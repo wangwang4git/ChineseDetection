@@ -1,0 +1,64 @@
+/**
+ * 样式变量定义
+ * 汉字认字量检测小程序
+ */
+
+/* 主题色 */
+$primary-color: #667eea;
+$primary-light: #764ba2;
+$secondary-color: #f093fb;
+
+/* 渐变色 */
+$gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$gradient-pink: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+$gradient-gold: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+$gradient-green: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+$gradient-blue: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+
+/* 背景色 */
+$bg-gradient: linear-gradient(180deg, #ffecd2 0%, #fcb69f 50%, #ee9ca7 100%);
+$bg-light: #f8f9fa;
+$bg-white: #ffffff;
+
+/* 文字颜色 */
+$text-primary: #333333;
+$text-secondary: #666666;
+$text-light: #999999;
+$text-white: #ffffff;
+
+/* 功能色 */
+$success-color: #52c41a;
+$warning-color: #faad14;
+$error-color: #ff4d4f;
+$info-color: #1890ff;
+
+/* 边框 */
+$border-color: #e8e8e8;
+$border-radius-sm: 8rpx;
+$border-radius-md: 16rpx;
+$border-radius-lg: 24rpx;
+$border-radius-xl: 32rpx;
+
+/* 阴影 */
+$shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.12);
+$shadow-lg: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+
+/* 间距 */
+$spacing-xs: 8rpx;
+$spacing-sm: 16rpx;
+$spacing-md: 24rpx;
+$spacing-lg: 32rpx;
+$spacing-xl: 48rpx;
+
+/* 字体大小 */
+$font-size-xs: 20rpx;
+$font-size-sm: 24rpx;
+$font-size-md: 28rpx;
+$font-size-lg: 32rpx;
+$font-size-xl: 36rpx;
+$font-size-xxl: 48rpx;
+$font-size-huge: 72rpx;
+
+/* 安全区域 */
+$safe-area-bottom: env(safe-area-inset-bottom);
