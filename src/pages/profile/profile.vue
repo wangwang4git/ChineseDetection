@@ -84,7 +84,7 @@ import { formatDateTime } from '@/utils/index.js'
 // 用户信息
 const userInfo = ref({
   id: '',
-  nickname: '小朋友',
+  nickname: '王澈小朋友',
   avatar: '👦',
   account: 'user_001'
 })

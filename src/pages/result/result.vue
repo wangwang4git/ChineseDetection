@@ -1,45 +1,17 @@
 <template>
   <!-- 结果页 - 检测结果展示 -->
   <view class="page-container">
-    <!-- 顶部安全区域 -->
-    <view class="safe-area-top"></view>
-
     <!-- 完成图标 -->
     <view class="complete-section">
       <text class="complete-emoji">🎊</text>
       <text class="complete-title">检测完成！</text>
     </view>
 
-    <!-- 熔断提示 -->
-    <view v-if="record.isFused" class="fuse-notice">
-      <text class="fuse-text">⚠️ 测试在 L{{ record.fusedAtLevel }} 层级提前结束</text>
-    </view>
-
-    <!-- 结果卡片 -->
+    <!-- 结果卡片 - 金黄渐变 -->
     <view class="result-card">
       <text class="result-label">你的认字量大约是</text>
-      <view class="result-value-row">
-        <text class="result-value">{{ record.estimatedVocabulary }}</text>
-        <text class="result-unit">个汉字 📚</text>
-      </view>
-    </view>
-
-    <!-- 分层详情 -->
-    <view class="level-detail-section">
-      <text class="section-title">📊 分层测试详情</text>
-      <view class="level-list">
-        <view 
-          v-for="detail in record.levelDetails" 
-          :key="detail.level"
-          class="level-item"
-          :class="{ 'level-fused': detail.isFused }"
-        >
-          <text class="level-name">L{{ detail.level }}</text>
-          <text class="level-score">{{ detail.knownCount }}/{{ detail.testedCount }}</text>
-          <text v-if="detail.isFused" class="level-fuse-tag">熔断</text>
-          <text v-else-if="detail.testedCount === 0" class="level-skip-tag">未测</text>
-        </view>
-      </view>
+      <text class="result-value">{{ record.estimatedVocabulary }}</text>
+      <text class="result-unit">个汉字 📚</text>
     </view>
 
     <!-- 不认识的汉字 -->
@@ -131,15 +103,13 @@ const endTest = async () => {
 </script>
 
 <style scoped>
+/* 页面容器 - 粉紫蓝渐变背景 */
 .page-container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #ffecd2 0%, #fcb69f 50%, #ee9ca7 100%);
+  background: linear-gradient(135deg, #FCCEE8 0%, #E9D4FF 50%, #BEDBFF 100%);
   padding: 0 32rpx;
+  padding-top: calc(120rpx + env(safe-area-inset-top));
   box-sizing: border-box;
-}
-
-.safe-area-top {
-  height: 44rpx;
 }
 
 .safe-area-bottom {
@@ -155,165 +125,106 @@ const endTest = async () => {
 }
 
 .complete-emoji {
-  font-size: 80rpx;
+  font-size: 96rpx;
   margin-bottom: 16rpx;
 }
 
 .complete-title {
-  font-size: 40rpx;
-  font-weight: bold;
-  color: #333333;
+  font-size: 48rpx;
+  font-weight: 500;
+  color: #6E11B0;
 }
 
-/* 熔断提示 */
-.fuse-notice {
-  background: rgba(255, 193, 7, 0.2);
-  border: 2rpx solid #ffc107;
-  border-radius: 16rpx;
-  padding: 16rpx 24rpx;
-  margin-bottom: 24rpx;
-  text-align: center;
-}
-
-.fuse-text {
-  font-size: 26rpx;
-  color: #856404;
-}
-
-/* 结果卡片 */
+/* 结果卡片 - 金黄渐变 */
 .result-card {
-  background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
-  border-radius: 24rpx;
-  padding: 40rpx;
+  background: linear-gradient(135deg, #FFF085 0%, #FFD6A7 100%);
+  border-radius: 32rpx;
+  border: 7rpx solid #FDC700;
+  padding: 72rpx 40rpx;
   text-align: center;
-  box-shadow: 0 8rpx 32rpx rgba(245, 175, 25, 0.4);
+  box-shadow: 0 50rpx 100rpx -24rpx rgba(0, 0, 0, 0.25);
   margin-bottom: 32rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .result-label {
-  font-size: 28rpx;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 36rpx;
+  color: #364153;
   display: block;
-  margin-bottom: 16rpx;
-}
-
-.result-value-row {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
+  margin-bottom: 12rpx;
 }
 
 .result-value {
   font-size: 96rpx;
-  font-weight: bold;
-  color: #ffffff;
+  font-weight: 400;
+  color: #9810FA;
+  letter-spacing: 1rpx;
 }
 
 .result-unit {
-  font-size: 28rpx;
-  color: rgba(255, 255, 255, 0.9);
-  margin-left: 12rpx;
+  font-size: 40rpx;
+  color: #364153;
+  margin-top: 8rpx;
 }
 
-/* 分层详情 */
-.level-detail-section {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 24rpx;
-  padding: 24rpx;
+/* 不认识的汉字区域 */
+.unknown-section {
+  background: rgba(255, 255, 255, 0.90);
+  border-radius: 32rpx;
+  border: 7rpx solid #FDA5D5;
+  padding: 56rpx;
   margin-bottom: 24rpx;
+  box-shadow: 0 16rpx 20rpx -12rpx rgba(0, 0, 0, 0.10), 0 40rpx 50rpx -10rpx rgba(0, 0, 0, 0.10);
 }
 
 .section-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #333333;
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #6E11B0;
   display: block;
-  margin-bottom: 20rpx;
-}
-
-.level-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16rpx;
-}
-
-.level-item {
-  display: flex;
-  align-items: center;
-  background: #f0f0f0;
-  border-radius: 12rpx;
-  padding: 12rpx 20rpx;
-  gap: 12rpx;
-}
-
-.level-fused {
-  background: rgba(255, 193, 7, 0.2);
-}
-
-.level-name {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: #667eea;
-}
-
-.level-score {
-  font-size: 26rpx;
-  color: #333333;
-}
-
-.level-fuse-tag {
-  font-size: 22rpx;
-  color: #856404;
-  background: #ffc107;
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
-}
-
-.level-skip-tag {
-  font-size: 22rpx;
-  color: #999999;
-}
-
-/* 不认识的汉字 */
-.unknown-section {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 24rpx;
-  padding: 24rpx;
-  margin-bottom: 24rpx;
+  margin-bottom: 28rpx;
+  text-align: center;
 }
 
 .char-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  gap: 24rpx;
 }
 
 /* 鼓励语 */
 .encourage-section {
   text-align: center;
-  padding: 24rpx 0;
+  padding: 32rpx 0;
 }
 
 .encourage-text {
-  font-size: 30rpx;
-  color: #333333;
-  font-weight: 500;
+  font-size: 36rpx;
+  color: #6E11B0;
+  font-weight: 400;
 }
 
 /* 操作按钮 */
 .action-section {
   margin-top: 16rpx;
+  display: flex;
+  justify-content: center;
 }
 
+/* 结束按钮 - 蓝紫渐变 */
 .end-btn {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  padding: 32rpx 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 50rpx;
-  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.4);
+  width: 460rpx;
+  padding: 38rpx 0;
+  background: linear-gradient(90deg, #51A2FF 0%, #C27AFF 100%);
+  border-radius: 9999rpx;
+  border: 7rpx solid #ffffff;
+  box-shadow: 0 50rpx 100rpx -24rpx rgba(0, 0, 0, 0.25);
 }
 
 .end-btn:active {
@@ -321,8 +232,8 @@ const endTest = async () => {
 }
 
 .btn-text {
-  font-size: 32rpx;
-  font-weight: bold;
+  font-size: 36rpx;
+  font-weight: 500;
   color: #ffffff;
 }
 </style>

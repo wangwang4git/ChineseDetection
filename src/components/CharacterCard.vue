@@ -41,15 +41,17 @@ const handleTap = () => {
 </script>
 
 <style scoped>
+/* 汉字卡片 - 粉色渐变样式 */
 .character-card {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100rpx;
-  height: 100rpx;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16rpx;
-  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+  width: 104rpx;
+  height: 150rpx;
+  background: linear-gradient(135deg, #FFE2E2 0%, #FCE7F3 100%);
+  border-radius: 20rpx;
+  border: 3rpx solid #FDA5D5;
+  box-shadow: 0 4rpx 12rpx -4rpx rgba(0, 0, 0, 0.10), 0 8rpx 16rpx -2rpx rgba(0, 0, 0, 0.10);
   margin: 12rpx;
 }
 
@@ -59,13 +61,13 @@ const handleTap = () => {
 
 .card-clickable:active {
   transform: scale(0.95);
-  box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.2);
+  box-shadow: 0 2rpx 8rpx rgba(253, 165, 213, 0.3);
 }
 
 .card-char {
   font-size: 48rpx;
   font-weight: bold;
-  color: #ffffff;
-  font-family: "SimHei", "Heiti SC", "Microsoft YaHei", sans-serif;
+  color: #0A0A0A;
+  font-family: "Helvetica", "SimHei", "Heiti SC", "Microsoft YaHei", sans-serif;
 }
 </style>

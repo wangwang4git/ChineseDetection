@@ -92,7 +92,7 @@ export function getUserInfo() {
     // 返回默认 Mock 用户
     return {
       id: 'user_001',
-      nickname: '小朋友',
+      nickname: '王澈小朋友',
       avatar: '👦',
       account: 'user_001'
     }
@@ -100,7 +100,7 @@ export function getUserInfo() {
     console.error('获取用户信息失败:', e)
     return {
       id: 'user_001',
-      nickname: '小朋友',
+      nickname: '王澈小朋友',
       avatar: '👦',
       account: 'user_001'
     }

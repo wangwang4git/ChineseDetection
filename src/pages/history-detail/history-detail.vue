@@ -15,34 +15,12 @@
 
     <!-- 详情内容 -->
     <view v-else-if="record" class="detail-content">
-      <!-- 检测信息卡片 -->
+      <!-- 检测信息卡片 - 粉紫蓝渐变 -->
       <view class="info-card">
-        <text class="info-time">{{ formatTime(record.testTime) }}</text>
+        <text class="info-time">检测时间：{{ formatTime(record.testTime) }}</text>
         <text class="info-label">当时的认字量</text>
-        <view class="info-value-row">
-          <text class="info-value">{{ record.estimatedVocabulary }}</text>
-          <text class="info-unit">个汉字 📚</text>
-        </view>
-        <view v-if="record.isFused" class="fuse-tag">
-          <text class="fuse-text">⚠️ 在 L{{ record.fusedAtLevel }} 层级提前结束</text>
-        </view>
-      </view>
-
-      <!-- 分层详情 -->
-      <view v-if="record.levelDetails" class="level-section">
-        <text class="section-title">📊 分层测试详情</text>
-        <view class="level-list">
-          <view 
-            v-for="detail in record.levelDetails" 
-            :key="detail.level"
-            class="level-item"
-            :class="{ 'level-fused': detail.isFused }"
-          >
-            <text class="level-name">L{{ detail.level }}</text>
-            <text class="level-score">{{ detail.knownCount }}/{{ detail.testedCount }}</text>
-            <text v-if="detail.isFused" class="level-fuse-tag">熔断</text>
-          </view>
-        </view>
+        <text class="info-value">{{ record.estimatedVocabulary }}</text>
+        <text class="info-unit">个汉字 📚</text>
       </view>
 
       <!-- 不认识的汉字 -->
@@ -135,9 +113,10 @@ onLoad((options) => {
 </script>
 
 <style scoped>
+/* 页面容器 - 粉紫蓝渐变背景 */
 .page-container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #ffecd2 0%, #fcb69f 50%, #ee9ca7 100%);
+  background: linear-gradient(135deg, #FCCEE8 0%, #E9D4FF 50%, #BEDBFF 100%);
   padding: 0 32rpx;
   box-sizing: border-box;
   padding-bottom: env(safe-area-inset-bottom);
@@ -149,12 +128,15 @@ onLoad((options) => {
   padding-top: calc(24rpx + env(safe-area-inset-top));
 }
 
+/* 返回按钮 - 白色背景 + 紫色边框 */
 .back-btn {
   display: inline-flex;
   align-items: center;
-  padding: 12rpx 24rpx;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 32rpx;
+  padding: 20rpx 36rpx;
+  background: rgba(255, 255, 255, 0.90);
+  border-radius: 9999rpx;
+  border: 3rpx solid #DAB2FF;
+  box-shadow: 0 8rpx 12rpx -8rpx rgba(0, 0, 0, 0.10), 0 20rpx 30rpx -6rpx rgba(0, 0, 0, 0.10);
 }
 
 .back-btn:active {
@@ -162,8 +144,8 @@ onLoad((options) => {
 }
 
 .back-text {
-  font-size: 28rpx;
-  color: #667eea;
+  font-size: 32rpx;
+  color: #6E11B0;
   font-weight: 500;
 }
 
@@ -177,7 +159,7 @@ onLoad((options) => {
 
 .loading-text {
   font-size: 30rpx;
-  color: #666666;
+  color: #6E11B0;
 }
 
 /* 详情内容 */
@@ -185,127 +167,71 @@ onLoad((options) => {
   padding-bottom: 32rpx;
 }
 
-/* 信息卡片 */
+/* 信息卡片 - 粉紫蓝渐变 + 白色边框 */
 .info-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 24rpx;
-  padding: 32rpx;
+  background: linear-gradient(90deg, #FDA5D5 0%, #DAB2FF 50%, #8EC5FF 100%);
+  border-radius: 32rpx;
+  border: 7rpx solid #ffffff;
+  padding: 56rpx 56rpx;
   text-align: center;
-  box-shadow: 0 8rpx 32rpx rgba(102, 126, 234, 0.3);
+  box-shadow: 0 50rpx 100rpx -24rpx rgba(0, 0, 0, 0.25);
   margin-bottom: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .info-time {
-  font-size: 26rpx;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.90);
   display: block;
   margin-bottom: 16rpx;
 }
 
 .info-label {
-  font-size: 28rpx;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 36rpx;
+  color: #ffffff;
   display: block;
   margin-bottom: 12rpx;
 }
 
-.info-value-row {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-}
-
 .info-value {
-  font-size: 80rpx;
-  font-weight: bold;
+  font-size: 72rpx;
+  font-weight: 400;
   color: #ffffff;
+  letter-spacing: 1rpx;
 }
 
 .info-unit {
-  font-size: 28rpx;
-  color: rgba(255, 255, 255, 0.9);
-  margin-left: 12rpx;
-}
-
-.fuse-tag {
-  margin-top: 16rpx;
-  background: rgba(255, 193, 7, 0.3);
-  border-radius: 12rpx;
-  padding: 8rpx 16rpx;
-  display: inline-block;
-}
-
-.fuse-text {
-  font-size: 24rpx;
+  font-size: 36rpx;
   color: #ffffff;
+  margin-top: 8rpx;
 }
 
-/* 分层详情 */
-.level-section {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 24rpx;
-  padding: 24rpx;
+/* 不认识的汉字区域 */
+.unknown-section {
+  background: rgba(255, 255, 255, 0.90);
+  border-radius: 32rpx;
+  border: 7rpx solid #FDA5D5;
+  padding: 56rpx;
   margin-bottom: 24rpx;
+  box-shadow: 0 16rpx 20rpx -12rpx rgba(0, 0, 0, 0.10), 0 40rpx 50rpx -10rpx rgba(0, 0, 0, 0.10);
 }
 
 .section-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #333333;
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #6E11B0;
   display: block;
-  margin-bottom: 20rpx;
-}
-
-.level-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16rpx;
-}
-
-.level-item {
-  display: flex;
-  align-items: center;
-  background: #f0f0f0;
-  border-radius: 12rpx;
-  padding: 12rpx 20rpx;
-  gap: 12rpx;
-}
-
-.level-fused {
-  background: rgba(255, 193, 7, 0.2);
-}
-
-.level-name {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: #667eea;
-}
-
-.level-score {
-  font-size: 26rpx;
-  color: #333333;
-}
-
-.level-fuse-tag {
-  font-size: 22rpx;
-  color: #856404;
-  background: #ffc107;
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
-}
-
-/* 不认识的汉字 */
-.unknown-section {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 24rpx;
-  padding: 24rpx;
-  margin-bottom: 24rpx;
+  margin-bottom: 28rpx;
+  text-align: center;
 }
 
 .char-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  gap: 24rpx;
 }
 
 /* 鼓励语 */
@@ -315,16 +241,16 @@ onLoad((options) => {
 }
 
 .encourage-text {
-  font-size: 30rpx;
-  color: #333333;
-  font-weight: 500;
+  font-size: 36rpx;
+  color: #6E11B0;
+  font-weight: 400;
   display: block;
   margin-bottom: 12rpx;
 }
 
 .encourage-sub {
-  font-size: 26rpx;
-  color: #666666;
+  font-size: 32rpx;
+  color: #9810FA;
 }
 
 /* 空状态 */
@@ -337,6 +263,6 @@ onLoad((options) => {
 
 .empty-text {
   font-size: 30rpx;
-  color: #999999;
+  color: #6E11B0;
 }
 </style>

@@ -1,9 +1,6 @@
 <template>
   <!-- 检测页 - 汉字认字量检测 -->
   <view class="page-container">
-    <!-- 顶部安全区域 -->
-    <view class="safe-area-top"></view>
-
     <!-- 加载状态 -->
     <view v-if="loading" class="loading-container">
       <text class="loading-text">正在准备测试...</text>
@@ -11,17 +8,11 @@
 
     <!-- 测试内容 -->
     <view v-else class="test-content">
-      <!-- 层级和进度信息 -->
+      <!-- 进度信息 -->
       <view class="progress-section">
-        <view class="level-info">
-          <text class="level-name">{{ currentLevelConfig?.name }} {{ currentLevelConfig?.description }}</text>
-        </view>
         <view class="progress-row">
           <text class="progress-text">第 {{ currentLevelIndex + 1 }} / {{ currentLevelConfig?.testCount }} 个</text>
-          <text class="total-progress">总进度: {{ totalProgress }} / {{ totalTestCount }}</text>
-        </view>
-        <view class="known-count">
-          <text>已认识: {{ totalKnownCount }} 个 ✅</text>
+          <text class="known-count">已认识: {{ totalKnownCount }} 个 ✅</text>
         </view>
         <!-- 进度条 -->
         <view class="progress-bar-container">
@@ -31,7 +22,7 @@
 
       <!-- 米字格展示汉字 -->
       <view class="character-section">
-        <RiceGrid :char="currentChar" :size="400" />
+        <RiceGrid :char="currentChar" :size="488" />
       </view>
 
       <!-- 操作按钮 -->
@@ -304,15 +295,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 页面容器 - 粉紫蓝渐变背景 */
 .page-container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #ffecd2 0%, #fcb69f 50%, #ee9ca7 100%);
+  background: linear-gradient(135deg, #FCCEE8 0%, #E9D4FF 50%, #BEDBFF 100%);
   padding: 0 32rpx;
+  padding-top: calc(120rpx + env(safe-area-inset-top));
   box-sizing: border-box;
-}
-
-.safe-area-top {
-  height: 44rpx;
 }
 
 /* 加载状态 */
@@ -325,7 +314,7 @@ onMounted(() => {
 
 .loading-text {
   font-size: 32rpx;
-  color: #666666;
+  color: #6E11B0;
 }
 
 /* 测试内容 */
@@ -335,59 +324,42 @@ onMounted(() => {
 
 /* 进度区域 */
 .progress-section {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 24rpx;
-  padding: 24rpx;
   margin-bottom: 32rpx;
-}
-
-.level-info {
-  margin-bottom: 12rpx;
-}
-
-.level-name {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #667eea;
 }
 
 .progress-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8rpx;
+  align-items: center;
+  margin-bottom: 16rpx;
 }
 
 .progress-text {
   font-size: 28rpx;
-  color: #333333;
-}
-
-.total-progress {
-  font-size: 24rpx;
-  color: #999999;
+  color: #6E11B0;
+  font-weight: 400;
 }
 
 .known-count {
-  margin-bottom: 16rpx;
-}
-
-.known-count text {
   font-size: 28rpx;
-  color: #52c41a;
-  font-weight: 500;
+  color: #6E11B0;
+  font-weight: 400;
 }
 
+/* 进度条 - 白色半透明背景 + 紫色边框 */
 .progress-bar-container {
-  height: 16rpx;
-  background: #e8e8e8;
-  border-radius: 8rpx;
+  height: 24rpx;
+  background: rgba(255, 255, 255, 0.50);
+  border-radius: 9999rpx;
+  border: 3rpx solid #DAB2FF;
   overflow: hidden;
+  padding: 3rpx;
 }
 
 .progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-  border-radius: 8rpx;
+  background: linear-gradient(90deg, #FDA5D5 0%, #DAB2FF 50%, #8EC5FF 100%);
+  border-radius: 9999rpx;
   transition: width 0.3s ease;
 }
 
@@ -399,21 +371,25 @@ onMounted(() => {
   margin: 48rpx 0;
 }
 
-/* 操作按钮 */
+/* 操作按钮 - 胶囊形状 */
 .action-section {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   gap: 32rpx;
   margin-bottom: 32rpx;
+  padding: 0 16rpx;
 }
 
 .action-btn {
   flex: 1;
+  max-width: 374rpx;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 32rpx 0;
-  border-radius: 50rpx;
+  padding: 30rpx 0;
+  border-radius: 9999rpx;
+  border: 7rpx solid #ffffff;
+  box-shadow: 0 50rpx 100rpx -24rpx rgba(0, 0, 0, 0.25);
   transition: transform 0.2s ease;
 }
 
@@ -421,19 +397,19 @@ onMounted(() => {
   transform: scale(0.98);
 }
 
+/* 我认识按钮 - 绿色渐变 */
 .btn-know {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-  box-shadow: 0 8rpx 24rpx rgba(17, 153, 142, 0.4);
+  background: linear-gradient(90deg, #05DF72 0%, #00C950 100%);
 }
 
+/* 不认识按钮 - 橙红渐变 */
 .btn-unknown {
-  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
-  box-shadow: 0 8rpx 24rpx rgba(245, 87, 108, 0.4);
+  background: linear-gradient(90deg, #FF8904 0%, #FF6467 100%);
 }
 
 .btn-text {
-  font-size: 32rpx;
-  font-weight: bold;
+  font-size: 36rpx;
+  font-weight: 500;
   color: #ffffff;
 }
 
@@ -444,8 +420,9 @@ onMounted(() => {
 }
 
 .encourage-text {
-  font-size: 28rpx;
-  color: #666666;
+  font-size: 36rpx;
+  color: #6E11B0;
+  font-weight: 400;
 }
 
 /* 熔断弹窗 */
@@ -465,7 +442,7 @@ onMounted(() => {
 .modal-content {
   width: 80%;
   background: #ffffff;
-  border-radius: 24rpx;
+  border-radius: 32rpx;
   padding: 48rpx 32rpx;
   display: flex;
   flex-direction: column;
@@ -475,7 +452,7 @@ onMounted(() => {
 .modal-title {
   font-size: 36rpx;
   font-weight: bold;
-  color: #333333;
+  color: #6E11B0;
   margin-bottom: 16rpx;
 }
 
@@ -489,8 +466,8 @@ onMounted(() => {
 .modal-btn {
   width: 100%;
   padding: 24rpx 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 50rpx;
+  background: linear-gradient(90deg, #51A2FF 0%, #C27AFF 100%);
+  border-radius: 9999rpx;
   text-align: center;
 }
 
