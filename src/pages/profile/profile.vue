@@ -65,8 +65,11 @@
       </view>
     </view>
 
-    <!-- 底部安全区域 -->
-    <view class="safe-area-bottom"></view>
+    <!-- 底部占位（为 TabBar 留空间） -->
+    <view class="tabbar-placeholder"></view>
+    
+    <!-- 自定义 TabBar -->
+    <CustomTabBar current="profile" />
   </view>
 </template>
 
@@ -80,6 +83,7 @@ import { onShow } from '@dcloudio/uni-app'
 import { getRecordList, getStatistics } from '@/api/record.js'
 import { getUserInfo } from '@/utils/storage.js'
 import { formatDateTime } from '@/utils/index.js'
+import CustomTabBar from '@/components/CustomTabBar.vue'
 
 // 用户信息
 const userInfo = ref({
@@ -183,8 +187,9 @@ onShow(() => {
   height: 32rpx;
 }
 
-.safe-area-bottom {
-  height: calc(40rpx + env(safe-area-inset-bottom));
+/* TabBar 占位 */
+.tabbar-placeholder {
+  height: calc(180rpx + env(safe-area-inset-bottom));
 }
 
 /* 用户卡片 */

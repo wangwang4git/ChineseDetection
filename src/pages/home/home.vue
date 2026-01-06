@@ -48,8 +48,11 @@
       </view>
     </view>
 
-    <!-- 底部安全区域 -->
-    <view class="safe-area-bottom"></view>
+    <!-- 底部占位（为 TabBar 留空间） -->
+    <view class="tabbar-placeholder"></view>
+    
+    <!-- 自定义 TabBar -->
+    <CustomTabBar current="home" />
   </view>
 </template>
 
@@ -59,6 +62,7 @@
  * 展示不同年龄段的认字量参考区间，引导用户开始检测
  */
 import { ref } from 'vue'
+import CustomTabBar from '@/components/CustomTabBar.vue'
 
 // 年龄段卡片数据（含 emoji 和渐变色）
 const ageCards = ref([
@@ -116,8 +120,9 @@ const startTest = () => {
   height: 40rpx;
 }
 
-.safe-area-bottom {
-  height: calc(40rpx + env(safe-area-inset-bottom));
+/* TabBar 占位 */
+.tabbar-placeholder {
+  height: calc(180rpx + env(safe-area-inset-bottom));
 }
 
 /* Banner 区域 */
