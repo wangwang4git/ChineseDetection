@@ -4,26 +4,22 @@
     <view class="tabbar-container">
       <!-- 首页 Tab -->
       <view 
-        class="tab-item" 
-        :class="{ 'tab-active': currentTab === 'home' }"
+        class="tab-content" 
+        :class="{ 'tab-content-active': current === 'home' }"
         @tap="switchTab('home')"
       >
-        <view class="tab-content" :class="{ 'tab-content-active': currentTab === 'home' }">
-          <text class="tab-icon">🏠</text>
-          <text class="tab-text" :class="{ 'tab-text-active': currentTab === 'home' }">首页</text>
-        </view>
+        <text class="tab-icon">🏠</text>
+        <text class="tab-text" :class="{ 'tab-text-active': current === 'home' }">首页</text>
       </view>
       
       <!-- 我的 Tab -->
       <view 
-        class="tab-item" 
-        :class="{ 'tab-active': currentTab === 'profile' }"
+        class="tab-content" 
+        :class="{ 'tab-content-active': current === 'profile' }"
         @tap="switchTab('profile')"
       >
-        <view class="tab-content" :class="{ 'tab-content-active': currentTab === 'profile' }">
-          <text class="tab-icon">👤</text>
-          <text class="tab-text" :class="{ 'tab-text-active': currentTab === 'profile' }">我的</text>
-        </view>
+        <text class="tab-icon">👤</text>
+        <text class="tab-text" :class="{ 'tab-text-active': current === 'profile' }">我的</text>
       </view>
     </view>
   </view>
@@ -34,7 +30,6 @@
  * 自定义 TabBar 组件
  * 设计稿样式：白色半透明背景 + 紫色顶部边框 + 选中项粉紫渐变卡片
  */
-import { ref, watch } from 'vue'
 
 // Props 定义
 const props = defineProps({
@@ -45,22 +40,12 @@ const props = defineProps({
   }
 })
 
-// 当前选中 Tab
-const currentTab = ref(props.current)
-
-// 监听 props 变化
-watch(() => props.current, (newVal) => {
-  currentTab.value = newVal
-})
-
 /**
  * 切换 Tab
  * @param {string} tab - Tab 名称
  */
 const switchTab = (tab) => {
-  if (currentTab.value === tab) return
-  
-  currentTab.value = tab
+  if (props.current === tab) return
   
   // 使用 switchTab 进行页面切换
   const urls = {
@@ -91,22 +76,14 @@ const switchTab = (tab) => {
 /* TabBar 内容区域 */
 .tabbar-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
+  gap: 48rpx;
   height: 144rpx;
   padding: 0 48rpx;
 }
 
-/* Tab 项 */
-.tab-item {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-/* Tab 内容 */
+/* Tab 内容（点击区域） */
 .tab-content {
   display: flex;
   flex-direction: column;
@@ -115,15 +92,12 @@ const switchTab = (tab) => {
   width: 152rpx;
   height: 144rpx;
   border-radius: 32rpx;
-  transition: all 0.3s ease;
 }
 
 /* 选中状态 - 粉紫渐变背景卡片 */
 .tab-content-active {
   background: linear-gradient(90deg, #FDA5D5 0%, #DAB2FF 100%);
   box-shadow: 0 8rpx 24rpx rgba(253, 165, 213, 0.3);
-  height: 158rpx;
-  margin-top: -14rpx;
 }
 
 /* Tab 图标 */

@@ -132,7 +132,7 @@ const records = ref([])
  * 格式化时间
  */
 const formatTime = (time) => {
-  return formatDateTime(time, 'YYYY/M/D HH:mm:ss')
+  return formatDateTime(time, 'YYYY/MM/DD HH:mm:ss')
 }
 
 /**
