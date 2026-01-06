@@ -1,5 +1,5 @@
 <template>
-  <!-- 个人页 - 用户信息和历史记录 -->
+  <!-- 个人页 - 用户信息和历史记录 v2.0 -->
   <view class="page-container">
     <!-- 顶部安全区域 -->
     <view class="safe-area-top"></view>
@@ -17,20 +17,18 @@
 
     <!-- 统计卡片 -->
     <view class="stats-section">
-      <view class="stat-card">
-        <text class="stat-icon">📊</text>
-        <text class="stat-value">{{ statistics.testCount }}</text>
-        <text class="stat-label">检测次数</text>
-      </view>
-      <view class="stat-card">
-        <text class="stat-icon">🏆</text>
-        <text class="stat-value">{{ statistics.maxScore }}</text>
-        <text class="stat-label">最高记录</text>
-      </view>
-      <view class="stat-card">
-        <text class="stat-icon">📈</text>
-        <text class="stat-value">{{ statistics.avgScore }}</text>
-        <text class="stat-label">平均认字</text>
+      <view 
+        v-for="(stat, index) in statCards" 
+        :key="index"
+        class="stat-card"
+        :style="{ 
+          background: stat.gradient,
+          borderColor: stat.borderColor
+        }"
+      >
+        <text class="stat-icon">{{ stat.emoji }}</text>
+        <text class="stat-value">{{ stat.value }}</text>
+        <text class="stat-label">{{ stat.label }}</text>
       </view>
     </view>
 
@@ -50,18 +48,18 @@
           class="record-item"
           @tap="goToDetail(record.id)"
         >
-          <view class="record-left">
+          <view class="record-content">
             <text class="record-time">{{ formatTime(record.testTime) }}</text>
-            <view class="record-tags">
-              <text class="record-score">📊 {{ record.estimatedVocabulary }} 字</text>
-              <text v-if="record.unknownChars?.length > 0" class="record-unknown">
-                需加强 {{ record.unknownChars.length }} 字
-              </text>
-              <text v-if="record.isFused" class="record-fuse">提前结束</text>
+            <view class="record-main">
+              <text class="record-icon">📊</text>
+              <text class="record-score">认字量：{{ record.estimatedVocabulary }}</text>
             </view>
+            <text v-if="record.unknownChars?.length > 0" class="record-unknown">
+              需加强：{{ record.unknownChars.length }} 个汉字
+            </text>
           </view>
-          <view class="record-right">
-            <text class="record-arrow">👉</text>
+          <view class="record-arrow">
+            <text class="arrow-icon">👉</text>
           </view>
         </view>
       </view>
@@ -74,10 +72,11 @@
 
 <script setup>
 /**
- * 个人页
+ * 个人页 v2.0
  * 展示用户信息、统计数据和历史检测记录
  */
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { getRecordList, getStatistics } from '@/api/record.js'
 import { getUserInfo } from '@/utils/storage.js'
 import { formatDateTime } from '@/utils/index.js'
@@ -97,6 +96,31 @@ const statistics = ref({
   avgScore: 0
 })
 
+// 统计卡片配置
+const statCards = computed(() => [
+  {
+    emoji: '📊',
+    value: statistics.value.testCount,
+    label: '次检测',
+    gradient: 'linear-gradient(135deg, #B9F8CF 0%, #7BF1A8 100%)',
+    borderColor: '#05DF72'
+  },
+  {
+    emoji: '🏆',
+    value: statistics.value.maxScore,
+    label: '最高记录',
+    gradient: 'linear-gradient(135deg, #BEDBFF 0%, #8EC5FF 100%)',
+    borderColor: '#51A2FF'
+  },
+  {
+    emoji: '📈',
+    value: statistics.value.avgScore,
+    label: '平均认字',
+    gradient: 'linear-gradient(135deg, #E9D4FF 0%, #DAB2FF 100%)',
+    borderColor: '#C27AFF'
+  }
+])
+
 // 历史记录
 const records = ref([])
 
@@ -104,7 +128,7 @@ const records = ref([])
  * 格式化时间
  */
 const formatTime = (time) => {
-  return formatDateTime(time, 'MM-DD HH:mm')
+  return formatDateTime(time, 'YYYY/M/D HH:mm:ss')
 }
 
 /**
@@ -142,7 +166,6 @@ onMounted(() => {
 })
 
 // 页面每次显示时刷新数据
-import { onShow } from '@dcloudio/uni-app'
 onShow(() => {
   loadData()
 })
@@ -151,43 +174,46 @@ onShow(() => {
 <style scoped>
 .page-container {
   min-height: 100vh;
-  background: linear-gradient(180deg, #ffecd2 0%, #fcb69f 50%, #ee9ca7 100%);
+  background: linear-gradient(135deg, #FCCEE8 0%, #E9D4FF 50%, #BEDBFF 100%);
   padding: 0 32rpx;
   box-sizing: border-box;
 }
 
 .safe-area-top {
-  height: 44rpx;
+  height: 32rpx;
 }
 
 .safe-area-bottom {
-  height: calc(120rpx + env(safe-area-inset-bottom));
+  height: calc(40rpx + env(safe-area-inset-bottom));
 }
 
 /* 用户卡片 */
 .user-card {
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 24rpx;
-  padding: 32rpx;
-  margin-top: 24rpx;
-  box-shadow: 0 8rpx 32rpx rgba(102, 126, 234, 0.3);
+  background: linear-gradient(90deg, #FDA5D5 0%, #DAB2FF 50%, #8EC5FF 100%);
+  border-radius: 32rpx;
+  padding: 54rpx;
+  margin-top: 32rpx;
+  border: 7rpx solid white;
+  box-shadow: 0 48rpx 96rpx rgba(0, 0, 0, 0.25);
 }
 
 .avatar-wrapper {
-  width: 120rpx;
-  height: 120rpx;
-  background: rgba(255, 255, 255, 0.3);
+  width: 122rpx;
+  height: 122rpx;
+  background: linear-gradient(135deg, #FFDF20 0%, #FFB86A 100%);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 24rpx;
+  margin-right: 32rpx;
+  border: 7rpx solid white;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
 }
 
 .avatar {
-  font-size: 64rpx;
+  font-size: 60rpx;
 }
 
 .user-info {
@@ -196,64 +222,64 @@ onShow(() => {
 }
 
 .nickname {
-  font-size: 36rpx;
-  font-weight: bold;
+  font-size: 40rpx;
+  font-weight: 500;
   color: #ffffff;
   margin-bottom: 8rpx;
 }
 
 .account {
-  font-size: 26rpx;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* 统计卡片 */
 .stats-section {
   display: flex;
   justify-content: space-between;
-  margin-top: 24rpx;
-  gap: 16rpx;
+  margin-top: 32rpx;
+  gap: 20rpx;
 }
 
 .stat-card {
   flex: 1;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 20rpx;
-  padding: 24rpx 16rpx;
+  border-radius: 28rpx;
+  padding: 34rpx 20rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  border: 3rpx solid;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
 }
 
 .stat-icon {
-  font-size: 40rpx;
-  margin-bottom: 8rpx;
+  font-size: 48rpx;
+  margin-bottom: 12rpx;
 }
 
 .stat-value {
   font-size: 40rpx;
-  font-weight: bold;
-  color: #667eea;
-  margin-bottom: 4rpx;
+  font-weight: 400;
+  color: #1E2939;
+  margin-bottom: 8rpx;
 }
 
 .stat-label {
   font-size: 24rpx;
-  color: #999999;
+  color: #364153;
 }
 
 /* 历史记录 */
 .history-section {
-  margin-top: 32rpx;
+  margin-top: 40rpx;
 }
 
 .section-title {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #333333;
+  font-size: 40rpx;
+  font-weight: 500;
+  color: #6E11B0;
   display: block;
-  margin-bottom: 20rpx;
+  margin-bottom: 24rpx;
 }
 
 .empty-state {
@@ -265,78 +291,75 @@ onShow(() => {
 
 .empty-text {
   font-size: 30rpx;
-  color: #999999;
+  color: #4A5565;
   margin-bottom: 12rpx;
 }
 
 .empty-hint {
   font-size: 26rpx;
-  color: #cccccc;
+  color: #6A7282;
 }
 
 .record-list {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: 20rpx;
 }
 
 .record-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 20rpx;
-  padding: 24rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, #FFF5E5 0%, white 100%);
+  border-radius: 28rpx;
+  padding: 34rpx;
+  border: 3rpx solid #FFDF20;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
 }
 
 .record-item:active {
   transform: scale(0.99);
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
-.record-left {
+.record-content {
   display: flex;
   flex-direction: column;
 }
 
 .record-time {
-  font-size: 26rpx;
-  color: #999999;
+  font-size: 24rpx;
+  color: #4A5565;
   margin-bottom: 8rpx;
 }
 
-.record-tags {
+.record-main {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12rpx;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.record-icon {
+  font-size: 40rpx;
+  margin-right: 12rpx;
 }
 
 .record-score {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #667eea;
+  font-size: 36rpx;
+  color: #9810FA;
 }
 
 .record-unknown {
   font-size: 24rpx;
-  color: #f5576c;
+  color: #4A5565;
 }
 
-.record-fuse {
-  font-size: 22rpx;
-  color: #856404;
-  background: rgba(255, 193, 7, 0.3);
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
-}
-
-.record-right {
+.record-arrow {
   display: flex;
   align-items: center;
 }
 
-.record-arrow {
-  font-size: 32rpx;
+.arrow-icon {
+  font-size: 48rpx;
 }
 </style>
