@@ -12,6 +12,11 @@ node_modules
 dist
 *.local
 
+# Environment variables (contains sensitive information)
+.env
+.env.local
+.env.*.local
+
 # Editor directories and files
 .idea
 *.suo

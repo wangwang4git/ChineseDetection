@@ -50,6 +50,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
+        "cloudfunctionRoot": "cloudfunctions/", // 配置云开发目录
         "appid" : "",
         "setting" : {
             "urlCheck" : false
