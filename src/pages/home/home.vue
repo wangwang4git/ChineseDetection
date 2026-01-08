@@ -3,14 +3,10 @@
   <view class="page-container">
     <!-- 顶部安全区域 -->
     <view class="safe-area-top"></view>
-    
+
     <!-- Banner 图片 -->
     <view class="banner-section">
-      <image 
-        class="banner-image" 
-        src="/static/images/home-banner.png" 
-        mode="aspectFill"
-      />
+      <image class="banner-image" src="/static/images/home-banner.png" mode="aspectFill" />
     </view>
 
     <!-- 标题区域 -->
@@ -21,12 +17,7 @@
 
     <!-- 年龄段认字量参考卡片 -->
     <view class="card-list">
-      <view 
-        v-for="(item, index) in ageCards" 
-        :key="index"
-        class="age-card"
-        :style="{ background: item.gradient }"
-      >
+      <view v-for="(item, index) in ageCards" :key="index" class="age-card" :style="{ background: item.gradient }">
         <view class="card-left">
           <text class="card-emoji">{{ item.emoji }}</text>
           <view class="card-info">
@@ -50,7 +41,7 @@
 
     <!-- 底部占位（为 TabBar 留空间） -->
     <view class="tabbar-placeholder"></view>
-    
+
     <!-- 自定义 TabBar -->
     <CustomTabBar current="home" />
   </view>
@@ -105,6 +96,88 @@ const startTest = () => {
   uni.navigateTo({
     url: '/pages/test/test'
   })
+
+  let app = getApp()
+  console.log('🔍 App globalData:', app?.globalData)
+
+  let cloudEnv = app.globalData.env
+  console.log('✅ 从 globalData 获取环境ID:', cloudEnv)
+
+  // 使用获取到的环境ID
+  callCloudFunction(cloudEnv)
+}
+
+/**
+ * 调用云函数
+ * @param {string} envId 环境ID
+ */
+const callCloudFunction = (envId) => {
+  console.log('☁️ 准备调用云函数: baseFunctions, 环境:', envId)
+
+  wx.cloud
+    .callFunction({
+      name: 'baseFunctions',
+      data: {
+        type: 'getOpenId',
+      },
+    })
+    .then((resp) => {
+      console.log('✅ 云函数调用成功:', resp)
+      if (resp.result && resp.result.success !== false) {
+        console.log('📋 返回数据:', resp.result)
+        uni.showToast({
+          title: '云函数调用成功',
+          icon: 'success'
+        })
+      } else {
+        console.warn('⚠️ 云函数返回异常:', resp.result)
+      }
+    })
+    .catch((e) => {
+      console.error('❌ 云函数调用失败:', e)
+
+      const { errCode, errMsg } = e
+      console.error('错误码:', errCode)
+      console.error('错误信息:', errMsg)
+
+      // 详细的错误处理
+      if (errMsg.includes('Environment not found') || errMsg.includes('env not exists')) {
+        console.error("🚨 云开发环境未找到：请检查环境ID是否正确")
+        uni.showModal({
+          title: '环境配置错误',
+          content: `云开发环境ID "${envId}" 不存在，请检查配置`,
+          showCancel: false
+        })
+        return
+      }
+
+      if (errMsg.includes('FunctionName parameter could not be found') || errMsg.includes('function not found')) {
+        console.error("🚨 云函数未找到：请检查 baseFunctions 是否已部署")
+        uni.showModal({
+          title: '云函数未部署',
+          content: '云函数 "baseFunctions" 未找到，请在开发者工具中部署云函数',
+          showCancel: false
+        })
+        return
+      }
+
+      if (errMsg.includes('system error')) {
+        console.error("🚨 系统错误：可能是网络问题或云函数运行异常")
+        uni.showModal({
+          title: '系统错误',
+          content: '云函数调用失败，请检查网络连接或稍后重试',
+          showCancel: false
+        })
+        return
+      }
+
+      // 通用错误处理
+      uni.showModal({
+        title: '调用失败',
+        content: `错误信息: ${errMsg}`,
+        showCancel: false
+      })
+    });
 }
 </script>
 

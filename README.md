@@ -14,6 +14,8 @@
 - 🎨 **儿童友好界面**：适配幼儿园低龄用户的 UI 设计
 - 📈 **历史记录追踪**：完整的测试历史和进步跟踪
 - 🔄 **跨平台支持**：基于 uni-app，支持微信小程序、H5 等多平台
+- ☁️ **云端数据同步**：基于微信云开发，数据安全可靠
+- 🔐 **用户身份识别**：微信授权登录，个人数据隔离
 
 ## 🏗️ 技术架构
 
@@ -24,10 +26,68 @@
 - **状态管理**：本地存储 + Vuex
 - **构建工具**：Vite
 
+### 后端技术栈
+- **云开发平台**：微信云开发
+- **云函数**：Node.js + wx-server-sdk
+- **数据库**：云数据库 (MongoDB)
+- **存储**：云存储
+- **用户认证**：微信小程序授权
+
 ### 核心算法
 - **测试策略**：分层频率抽样
 - **计算公式**：`W = N₁ + (N₂×3) + (N₃×10) + (N₄×20) + (N₅×50) + (N₆×100)`
 - **熔断机制**：连续 5 个不认识或错误率超过 80% 自动停止
+
+### 云函数 API
+项目使用微信云开发提供后端服务，主要云函数接口：
+
+#### baseFunctions 云函数
+```javascript
+// 获取用户 OpenID
+wx.cloud.callFunction({
+  name: 'baseFunctions',
+  data: { type: 'getOpenId' }
+})
+
+// 创建数据集合
+wx.cloud.callFunction({
+  name: 'baseFunctions',
+  data: { type: 'createCollection' }
+})
+
+// 查询记录
+wx.cloud.callFunction({
+  name: 'baseFunctions',
+  data: { type: 'selectRecord' }
+})
+
+// 新增记录
+wx.cloud.callFunction({
+  name: 'baseFunctions',
+  data: { 
+    type: 'insertRecord',
+    data: { /* 记录数据 */ }
+  }
+})
+
+// 更新记录
+wx.cloud.callFunction({
+  name: 'baseFunctions',
+  data: { 
+    type: 'updateRecord',
+    data: [/* 更新数据数组 */]
+  }
+})
+
+// 删除记录
+wx.cloud.callFunction({
+  name: 'baseFunctions',
+  data: { 
+    type: 'deleteRecord',
+    data: { _id: 'record_id' }
+  }
+})
+```
 
 ## 📁 项目结构
 
@@ -37,11 +97,18 @@ src/
 │   ├── character.js        # 汉字数据接口
 │   ├── record.js          # 检测记录接口
 │   └── index.js           # 接口统一导出
+├── cloudfunctions/        # 云函数目录
+│   └── baseFunctions/     # 基础云函数
+│       ├── index.js       # 云函数入口文件
+│       ├── package.json   # 依赖配置
+│       └── config.json    # 云函数配置
 ├── components/            # 公共组件
 │   ├── CustomTabBar.vue   # 自定义 TabBar
 │   ├── RiceGrid.vue       # 米字格组件
 │   ├── GradientButton.vue # 渐变按钮
 │   └── CharacterCard.vue  # 汉字卡片
+├── config/                # 配置文件
+│   └── env.js            # 环境变量配置
 ├── pages/                 # 页面
 │   ├── home/              # 首页
 │   ├── test/              # 检测页
@@ -67,11 +134,41 @@ src/
 ### 环境要求
 - Node.js >= 16.0.0
 - npm >= 8.0.0
+- 微信开发者工具 (用于小程序开发和云函数部署)
+
+### 环境配置
+
+1. **创建环境变量文件**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **配置微信云开发环境ID**
+   ```bash
+   # .env 文件
+   VITE_WX_CLOUD_ENV=your-cloud-env-id-here
+   ```
 
 ### 安装依赖
 ```bash
 npm install
 ```
+
+### 云开发配置
+
+1. **开通微信云开发**
+   - 在微信开发者工具中打开项目
+   - 点击"云开发"按钮，开通云开发服务
+   - 创建云开发环境，获取环境ID
+
+2. **部署云函数**
+   - 右键点击 `src/cloudfunctions/baseFunctions` 目录
+   - 选择"上传并部署：云端安装依赖"
+   - 等待部署完成
+
+3. **初始化云数据库**
+   - 云函数会自动创建 `sales` 集合（示例数据）
+   - 可根据需要创建其他集合
 
 ### 开发运行
 ```bash
@@ -192,11 +289,30 @@ chore: 构建/工具相关
 ### Q: 如何调试微信小程序？
 A: 使用微信开发者工具，导入 `dist/dev/mp-weixin` 目录
 
+### Q: 云函数调用失败怎么办？
+A: 
+1. 检查云开发环境ID是否正确配置
+2. 确认云函数已正确部署
+3. 查看控制台错误信息进行排查
+4. 确保小程序已关联到对应的云开发环境
+
+### Q: 如何更新云函数？
+A: 
+1. 修改 `src/cloudfunctions/baseFunctions/index.js`
+2. 右键选择"上传并部署：云端安装依赖"
+3. 等待部署完成后重新测试
+
 ### Q: 汉字数据如何更新？
 A: 修改 `static/top_2500_chars_with_literacy.json` 文件
 
 ### Q: 如何自定义测试算法？
 A: 修改 `utils/levelConfig.js` 和 `utils/calculate.js` 文件
+
+### Q: 环境变量配置问题？
+A: 
+1. 确保 `.env` 文件存在且格式正确
+2. 检查 `vite.config.js` 中的环境变量注入
+3. 重新编译项目：`npm run dev:mp-weixin`
 
 ## 🤝 贡献指南
 
@@ -214,6 +330,7 @@ A: 修改 `utils/levelConfig.js` 和 `utils/calculate.js` 文件
 
 - [uni-app](https://uniapp.dcloud.io/) - 跨平台应用开发框架
 - [Vue.js](https://vuejs.org/) - 渐进式 JavaScript 框架
+- [微信云开发](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html) - 云端一体化开发平台
 - [现代汉语常用字表](https://www.zdic.net/zd/zb/cc1/) - 汉字数据来源
 - [Figma](https://www.figma.com/) - UI 设计工具
 

@@ -8,7 +8,16 @@ import path from 'path'
 export default defineConfig(({ mode }) => {
   // 加载环境变量
   const env = loadEnv(mode, process.cwd(), '')
-  
+
+  // 调试：打印环境变量加载情况
+  console.log('🔧 Vite 构建模式:', mode)
+  console.log('🔧 当前平台:', process.env.UNI_PLATFORM)
+  console.log('🔧 加载的环境变量:', {
+    VITE_WX_CLOUD_ENV: env.VITE_WX_CLOUD_ENV,
+    VITE_API_BASE_URL: env.VITE_API_BASE_URL,
+    VITE_APP_VERSION: env.VITE_APP_VERSION
+  })
+
   const plugins = [uni()]
 
   // 仅微信小程序生效
@@ -24,17 +33,22 @@ export default defineConfig(({ mode }) => {
     })
   }
 
+  // 构建注入的环境变量对象，确保不会有undefined值
+  const envToInject = {
+    VITE_WX_CLOUD_ENV: env.VITE_WX_CLOUD_ENV || 'cloud-XXXX',
+    VITE_API_BASE_URL: env.VITE_API_BASE_URL || '',
+    VITE_APP_VERSION: env.VITE_APP_VERSION || '1.0.0',
+    NODE_ENV: mode
+  }
+
+  console.log('🚀 注入到代码中的环境变量:', envToInject)
+
   return {
     plugins,
     // 定义全局常量，将环境变量注入到代码中
     define: {
       // 将 VITE_ 开头的环境变量注入到全局
-      __ENV__: JSON.stringify({
-        VITE_WX_CLOUD_ENV: env.VITE_WX_CLOUD_ENV,
-        VITE_API_BASE_URL: env.VITE_API_BASE_URL,
-        VITE_APP_VERSION: env.VITE_APP_VERSION,
-        NODE_ENV: mode
-      })
+      __ENV__: JSON.stringify(envToInject)
     },
     // 环境变量配置
     envPrefix: 'VITE_', // 只有以 VITE_ 开头的变量会被暴露

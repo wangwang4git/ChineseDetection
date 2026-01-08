@@ -8,26 +8,12 @@ const db = cloud.database();
 const getOpenId = async () => {
   // 获取基础信息
   const wxContext = cloud.getWXContext();
+  console.log(wxContext);
   return {
     openid: wxContext.OPENID,
     appid: wxContext.APPID,
     unionid: wxContext.UNIONID,
   };
-};
-
-// 获取小程序二维码
-const getMiniProgramCode = async () => {
-  // 获取小程序二维码的buffer
-  const resp = await cloud.openapi.wxacode.get({
-    path: "pages/index/index",
-  });
-  const { buffer } = resp;
-  // 将图片上传云存储空间
-  const upload = await cloud.uploadFile({
-    cloudPath: "code.png",
-    fileContent: buffer,
-  });
-  return upload.fileID;
 };
 
 // 创建集合
@@ -158,20 +144,14 @@ const deleteRecord = async (event) => {
 };
 
 // const getOpenId = require('./getOpenId/index');
-// const getMiniProgramCode = require('./getMiniProgramCode/index');
 // const createCollection = require('./createCollection/index');
 // const selectRecord = require('./selectRecord/index');
 // const updateRecord = require('./updateRecord/index');
-// const sumRecord = require('./sumRecord/index');
-// const fetchGoodsList = require('./fetchGoodsList/index');
-// const genMpQrcode = require('./genMpQrcode/index');
 // 云函数入口函数
 exports.main = async (event, context) => {
   switch (event.type) {
     case "getOpenId":
       return await getOpenId();
-    case "getMiniProgramCode":
-      return await getMiniProgramCode();
     case "createCollection":
       return await createCollection();
     case "selectRecord":
