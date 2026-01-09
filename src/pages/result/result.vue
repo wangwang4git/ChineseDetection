@@ -50,9 +50,13 @@
  */
 import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+// #ifdef MP-WEIXIN
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
+// #endif
 import CharacterCard from '@/components/CharacterCard.vue'
 import { addRecord } from '@/api/record.js'
 import { getEncouragementMessage } from '@/utils/calculate.js'
+import { getResultShareConfig, getResultTimelineConfig } from '@/utils/share.js'
 
 // 检测记录
 const record = ref({
@@ -83,6 +87,22 @@ onLoad((options) => {
     }
   }
 })
+
+// #ifdef MP-WEIXIN
+/**
+ * 分享给好友 - 包含检测结果
+ */
+onShareAppMessage(() => {
+  return getResultShareConfig(record.value.estimatedVocabulary)
+})
+
+/**
+ * 分享到朋友圈 - 包含检测结果
+ */
+onShareTimeline(() => {
+  return getResultTimelineConfig(record.value.estimatedVocabulary)
+})
+// #endif
 
 /**
  * 结束检测

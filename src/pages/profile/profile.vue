@@ -145,11 +145,15 @@
  */
 import { ref, computed, onMounted } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
+// #ifdef MP-WEIXIN
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
+// #endif
 import { getRecordList, getStatistics } from '@/api/record.js'
 import { handleChooseAvatar, handleNicknameInput, getMaskedOpenId } from '@/api/user.js'
 import userManager from '@/utils/userManager.js'
 import { formatDateTime } from '@/utils/index.js'
 import { getProfileGuideShown, setProfileGuideShown } from '@/utils/storage.js'
+import { getDefaultShareConfig, getDefaultTimelineConfig } from '@/utils/share.js'
 import CustomTabBar from '@/components/CustomTabBar.vue'
 
 // 用户信息
@@ -207,6 +211,22 @@ const isLoading = ref(false)
 
 // 用户引导提示状态
 const showGuideModal = ref(false)
+
+// #ifdef MP-WEIXIN
+/**
+ * 分享给好友
+ */
+onShareAppMessage(() => {
+  return getDefaultShareConfig()
+})
+
+/**
+ * 分享到朋友圈
+ */
+onShareTimeline(() => {
+  return getDefaultTimelineConfig()
+})
+// #endif
 
 /**
  * 处理头像点击

@@ -53,7 +53,11 @@
  * 展示不同年龄段的认字量参考区间，引导用户开始检测
  */
 import { ref } from 'vue'
+// #ifdef MP-WEIXIN
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
+// #endif
 import CustomTabBar from '@/components/CustomTabBar.vue'
+import { getDefaultShareConfig, getDefaultTimelineConfig } from '@/utils/share.js'
 
 // 年龄段卡片数据（含 emoji 和渐变色）
 const ageCards = ref([
@@ -88,6 +92,22 @@ const ageCards = ref([
     gradient: 'linear-gradient(135deg, #FFE5F5 0%, white 100%)'
   }
 ])
+
+// #ifdef MP-WEIXIN
+/**
+ * 分享给好友
+ */
+onShareAppMessage(() => {
+  return getDefaultShareConfig()
+})
+
+/**
+ * 分享到朋友圈
+ */
+onShareTimeline(() => {
+  return getDefaultTimelineConfig()
+})
+// #endif
 
 /**
  * 开始检测

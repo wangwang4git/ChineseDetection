@@ -56,15 +56,37 @@
  */
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+// #ifdef MP-WEIXIN
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
+// #endif
 import CharacterCard from '@/components/CharacterCard.vue'
 import { getRecordDetail } from '@/api/record.js'
 import { formatDateTime } from '@/utils/index.js'
+import { getHistoryShareConfig, getHistoryTimelineConfig } from '@/utils/share.js'
 
 // 加载状态
 const loading = ref(true)
 
 // 记录详情
 const record = ref(null)
+
+// #ifdef MP-WEIXIN
+/**
+ * 分享给好友 - 包含历史检测结果
+ */
+onShareAppMessage(() => {
+  const vocabulary = record.value?.estimatedVocabulary || 0
+  return getHistoryShareConfig(vocabulary)
+})
+
+/**
+ * 分享到朋友圈 - 包含历史检测结果
+ */
+onShareTimeline(() => {
+  const vocabulary = record.value?.estimatedVocabulary || 0
+  return getHistoryTimelineConfig(vocabulary)
+})
+// #endif
 
 /**
  * 格式化时间
