@@ -1,5 +1,6 @@
 <script>
 import { getCloudEnv, logEnvInfo } from '@/config/env.js'
+import userManager from '@/utils/userManager.js'
 
 export default {
   // 确保globalData在App实例创建时就存在
@@ -31,6 +32,9 @@ export default {
     this.globalData.env = cloudEnv
     this.globalData.isReady = true
 
+    // 保存 this 引用
+    const app = this
+
     // #ifdef MP-WEIXIN
     if (!wx.cloud) {
       console.error("❌ 请使用 2.2.3 或以上的基础库以使用云能力");
@@ -43,15 +47,91 @@ export default {
       });
 
       console.log("✅ 微信云开发能力初始化成功， env：" + this.globalData.env);
+      
+      // 云开发初始化完成后，异步获取用户信息
+      // 使用 setTimeout 确保异步执行，避免 this 绑定问题
+      setTimeout(() => {
+        app.initUserInfo()
+      }, 100)
     }
     // #endif
+    
+    // #ifdef H5
+    // H5 环境直接初始化用户信息
+    setTimeout(() => {
+      app.initUserInfo()
+    }, 100)
+    // #endif
   },
+
   onShow: function () {
     console.log('👁️ App Show')
+    
+    // 保存 this 引用并异步调用
+    const app = this
+    setTimeout(() => {
+      app.checkUserInfoUpdate()
+    }, 0)
   },
+
   onHide: function () {
     console.log('👋 App Hide')
   },
+
+  methods: {
+    /**
+     * 初始化用户信息
+     * 异步获取 OpenID 和用户信息，不阻塞应用启动
+     */
+    async initUserInfo() {
+      try {
+        console.log('👤 开始初始化用户信息...')
+        
+        // 异步获取用户信息
+        const userInfo = await userManager.initUserInfo()
+        
+        if (userInfo) {
+          // 更新全局用户信息
+          this.globalData.userInfo = userInfo
+          console.log('✅ 用户信息初始化成功:', {
+            openid: userManager.getMaskedOpenId(userInfo.openid),
+            nickname: userInfo.nickname,
+            hasAuthorized: userInfo.hasAuthorized,
+            source: userInfo.source
+          })
+        } else {
+          console.warn('⚠️ 用户信息初始化失败，使用默认信息')
+        }
+      } catch (error) {
+        console.error('❌ 用户信息初始化异常:', error)
+        // 不影响应用正常启动，继续使用默认信息
+      }
+    },
+
+    /**
+     * 检查用户信息更新
+     * 当应用从后台切换到前台时调用
+     */
+    async checkUserInfoUpdate() {
+      try {
+        // 如果用户信息存在且距离上次更新超过24小时，尝试刷新
+        if (this.globalData.userInfo && this.globalData.userInfo.lastUpdated) {
+          const twentyFourHours = 24 * 60 * 60 * 1000
+          const now = Date.now()
+          
+          if (now - this.globalData.userInfo.lastUpdated > twentyFourHours) {
+            console.log('🔄 检查用户信息更新...')
+            const updatedUserInfo = await userManager.getCurrentUserInfo()
+            if (updatedUserInfo) {
+              this.globalData.userInfo = updatedUserInfo
+            }
+          }
+        }
+      } catch (error) {
+        console.error('检查用户信息更新失败:', error)
+      }
+    }
+  }
 }
 </script>
 

@@ -164,8 +164,8 @@ capability: pages
 **Given** 用户点击 TabBar 进入个人页
 **When** 页面加载完成
 **Then** 显示用户信息卡片（渐变背景）：
-  - 用户头像（emoji 👦）
-  - 昵称"小朋友"
+  - 用户头像“https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0”
+  - 昵称"王澈小朋友"
   - 账号"账号：user_001"
 
 #### Scenario: 用户查看统计数据

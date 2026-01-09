@@ -6,7 +6,9 @@
 // 存储键名
 const STORAGE_KEYS = {
   TEST_RECORDS: 'TEST_RECORDS',
-  USER_INFO: 'USER_INFO'
+  USER_INFO: 'USER_INFO',
+  USER_OPENID: 'USER_OPENID',  // 单独存储 OpenID
+  PROFILE_GUIDE_SHOWN: 'PROFILE_GUIDE_SHOWN'  // 个人页引导提示状态
 }
 
 /**
@@ -80,30 +82,78 @@ export function getStatistics() {
 }
 
 /**
- * 获取用户信息（Mock）
- * @returns {Object} 用户信息
+ * 获取用户信息
+ * @returns {Object|null} 用户信息
  */
 export function getUserInfo() {
   try {
     const userInfo = uni.getStorageSync(STORAGE_KEYS.USER_INFO)
     if (userInfo) {
-      return JSON.parse(userInfo)
+      const parsed = JSON.parse(userInfo)
+      // 验证数据完整性
+      if (parsed && typeof parsed === 'object') {
+        return parsed
+      }
     }
-    // 返回默认 Mock 用户
-    return {
-      id: 'user_001',
-      nickname: '王澈小朋友',
-      avatar: '👦',
-      account: 'user_001'
-    }
+    return null
   } catch (e) {
     console.error('获取用户信息失败:', e)
-    return {
-      id: 'user_001',
-      nickname: '王澈小朋友',
-      avatar: '👦',
-      account: 'user_001'
+    return null
+  }
+}
+
+/**
+ * 保存用户信息
+ * @param {Object} userInfo - 用户信息
+ * @returns {boolean} 是否保存成功
+ */
+export function setUserInfo(userInfo) {
+  try {
+    if (!userInfo || typeof userInfo !== 'object') {
+      console.error('用户信息格式无效')
+      return false
     }
+
+    uni.setStorageSync(STORAGE_KEYS.USER_INFO, JSON.stringify(userInfo))
+    
+    // 同时单独存储 OpenID（便于快速访问）
+    if (userInfo.openid) {
+      uni.setStorageSync(STORAGE_KEYS.USER_OPENID, userInfo.openid)
+    }
+    
+    return true
+  } catch (e) {
+    console.error('保存用户信息失败:', e)
+    return false
+  }
+}
+
+/**
+ * 获取用户 OpenID
+ * @returns {string|null} OpenID
+ */
+export function getUserOpenId() {
+  try {
+    const openid = uni.getStorageSync(STORAGE_KEYS.USER_OPENID)
+    return openid || null
+  } catch (e) {
+    console.error('获取用户 OpenID 失败:', e)
+    return null
+  }
+}
+
+/**
+ * 清除用户信息
+ * @returns {boolean} 是否清除成功
+ */
+export function clearUserInfo() {
+  try {
+    uni.removeStorageSync(STORAGE_KEYS.USER_INFO)
+    uni.removeStorageSync(STORAGE_KEYS.USER_OPENID)
+    return true
+  } catch (e) {
+    console.error('清除用户信息失败:', e)
+    return false
   }
 }
 
@@ -114,9 +164,40 @@ export function clearAllData() {
   try {
     uni.removeStorageSync(STORAGE_KEYS.TEST_RECORDS)
     uni.removeStorageSync(STORAGE_KEYS.USER_INFO)
+    uni.removeStorageSync(STORAGE_KEYS.USER_OPENID)
+    uni.removeStorageSync(STORAGE_KEYS.PROFILE_GUIDE_SHOWN)
     return true
   } catch (e) {
     console.error('清除数据失败:', e)
+    return false
+  }
+}
+
+/**
+ * 获取个人页引导提示显示状态
+ * @returns {boolean} 是否已显示过引导提示
+ */
+export function getProfileGuideShown() {
+  try {
+    const shown = uni.getStorageSync(STORAGE_KEYS.PROFILE_GUIDE_SHOWN)
+    return Boolean(shown)
+  } catch (e) {
+    console.error('获取引导提示状态失败:', e)
+    return false
+  }
+}
+
+/**
+ * 设置个人页引导提示显示状态
+ * @param {boolean} shown - 是否已显示
+ * @returns {boolean} 是否设置成功
+ */
+export function setProfileGuideShown(shown = true) {
+  try {
+    uni.setStorageSync(STORAGE_KEYS.PROFILE_GUIDE_SHOWN, shown)
+    return true
+  } catch (e) {
+    console.error('设置引导提示状态失败:', e)
     return false
   }
 }

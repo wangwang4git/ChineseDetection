@@ -103,8 +103,8 @@ const startTest = () => {
   let cloudEnv = app.globalData.env
   console.log('✅ 从 globalData 获取环境ID:', cloudEnv)
 
-  // 使用获取到的环境ID
-  callCloudFunction(cloudEnv)
+  // 测试用：使用获取到的环境ID
+  // callCloudFunction(cloudEnv)
 }
 
 /**

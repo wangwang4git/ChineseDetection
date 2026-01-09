@@ -5,6 +5,7 @@
 
 export * from './character.js'
 export * from './record.js'
+export * from './user.js'
 
 /**
  * 统一响应格式

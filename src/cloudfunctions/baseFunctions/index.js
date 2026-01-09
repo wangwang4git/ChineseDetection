@@ -6,17 +6,39 @@ cloud.init({
 const db = cloud.database();
 // 获取openid
 const getOpenId = async () => {
-  // 获取基础信息
-  const wxContext = cloud.getWXContext();
-  console.log(wxContext);
-  return {
-    openid: wxContext.OPENID,
-    appid: wxContext.APPID,
-    unionid: wxContext.UNIONID,
-  };
+  try {
+    // 获取基础信息
+    const wxContext = cloud.getWXContext();
+    console.log('获取用户上下文:', wxContext);
+    
+    // 检查 OpenID 是否存在
+    if (!wxContext.OPENID) {
+      return {
+        success: false,
+        errMsg: 'OpenID 获取失败',
+        data: null
+      };
+    }
+    
+    return {
+      success: true,
+      data: {
+        openid: wxContext.OPENID,
+        appid: wxContext.APPID,
+        unionid: wxContext.UNIONID || null
+      }
+    };
+  } catch (error) {
+    console.error('获取 OpenID 失败:', error);
+    return {
+      success: false,
+      errMsg: error.message || '获取 OpenID 失败',
+      data: null
+    };
+  }
 };
 
-// 创建集合
+// 示例：创建集合
 const createCollection = async () => {
   try {
     // 创建集合
@@ -65,13 +87,13 @@ const createCollection = async () => {
   }
 };
 
-// 查询数据
+// 示例：查询数据
 const selectRecord = async () => {
   // 返回数据库查询结果
   return await db.collection("sales").get();
 };
 
-// 更新数据
+// 示例：更新数据
 const updateRecord = async (event) => {
   try {
     // 遍历修改数据库信息
@@ -99,7 +121,7 @@ const updateRecord = async (event) => {
   }
 };
 
-// 新增数据
+// 示例：新增数据
 const insertRecord = async (event) => {
   try {
     const insertRecord = event.data;
@@ -123,7 +145,7 @@ const insertRecord = async (event) => {
   }
 };
 
-// 删除数据
+// 示例：删除数据
 const deleteRecord = async (event) => {
   try {
     await db
