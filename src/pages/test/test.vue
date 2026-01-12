@@ -152,6 +152,7 @@ const initTest = async () => {
     const res = await getLayeredTestCharacters()
     if (res.errCode === 0) {
       levelTestData.value = res.data.levels
+      console.log('初始化汉字:', levelTestData.value)
       
       // 初始化各层级结果
       levelResults.value = LEVEL_CONFIGS.map(config => initLevelResult(config.level))

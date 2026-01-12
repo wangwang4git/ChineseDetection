@@ -365,7 +365,7 @@ if (openIdFailed) {
   // 2. 使用默认用户信息
   const defaultUserInfo = {
     openid: fallbackId,
-    nickname: '王澈小朋友',
+    nickname: '点击设置小朋友昵称',
     avatar: 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
     hasAuthorized: false,
     lastUpdated: Date.now(),

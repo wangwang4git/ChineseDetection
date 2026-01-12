@@ -41,7 +41,7 @@ class UserManager {
         if (openid) {
           userInfo = {
             openid,
-            nickname: userInfo?.nickname || '王澈小朋友',
+            nickname: userInfo?.nickname || '点击设置小朋友昵称',
             avatar: userInfo?.avatar || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
             age: userInfo?.age || 0,
             hasAuthorized: false,
@@ -312,7 +312,7 @@ class UserManager {
   migrateUserData(oldData) {
     return {
       openid: this.generateFallbackId(),
-      nickname: oldData.nickname || '王澈小朋友',
+      nickname: oldData.nickname || '点击设置小朋友昵称',
       avatar: oldData.avatar || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
       age: oldData.age || 0,
       hasAuthorized: false,
@@ -328,7 +328,7 @@ class UserManager {
   getDefaultUserInfo() {
     return {
       openid: this.generateFallbackId(),
-      nickname: '王澈小朋友',
+      nickname: '点击设置小朋友昵称',
       avatar: 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
       age: 0,
       hasAuthorized: false,

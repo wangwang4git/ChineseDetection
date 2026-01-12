@@ -167,7 +167,7 @@ import CustomTabBar from '@/components/CustomTabBar.vue'
 // 用户信息
 const userInfo = ref({
   openid: '',
-  nickname: '王澈小朋友',
+  nickname: '点击设置小朋友昵称',
   avatar: 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
   age: 0,
   hasAuthorized: false,

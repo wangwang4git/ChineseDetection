@@ -6,8 +6,43 @@
 import { LEVEL_CONFIGS, FUSE_CONFIG } from './levelConfig.js'
 
 /**
+ * Fisher-Yates 洗牌算法
+ * 将数组随机打乱顺序
+ * @param {Array} array - 原数组
+ * @returns {Array} 打乱后的新数组
+ */
+function shuffleArray(array) {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
+/**
+ * 随机抽样
+ * 从数组中随机抽取指定数量的元素
+ * @param {Array} array - 原数组
+ * @param {number} count - 抽取数量
+ * @returns {Array} 抽样后的数组
+ */
+function randomSample(array, count) {
+  // 如果需要的数量大于等于数组长度，返回打乱后的全部
+  if (count >= array.length) {
+    return shuffleArray(array)
+  }
+  
+  // 先打乱再截取，保证随机性
+  const shuffled = shuffleArray(array)
+  return shuffled.slice(0, count)
+}
+
+/**
  * 生成测试序列
  * 基于分层频率抽样策略，从汉字数据中生成测试序列
+ * - L1层：全部汉字随机打乱顺序
+ * - L2-L6层：按抽样比例随机抽取汉字
  * @param {Array<{rank_id: number, char: string, frequency: number, frequency_cumulative: number}>} allChars - 所有汉字数据
  * @returns {Array<{level: number, name: string, description: string, weight: number, chars: Array}>} 分层测试数据
  */
@@ -20,13 +55,20 @@ export function generateTestSequence(allChars) {
       char => char.rank_id >= config.rankStart && char.rank_id <= config.rankEnd
     )
 
-    // 按抽样间隔抽取测试汉字
-    const sampledChars = []
-    for (let i = 0; i < levelChars.length && sampledChars.length < config.testCount; i += config.sampleInterval) {
-      sampledChars.push({
-        ...levelChars[i],
+    let sampledChars
+    
+    if (config.level === 1) {
+      // L1层：全部汉字随机打乱顺序
+      sampledChars = shuffleArray(levelChars).map(char => ({
+        ...char,
         level: config.level
-      })
+      }))
+    } else {
+      // L2-L6层：随机抽取 testCount 个汉字
+      sampledChars = randomSample(levelChars, config.testCount).map(char => ({
+        ...char,
+        level: config.level
+      }))
     }
 
     levelTestData.push({

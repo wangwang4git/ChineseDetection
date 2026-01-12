@@ -165,7 +165,7 @@ capability: pages
 **When** 页面加载完成
 **Then** 显示用户信息卡片（渐变背景）：
   - 用户头像“https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0”
-  - 昵称"王澈小朋友"
+  - 昵称"点击设置小朋友昵称"
   - 账号"账号：user_001"
 
 #### Scenario: 用户查看统计数据
