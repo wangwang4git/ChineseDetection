@@ -102,6 +102,64 @@ UI风格：适配幼儿园低龄用户风格，参考上传图片风格！！
 
 实现参考：[Figma Make原型设计](https://www.figma.com/make/K1cQSppPrXDCQosKJHo0rM/%E6%B1%89%E5%AD%97%E8%AE%A4%E5%AD%97%E9%87%8F%E6%A3%80%E6%B5%8B%E5%B0%8F%E7%A8%8B%E5%BA%8F?fullscreen=1&t=kHgXep5NcHs5pRXf-1)、[Figma设计稿](https://www.figma.com/design/WnWhtqvnDK8QVKWL9isb75/%E6%B1%89%E5%AD%97%E8%AE%A4%E5%AD%97%E9%87%8F%E6%A3%80%E6%B5%8B%E5%B0%8F%E7%A8%8B%E5%BA%8F?node-id=0-1&t=STw25JjQ21axAzHI-1)
 
+### 技术框架
+
+基于小程序开发框架`uni-app`，搭配`微信开发者工具`，实现小程序开发。
+
+1. 手动创建`uni-app`空项目；
+```bash
+npx degit dcloudio/uni-preset-vue#vite my-vue3-project
+# 进入目录my-vue3-project
+npm install
+```
+2. 基于`OpenSpec`AI开发框架，初始化空项目；
+3. 基于SDD研发模式生成代码；
+4. 基于`uni-app`框架，编译小程序代码；
+```bash
+# 微信小程序开发构建
+npm run dev:mp-weixin
+# 微信小程序生产构建
+npm run build:mp-weixin
+```
+5. 使用`微信开发者工具`进行调试和发布，打开`dist/dev`或者`dist/build`目录；
+6. `uni-app`框架下微信云开发，`manifest.json`、`vite.config.js`需要单独配置，可以[参考](https://uniapp.dcloud.net.cn/collocation/manifest.html#cloudfunctionroot);
+```javascript
+// manifest.json
+"mp-weixin":{
+  // ...
+   "cloudfunctionRoot": "cloudfunctions/", // 配置云开发目录
+  // ...
+}
+```
+```javascript
+// vite.config.js
+import { defineConfig } from 'vite'
+import uni from '@dcloudio/vite-plugin-uni'
+import fs from 'fs-extra' // fs-extra 为第三方依赖，需要安装
+import path from 'path'
+
+const plugins = [uni()]
+
+// 仅微信小程序生效
+if (process.env.UNI_PLATFORM === 'mp-weixin') {
+  plugins.push({
+    name: 'copy-cloudfunctions',
+    buildStart() {
+      fs.copySync(
+        path.join(process.env.UNI_INPUT_DIR, 'cloudfunctions'),
+        path.join(process.env.UNI_OUTPUT_DIR, 'cloudfunctions')
+      )
+    },
+  })
+}
+
+export default defineConfig({
+  plugins,
+})
+```
+
+参考：[uni-app](https://uniapp.dcloud.net.cn/)、[微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/devtools.html)
+
 ### 技术实现
 
 基于`OpenSpec`框架，使用SDD研发模式，使用的相关脚手架：
@@ -182,11 +240,12 @@ fix运行错误提示词参考：
 - [x] 前端布局优化
 - [x] 前端交互增加动画效果
 - [x] 小程序上架
-- [ ] 后端服务搭建部署
+- [x] 后端服务搭建部署
+- [ ] 增加AI相关能力
 
 ## 技术选型
 
 - 前端形态：小程序
 - 小程序开发框架：uni-app
 - 前端框架：Vue.js
-- 后端服务：Python，Flask
+- 后端服务：微信云开发
