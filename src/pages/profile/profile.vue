@@ -59,6 +59,13 @@
         
         <!-- OpenID 显示（掩码处理） -->
         <text class="account">ID：{{ maskedOpenId }}</text>
+        
+        <!-- 年龄显示 - 可点击编辑 -->
+        <picker mode="selector" :range="ageOptions" @change="onAgeChange">
+          <view class="age-wrapper">
+            <text class="age">年龄：{{ userInfo.age ? userInfo.age + '岁' : '点击设置' }}</text>
+          </view>
+        </picker>
       </view>
     </view>
 
@@ -127,6 +134,7 @@
         <view class="guide-body">
           <text class="guide-text">点击用户头像可以更新您的头像</text>
           <text class="guide-text">点击昵称可以修改您的昵称</text>
+          <text class="guide-text">点击年龄可以设置孩子的年龄</text>
           <text class="guide-hint">让我们开始个性化您的资料吧～</text>
         </view>
         <view class="guide-footer">
@@ -161,6 +169,7 @@ const userInfo = ref({
   openid: '',
   nickname: '王澈小朋友',
   avatar: 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
+  age: 0,
   hasAuthorized: false,
   lastUpdated: 0,
   source: 'default'
@@ -212,6 +221,9 @@ const isLoading = ref(false)
 // 用户引导提示状态
 const showGuideModal = ref(false)
 
+// 年龄选项（1-15岁）
+const ageOptions = Array.from({ length: 15 }, (_, i) => `${i + 1}岁`)
+
 // #ifdef MP-WEIXIN
 /**
  * 分享给好友
@@ -253,12 +265,12 @@ const onChooseAvatar = (e) => {
     userInfo.value.avatar = avatarUrl
     userInfo.value.hasAuthorized = true
     userInfo.value.lastUpdated = Date.now()
+    uni.showToast({ title: '头像更新成功', icon: 'success' })
     
     // 2. 异步保存到本地存储（不阻塞UI）
     userManager.updateAvatar(avatarUrl).then(success => {
       if (success) {
         console.log('✅ 头像保存成功')
-        uni.showToast({ title: '头像更新成功', icon: 'success' })
       } else {
         console.warn('⚠️ 头像保存失败')
       }
@@ -292,6 +304,29 @@ const handleNicknameClick = () => {
 }
 
 /**
+ * 处理年龄选择变更
+ */
+const onAgeChange = (e) => {
+  const selectedAge = parseInt(e.detail.value) + 1
+  
+  // 1. 立即更新UI
+  userInfo.value.age = selectedAge
+  userInfo.value.lastUpdated = Date.now()
+  uni.showToast({ title: '年龄设置成功', icon: 'success' })
+  
+  // 2. 异步保存到本地存储
+  userManager.updateAge(selectedAge).then(success => {
+    if (success) {
+      console.log('✅ 年龄保存成功')
+    } else {
+      console.warn('⚠️ 年龄保存失败')
+    }
+  }).catch(err => {
+    console.error('年龄保存异常:', err)
+  })
+}
+
+/**
  * 处理昵称变更
  * 优化：先更新UI，再异步保存数据
  */
@@ -309,12 +344,12 @@ const onNicknameChange = (e) => {
       userInfo.value.nickname = result.data
       userInfo.value.hasAuthorized = true
       userInfo.value.lastUpdated = Date.now()
+      uni.showToast({ title: '昵称更新成功', icon: 'success' })
       
       // 2. 异步保存到本地存储（不阻塞UI）
       userManager.updateNickname(result.data).then(success => {
         if (success) {
           console.log('✅ 昵称保存成功')
-          uni.showToast({ title: '昵称更新成功', icon: 'success' })
         }
       })
     } else {
@@ -590,6 +625,15 @@ onShow(() => {
   font-size: 28rpx;
   color: rgba(255, 255, 255, 0.9);
   margin-bottom: 4rpx;
+}
+
+.age-wrapper {
+  cursor: pointer;
+}
+
+.age {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .auth-hint {

@@ -11,6 +11,7 @@ import { getUserInfo, setUserInfo, clearUserInfo } from './storage.js'
  * @property {string} openid - 微信 OpenID（必需）
  * @property {string} nickname - 用户昵称
  * @property {string} avatar - 头像 URL 或 emoji
+ * @property {number} age - 用户年龄（1-15岁，0表示未设置）
  * @property {boolean} hasAuthorized - 是否已授权
  * @property {number} lastUpdated - 最后更新时间戳
  * @property {'wechat'|'default'} source - 数据来源
@@ -42,6 +43,7 @@ class UserManager {
             openid,
             nickname: userInfo?.nickname || '王澈小朋友',
             avatar: userInfo?.avatar || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
+            age: userInfo?.age || 0,
             hasAuthorized: false,
             lastUpdated: Date.now(),
             source: 'wechat'
@@ -172,6 +174,33 @@ class UserManager {
   }
 
   /**
+   * 更新年龄
+   * @param {number} age - 年龄（1-15岁）
+   * @returns {Promise<boolean>} 是否更新成功
+   */
+  async updateAge(age) {
+    try {
+      if (!this.userInfo) {
+        await this.initUserInfo()
+      }
+
+      // 年龄验证
+      if (typeof age !== 'number' || age < 1 || age > 15) {
+        console.warn('年龄必须在1-15岁范围内')
+        return false
+      }
+
+      this.userInfo.age = age
+      this.userInfo.lastUpdated = Date.now()
+      
+      return this.saveUserInfo(this.userInfo)
+    } catch (error) {
+      console.error('更新年龄失败:', error)
+      return false
+    }
+  }
+
+  /**
    * 获取掩码 OpenID
    * @param {string} openid - OpenID
    * @returns {string} 掩码后的 OpenID（最长16个字符）
@@ -255,7 +284,8 @@ class UserManager {
    * @returns {boolean} 是否有效
    */
   validateUserInfo(userInfo) {
-    return userInfo && 
+    // 基础验证
+    const isValid = userInfo && 
            typeof userInfo.openid === 'string' &&
            userInfo.openid.length > 0 &&
            typeof userInfo.nickname === 'string' &&
@@ -263,6 +293,15 @@ class UserManager {
            typeof userInfo.hasAuthorized === 'boolean' &&
            typeof userInfo.lastUpdated === 'number' &&
            ['wechat', 'default'].includes(userInfo.source)
+    
+    if (!isValid) return false
+    
+    // 兼容旧数据：如果没有 age 字段，自动补充
+    if (userInfo.age === undefined) {
+      userInfo.age = 0
+    }
+    
+    return true
   }
 
   /**
@@ -275,6 +314,7 @@ class UserManager {
       openid: this.generateFallbackId(),
       nickname: oldData.nickname || '王澈小朋友',
       avatar: oldData.avatar || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
+      age: oldData.age || 0,
       hasAuthorized: false,
       lastUpdated: Date.now(),
       source: 'default'
@@ -290,6 +330,7 @@ class UserManager {
       openid: this.generateFallbackId(),
       nickname: '王澈小朋友',
       avatar: 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
+      age: 0,
       hasAuthorized: false,
       lastUpdated: Date.now(),
       source: 'default'
@@ -325,6 +366,7 @@ export const {
   initUserInfo,
   updateAvatar,
   updateNickname,
+  updateAge,
   getMaskedOpenId,
   getCurrentUserInfo,
   clearUserInfo: clearUser
