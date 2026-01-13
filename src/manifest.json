@@ -51,7 +51,13 @@
     /* 小程序特有相关 */
     "mp-weixin" : {
         "cloudfunctionRoot": "cloudfunctions/", // 配置云开发目录
-        "appid" : "",
+        "appid" : "wx363cd645de67489c",
+        "plugins": {
+            "WechatSI": {
+                "version": "0.3.1",
+                "provider": "wx069ba97219f66d99"
+            }
+        },
         "setting" : {
             "urlCheck" : false
         },

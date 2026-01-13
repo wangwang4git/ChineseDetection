@@ -23,6 +23,12 @@
       <!-- 米字格展示汉字 -->
       <view class="character-section">
         <RiceGrid :char="currentChar" :size="488" />
+        <!-- #ifdef MP-WEIXIN -->
+        <!-- 喇叭按钮 - 点击播放当前汉字发音 -->
+        <view class="speaker-btn" @tap="handleSpeakerTap">
+          <image class="speaker-icon" src="/assets/speaker.svg" mode="aspectFit" />
+        </view>
+        <!-- #endif -->
       </view>
 
       <!-- 操作按钮 -->
@@ -58,12 +64,20 @@
 /**
  * 检测页
  * 展示待测汉字，用户判断是否认识，支持分层测试和动态熔断
+ * 微信小程序环境下支持汉字发音功能
  */
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import RiceGrid from '@/components/RiceGrid.vue'
 import { getLayeredTestCharacters } from '@/api/character.js'
 import { LEVEL_CONFIGS, TOTAL_TEST_COUNT } from '@/utils/levelConfig.js'
 import { initLevelResult, checkFuse, generateTestRecord } from '@/utils/calculate.js'
+
+// #ifdef MP-WEIXIN
+// 微信同声传译插件
+const plugin = requirePlugin('WechatSI')
+// 音频上下文
+let innerAudioContext = null
+// #endif
 
 // 加载状态
 const loading = ref(true)
@@ -292,7 +306,72 @@ const goToResult = () => {
 // 页面加载时初始化
 onMounted(() => {
   initTest()
+  
+  // #ifdef MP-WEIXIN
+  // 创建音频上下文
+  innerAudioContext = uni.createInnerAudioContext()
+  innerAudioContext.onError((err) => {
+    console.error('音频播放错误:', err)
+  })
+  // #endif
 })
+
+// #ifdef MP-WEIXIN
+/**
+ * 播放汉字发音
+ * @param {string} char - 要播放的汉字
+ */
+const playPronunciation = (char) => {
+  if (!char || !innerAudioContext) return
+  
+  // 先停止当前播放
+  innerAudioContext.stop()
+  
+  // 调用微信同声传译插件进行文本转语音
+  plugin.textToSpeech({
+    lang: 'zh_CN',
+    tts: true,
+    content: char,
+    success: (res) => {
+      if (res.filename) {
+        innerAudioContext.src = res.filename
+        innerAudioContext.play()
+      }
+    },
+    fail: (err) => {
+      console.error('语音合成失败:', err)
+    }
+  })
+}
+
+/**
+ * 处理喇叭按钮点击 - 手动播放当前汉字发音
+ */
+const handleSpeakerTap = () => {
+  if (currentChar.value) {
+    playPronunciation(currentChar.value)
+  }
+}
+
+// 监听当前汉字变化，自动播放发音
+watch(currentChar, (newChar, oldChar) => {
+  if (newChar && newChar !== oldChar) {
+    // 延时 100ms 后播放，确保 UI 已更新
+    setTimeout(() => {
+      playPronunciation(newChar)
+    }, 100)
+  }
+})
+
+// 页面卸载时销毁音频上下文
+onUnmounted(() => {
+  if (innerAudioContext) {
+    innerAudioContext.stop()
+    innerAudioContext.destroy()
+    innerAudioContext = null
+  }
+})
+// #endif
 </script>
 
 <style scoped>
@@ -370,6 +449,29 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   margin: 48rpx 0;
+  gap: 24rpx;
+}
+
+/* 喇叭按钮 */
+.speaker-btn {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.speaker-btn:active {
+  transform: scale(0.95);
+}
+
+.speaker-icon {
+  width: 48rpx;
+  height: 48rpx;
 }
 
 /* 操作按钮 - 胶囊形状 */
