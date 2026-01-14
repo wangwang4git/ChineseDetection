@@ -6,8 +6,8 @@
 import { successResponse, errorResponse } from './index.js'
 import { LEVEL_CONFIGS } from '../utils/levelConfig.js'
 import { generateTestSequence } from '../utils/calculate.js'
-// 静态导入 JSON 数据
-import charactersData from '../static/top_2500_chars_with_literacy.json'
+// 静态导入 JSON 数据（包含 words 字段）
+import charactersData from '../static/top_2500_chars_with_words.json'
 
 // 汉字数据缓存
 let charactersCache = null

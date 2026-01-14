@@ -1,0 +1,962 @@
+[
+  {
+    "rank_id": 1,
+    "char": "的",
+    "words": ["好的", "是的"],
+    "frequency": 4.8867,
+    "frequency_cumulative": 4.8867,
+    "literacy_rate": 0.04
+  },
+  {
+    "rank_id": 2,
+    "char": "一",
+    "words": ["一个", "一起"],
+    "frequency": 2.0824,
+    "frequency_cumulative": 6.9691,
+    "literacy_rate": 0.08
+  },
+  {
+    "rank_id": 3,
+    "char": "是",
+    "words": ["可是", "是否"],
+    "frequency": 1.8445,
+    "frequency_cumulative": 8.8136,
+    "literacy_rate": 0.12
+  },
+  {
+    "rank_id": 4,
+    "char": "不",
+    "words": ["不要", "不是"],
+    "frequency": 1.6299,
+    "frequency_cumulative": 10.4435,
+    "literacy_rate": 0.16
+  },
+  {
+    "rank_id": 5,
+    "char": "了",
+    "words": ["好了", "罢了"],
+    "frequency": 1.551,
+    "frequency_cumulative": 11.9945,
+    "literacy_rate": 0.2
+  },
+  {
+    "rank_id": 6,
+    "char": "在",
+    "words": ["现在", "正在"],
+    "frequency": 1.2383,
+    "frequency_cumulative": 13.2328,
+    "literacy_rate": 0.24
+  },
+  {
+    "rank_id": 7,
+    "char": "有",
+    "words": ["拥有", "所有"],
+    "frequency": 1.1337,
+    "frequency_cumulative": 14.3665,
+    "literacy_rate": 0.28
+  },
+  {
+    "rank_id": 8,
+    "char": "人",
+    "words": ["人们", "人生"],
+    "frequency": 1.053,
+    "frequency_cumulative": 15.4195,
+    "literacy_rate": 0.32
+  },
+  {
+    "rank_id": 9,
+    "char": "这",
+    "words": ["这个", "这里"],
+    "frequency": 0.9492,
+    "frequency_cumulative": 16.3687,
+    "literacy_rate": 0.36
+  },
+  {
+    "rank_id": 10,
+    "char": "上",
+    "words": ["上面", "上课"],
+    "frequency": 0.927,
+    "frequency_cumulative": 17.2957,
+    "literacy_rate": 0.4
+  },
+  {
+    "rank_id": 11,
+    "char": "大",
+    "words": ["大家", "大小"],
+    "frequency": 0.8584,
+    "frequency_cumulative": 18.1541,
+    "literacy_rate": 0.44
+  },
+  {
+    "rank_id": 12,
+    "char": "来",
+    "words": ["回来", "来到"],
+    "frequency": 0.824,
+    "frequency_cumulative": 18.9781,
+    "literacy_rate": 0.48
+  },
+  {
+    "rank_id": 13,
+    "char": "和",
+    "words": ["和平", "和谐"],
+    "frequency": 0.7823,
+    "frequency_cumulative": 19.7604,
+    "literacy_rate": 0.52
+  },
+  {
+    "rank_id": 14,
+    "char": "我",
+    "words": ["我们", "自我"],
+    "frequency": 0.7695,
+    "frequency_cumulative": 20.5299,
+    "literacy_rate": 0.56
+  },
+  {
+    "rank_id": 15,
+    "char": "个",
+    "words": ["个人", "个别"],
+    "frequency": 0.7612,
+    "frequency_cumulative": 21.2911,
+    "literacy_rate": 0.6
+  },
+  {
+    "rank_id": 16,
+    "char": "中",
+    "words": ["中间", "中国"],
+    "frequency": 0.729,
+    "frequency_cumulative": 22.0201,
+    "literacy_rate": 0.64
+  },
+  {
+    "rank_id": 17,
+    "char": "地",
+    "words": ["土地", "大地"],
+    "frequency": 0.699,
+    "frequency_cumulative": 22.7191,
+    "literacy_rate": 0.68
+  },
+  {
+    "rank_id": 18,
+    "char": "为",
+    "words": ["因为", "成为"],
+    "frequency": 0.689,
+    "frequency_cumulative": 23.4081,
+    "literacy_rate": 0.72
+  },
+  {
+    "rank_id": 19,
+    "char": "他",
+    "words": ["他们", "他人"],
+    "frequency": 0.6793,
+    "frequency_cumulative": 24.0874,
+    "literacy_rate": 0.76
+  },
+  {
+    "rank_id": 20,
+    "char": "生",
+    "words": ["生活", "学生"],
+    "frequency": 0.6597,
+    "frequency_cumulative": 24.7471,
+    "literacy_rate": 0.8
+  },
+  {
+    "rank_id": 21,
+    "char": "要",
+    "words": ["需要", "重要"],
+    "frequency": 0.657,
+    "frequency_cumulative": 25.4041,
+    "literacy_rate": 0.84
+  },
+  {
+    "rank_id": 22,
+    "char": "们",
+    "words": ["你们", "他们"],
+    "frequency": 0.6404,
+    "frequency_cumulative": 26.0445,
+    "literacy_rate": 0.88
+  },
+  {
+    "rank_id": 23,
+    "char": "以",
+    "words": ["以后", "以为"],
+    "frequency": 0.6283,
+    "frequency_cumulative": 26.6728,
+    "literacy_rate": 0.92
+  },
+  {
+    "rank_id": 24,
+    "char": "到",
+    "words": ["到达", "到处"],
+    "frequency": 0.6226,
+    "frequency_cumulative": 27.2954,
+    "literacy_rate": 0.96
+  },
+  {
+    "rank_id": 25,
+    "char": "国",
+    "words": ["国家", "祖国"],
+    "frequency": 0.6098,
+    "frequency_cumulative": 27.9052,
+    "literacy_rate": 1.0
+  },
+  {
+    "rank_id": 26,
+    "char": "时",
+    "words": ["时间", "时候"],
+    "frequency": 0.592,
+    "frequency_cumulative": 28.4972,
+    "literacy_rate": 1.04
+  },
+  {
+    "rank_id": 27,
+    "char": "就",
+    "words": ["就是", "将就"],
+    "frequency": 0.5814,
+    "frequency_cumulative": 29.0786,
+    "literacy_rate": 1.08
+  },
+  {
+    "rank_id": 28,
+    "char": "出",
+    "words": ["出现", "出去"],
+    "frequency": 0.566,
+    "frequency_cumulative": 29.6446,
+    "literacy_rate": 1.12
+  },
+  {
+    "rank_id": 29,
+    "char": "说",
+    "words": ["说话", "说明"],
+    "frequency": 0.5593,
+    "frequency_cumulative": 30.2039,
+    "literacy_rate": 1.16
+  },
+  {
+    "rank_id": 30,
+    "char": "会",
+    "words": ["开会", "机会"],
+    "frequency": 0.5526,
+    "frequency_cumulative": 30.7565,
+    "literacy_rate": 1.2
+  },
+  {
+    "rank_id": 31,
+    "char": "也",
+    "words": ["也许", "也好"],
+    "frequency": 0.538,
+    "frequency_cumulative": 31.2945,
+    "literacy_rate": 1.24
+  },
+  {
+    "rank_id": 32,
+    "char": "子",
+    "words": ["孩子", "儿子"],
+    "frequency": 0.5297,
+    "frequency_cumulative": 31.8242,
+    "literacy_rate": 1.28
+  },
+  {
+    "rank_id": 33,
+    "char": "学",
+    "words": ["学习", "学校"],
+    "frequency": 0.516,
+    "frequency_cumulative": 32.3402,
+    "literacy_rate": 1.32
+  },
+  {
+    "rank_id": 34,
+    "char": "发",
+    "words": ["发现", "头发"],
+    "frequency": 0.5093,
+    "frequency_cumulative": 32.8495,
+    "literacy_rate": 1.36
+  },
+  {
+    "rank_id": 35,
+    "char": "着",
+    "words": ["看着", "说着"],
+    "frequency": 0.5026,
+    "frequency_cumulative": 33.3521,
+    "literacy_rate": 1.4
+  },
+  {
+    "rank_id": 36,
+    "char": "对",
+    "words": ["对错", "对方"],
+    "frequency": 0.4959,
+    "frequency_cumulative": 33.848,
+    "literacy_rate": 1.44
+  },
+  {
+    "rank_id": 37,
+    "char": "作",
+    "words": ["作业", "工作"],
+    "frequency": 0.4869,
+    "frequency_cumulative": 34.3349,
+    "literacy_rate": 1.48
+  },
+  {
+    "rank_id": 38,
+    "char": "能",
+    "words": ["能力", "能够"],
+    "frequency": 0.4796,
+    "frequency_cumulative": 34.8145,
+    "literacy_rate": 1.52
+  },
+  {
+    "rank_id": 39,
+    "char": "可",
+    "words": ["可以", "可能"],
+    "frequency": 0.4729,
+    "frequency_cumulative": 35.2874,
+    "literacy_rate": 1.56
+  },
+  {
+    "rank_id": 40,
+    "char": "于",
+    "words": ["于是", "关于"],
+    "frequency": 0.4646,
+    "frequency_cumulative": 35.752,
+    "literacy_rate": 1.6
+  },
+  {
+    "rank_id": 41,
+    "char": "成",
+    "words": ["成功", "成长"],
+    "frequency": 0.4579,
+    "frequency_cumulative": 36.2099,
+    "literacy_rate": 1.64
+  },
+  {
+    "rank_id": 42,
+    "char": "用",
+    "words": ["使用", "用处"],
+    "frequency": 0.4506,
+    "frequency_cumulative": 36.6605,
+    "literacy_rate": 1.68
+  },
+  {
+    "rank_id": 43,
+    "char": "过",
+    "words": ["过去", "经过"],
+    "frequency": 0.4439,
+    "frequency_cumulative": 37.1044,
+    "literacy_rate": 1.72
+  },
+  {
+    "rank_id": 44,
+    "char": "动",
+    "words": ["动作", "运动"],
+    "frequency": 0.4372,
+    "frequency_cumulative": 37.5416,
+    "literacy_rate": 1.76
+  },
+  {
+    "rank_id": 45,
+    "char": "主",
+    "words": ["主要", "主人"],
+    "frequency": 0.4299,
+    "frequency_cumulative": 37.9715,
+    "literacy_rate": 1.8
+  },
+  {
+    "rank_id": 46,
+    "char": "下",
+    "words": ["下面", "下去"],
+    "frequency": 0.4232,
+    "frequency_cumulative": 38.3947,
+    "literacy_rate": 1.84
+  },
+  {
+    "rank_id": 47,
+    "char": "而",
+    "words": ["而且", "然而"],
+    "frequency": 0.4165,
+    "frequency_cumulative": 38.8112,
+    "literacy_rate": 1.88
+  },
+  {
+    "rank_id": 48,
+    "char": "年",
+    "words": ["新年", "年纪"],
+    "frequency": 0.4098,
+    "frequency_cumulative": 39.221,
+    "literacy_rate": 1.92
+  },
+  {
+    "rank_id": 49,
+    "char": "分",
+    "words": ["分开", "分钟"],
+    "frequency": 0.4031,
+    "frequency_cumulative": 39.6241,
+    "literacy_rate": 1.96
+  },
+  {
+    "rank_id": 50,
+    "char": "得",
+    "words": ["得到", "觉得"],
+    "frequency": 0.3964,
+    "frequency_cumulative": 40.0205,
+    "literacy_rate": 2.0
+  },
+  {
+    "rank_id": 51,
+    "char": "家",
+    "words": ["家庭", "家乡"],
+    "frequency": 0.3897,
+    "frequency_cumulative": 40.4102,
+    "literacy_rate": 2.04
+  },
+  {
+    "rank_id": 52,
+    "char": "种",
+    "words": ["种子", "种类"],
+    "frequency": 0.383,
+    "frequency_cumulative": 40.7932,
+    "literacy_rate": 2.08
+  },
+  {
+    "rank_id": 53,
+    "char": "事",
+    "words": ["事情", "事实"],
+    "frequency": 0.3763,
+    "frequency_cumulative": 41.1695,
+    "literacy_rate": 2.12
+  },
+  {
+    "rank_id": 54,
+    "char": "情",
+    "words": ["心情", "感情"],
+    "frequency": 0.3696,
+    "frequency_cumulative": 41.5391,
+    "literacy_rate": 2.16
+  },
+  {
+    "rank_id": 55,
+    "char": "面",
+    "words": ["面前", "面条"],
+    "frequency": 0.3629,
+    "frequency_cumulative": 41.902,
+    "literacy_rate": 2.2
+  },
+  {
+    "rank_id": 56,
+    "char": "方",
+    "words": ["方向", "方法"],
+    "frequency": 0.3562,
+    "frequency_cumulative": 42.2582,
+    "literacy_rate": 2.24
+  },
+  {
+    "rank_id": 57,
+    "char": "后",
+    "words": ["后面", "后来"],
+    "frequency": 0.3495,
+    "frequency_cumulative": 42.6077,
+    "literacy_rate": 2.28
+  },
+  {
+    "rank_id": 58,
+    "char": "多",
+    "words": ["多少", "很多"],
+    "frequency": 0.3428,
+    "frequency_cumulative": 42.9505,
+    "literacy_rate": 2.32
+  },
+  {
+    "rank_id": 59,
+    "char": "定",
+    "words": ["一定", "决定"],
+    "frequency": 0.3361,
+    "frequency_cumulative": 43.2866,
+    "literacy_rate": 2.36
+  },
+  {
+    "rank_id": 60,
+    "char": "行",
+    "words": ["行走", "行动"],
+    "frequency": 0.3294,
+    "frequency_cumulative": 43.616,
+    "literacy_rate": 2.4
+  },
+  {
+    "rank_id": 61,
+    "char": "进",
+    "words": ["进步", "进去"],
+    "frequency": 0.3227,
+    "frequency_cumulative": 43.9387,
+    "literacy_rate": 2.44
+  },
+  {
+    "rank_id": 62,
+    "char": "道",
+    "words": ["道路", "道理"],
+    "frequency": 0.316,
+    "frequency_cumulative": 44.2547,
+    "literacy_rate": 2.48
+  },
+  {
+    "rank_id": 63,
+    "char": "理",
+    "words": ["理解", "理由"],
+    "frequency": 0.3093,
+    "frequency_cumulative": 44.564,
+    "literacy_rate": 2.52
+  },
+  {
+    "rank_id": 64,
+    "char": "心",
+    "words": ["心里", "爱心"],
+    "frequency": 0.3026,
+    "frequency_cumulative": 44.8666,
+    "literacy_rate": 2.56
+  },
+  {
+    "rank_id": 65,
+    "char": "数",
+    "words": ["数字", "数学"],
+    "frequency": 0.2959,
+    "frequency_cumulative": 45.1625,
+    "literacy_rate": 2.6
+  },
+  {
+    "rank_id": 66,
+    "char": "现",
+    "words": ["现在", "现实"],
+    "frequency": 0.2892,
+    "frequency_cumulative": 45.4517,
+    "literacy_rate": 2.64
+  },
+  {
+    "rank_id": 67,
+    "char": "所",
+    "words": ["所以", "所有"],
+    "frequency": 0.2825,
+    "frequency_cumulative": 45.7342,
+    "literacy_rate": 2.68
+  },
+  {
+    "rank_id": 68,
+    "char": "之",
+    "words": ["之间", "之后"],
+    "frequency": 0.2758,
+    "frequency_cumulative": 46.01,
+    "literacy_rate": 2.72
+  },
+  {
+    "rank_id": 69,
+    "char": "工",
+    "words": ["工作", "工人"],
+    "frequency": 0.2691,
+    "frequency_cumulative": 46.2791,
+    "literacy_rate": 2.76
+  },
+  {
+    "rank_id": 70,
+    "char": "物",
+    "words": ["物品", "事物"],
+    "frequency": 0.2624,
+    "frequency_cumulative": 46.5415,
+    "literacy_rate": 2.8
+  },
+  {
+    "rank_id": 71,
+    "char": "起",
+    "words": ["起来", "起点"],
+    "frequency": 0.2557,
+    "frequency_cumulative": 46.7972,
+    "literacy_rate": 2.84
+  },
+  {
+    "rank_id": 72,
+    "char": "如",
+    "words": ["如果", "如同"],
+    "frequency": 0.249,
+    "frequency_cumulative": 47.0462,
+    "literacy_rate": 2.88
+  },
+  {
+    "rank_id": 73,
+    "char": "去",
+    "words": ["回去", "过去"],
+    "frequency": 0.2423,
+    "frequency_cumulative": 47.2885,
+    "literacy_rate": 2.92
+  },
+  {
+    "rank_id": 74,
+    "char": "把",
+    "words": ["把手", "把握"],
+    "frequency": 0.2356,
+    "frequency_cumulative": 47.5241,
+    "literacy_rate": 2.96
+  },
+  {
+    "rank_id": 75,
+    "char": "开",
+    "words": ["开心", "开门"],
+    "frequency": 0.2289,
+    "frequency_cumulative": 47.753,
+    "literacy_rate": 3.0
+  },
+  {
+    "rank_id": 76,
+    "char": "美",
+    "words": ["美丽", "美好"],
+    "frequency": 0.2222,
+    "frequency_cumulative": 47.9752,
+    "literacy_rate": 3.04
+  },
+  {
+    "rank_id": 77,
+    "char": "天",
+    "words": ["天空", "天气"],
+    "frequency": 0.2155,
+    "frequency_cumulative": 48.1907,
+    "literacy_rate": 3.08
+  },
+  {
+    "rank_id": 78,
+    "char": "水",
+    "words": ["水果", "喝水"],
+    "frequency": 0.2088,
+    "frequency_cumulative": 48.3995,
+    "literacy_rate": 3.12
+  },
+  {
+    "rank_id": 79,
+    "char": "话",
+    "words": ["话语", "说话"],
+    "frequency": 0.2021,
+    "frequency_cumulative": 48.6016,
+    "literacy_rate": 3.16
+  },
+  {
+    "rank_id": 80,
+    "char": "然",
+    "words": ["然后", "自然"],
+    "frequency": 0.1954,
+    "frequency_cumulative": 48.797,
+    "literacy_rate": 3.2
+  },
+  {
+    "rank_id": 81,
+    "char": "本",
+    "words": ["本来", "书本"],
+    "frequency": 0.1887,
+    "frequency_cumulative": 48.9857,
+    "literacy_rate": 3.24
+  },
+  {
+    "rank_id": 82,
+    "char": "前",
+    "words": ["前面", "前进"],
+    "frequency": 0.182,
+    "frequency_cumulative": 49.1677,
+    "literacy_rate": 3.28
+  },
+  {
+    "rank_id": 83,
+    "char": "比",
+    "words": ["比较", "比例"],
+    "frequency": 0.1753,
+    "frequency_cumulative": 49.343,
+    "literacy_rate": 3.32
+  },
+  {
+    "rank_id": 84,
+    "char": "又",
+    "words": ["又来", "又有"],
+    "frequency": 0.1686,
+    "frequency_cumulative": 49.5116,
+    "literacy_rate": 3.36
+  },
+  {
+    "rank_id": 85,
+    "char": "但",
+    "words": ["但是", "但愿"],
+    "frequency": 0.1619,
+    "frequency_cumulative": 49.6735,
+    "literacy_rate": 3.4
+  },
+  {
+    "rank_id": 86,
+    "char": "只",
+    "words": ["只有", "只要"],
+    "frequency": 0.1552,
+    "frequency_cumulative": 49.8287,
+    "literacy_rate": 3.44
+  },
+  {
+    "rank_id": 87,
+    "char": "没",
+    "words": ["没有", "没事"],
+    "frequency": 0.1485,
+    "frequency_cumulative": 49.9772,
+    "literacy_rate": 3.48
+  },
+  {
+    "rank_id": 88,
+    "char": "很",
+    "words": ["很好", "很多"],
+    "frequency": 0.1418,
+    "frequency_cumulative": 50.119,
+    "literacy_rate": 3.52
+  },
+  {
+    "rank_id": 89,
+    "char": "都",
+    "words": ["都是", "首都"],
+    "frequency": 0.1351,
+    "frequency_cumulative": 50.2541,
+    "literacy_rate": 3.56
+  },
+  {
+    "rank_id": 90,
+    "char": "向",
+    "words": ["方向", "向往"],
+    "frequency": 0.1284,
+    "frequency_cumulative": 50.3825,
+    "literacy_rate": 3.6
+  },
+  {
+    "rank_id": 91,
+    "char": "头",
+    "words": ["头发", "头脑"],
+    "frequency": 0.1217,
+    "frequency_cumulative": 50.5042,
+    "literacy_rate": 3.64
+  },
+  {
+    "rank_id": 92,
+    "char": "长",
+    "words": ["长大", "长度"],
+    "frequency": 0.115,
+    "frequency_cumulative": 50.6192,
+    "literacy_rate": 3.68
+  },
+  {
+    "rank_id": 93,
+    "char": "小",
+    "words": ["小孩", "小心"],
+    "frequency": 0.1083,
+    "frequency_cumulative": 50.7275,
+    "literacy_rate": 3.72
+  },
+  {
+    "rank_id": 94,
+    "char": "知",
+    "words": ["知道", "知识"],
+    "frequency": 0.1016,
+    "frequency_cumulative": 50.8291,
+    "literacy_rate": 3.76
+  },
+  {
+    "rank_id": 95,
+    "char": "明",
+    "words": ["明天", "明白"],
+    "frequency": 0.0949,
+    "frequency_cumulative": 50.924,
+    "literacy_rate": 3.8
+  },
+  {
+    "rank_id": 96,
+    "char": "全",
+    "words": ["全部", "完全"],
+    "frequency": 0.0882,
+    "frequency_cumulative": 51.0122,
+    "literacy_rate": 3.84
+  },
+  {
+    "rank_id": 97,
+    "char": "公",
+    "words": ["公平", "公共"],
+    "frequency": 0.0815,
+    "frequency_cumulative": 51.0937,
+    "literacy_rate": 3.88
+  },
+  {
+    "rank_id": 98,
+    "char": "业",
+    "words": ["事业", "工业"],
+    "frequency": 0.0748,
+    "frequency_cumulative": 51.1685,
+    "literacy_rate": 3.92
+  },
+  {
+    "rank_id": 99,
+    "char": "代",
+    "words": ["代表", "时代"],
+    "frequency": 0.0681,
+    "frequency_cumulative": 51.2366,
+    "literacy_rate": 3.96
+  },
+  {
+    "rank_id": 100,
+    "char": "力",
+    "words": ["力气", "力量"],
+    "frequency": 0.0614,
+    "frequency_cumulative": 51.298,
+    "literacy_rate": 4.0
+  },
+  {
+    "rank_id": 101,
+    "char": "高",
+    "words": ["高兴", "高低"],
+    "frequency": 0.0581,
+    "frequency_cumulative": 51.3561,
+    "literacy_rate": 4.04
+  },
+  {
+    "rank_id": 102,
+    "char": "正",
+    "words": ["正确", "正常"],
+    "frequency": 0.0548,
+    "frequency_cumulative": 51.4109,
+    "literacy_rate": 4.08
+  },
+  {
+    "rank_id": 103,
+    "char": "变",
+    "words": ["变化", "改变"],
+    "frequency": 0.0515,
+    "frequency_cumulative": 51.4624,
+    "literacy_rate": 4.12
+  },
+  {
+    "rank_id": 104,
+    "char": "革",
+    "words": ["革命", "改革"],
+    "frequency": 0.0482,
+    "frequency_cumulative": 51.5106,
+    "literacy_rate": 4.16
+  },
+  {
+    "rank_id": 105,
+    "char": "文",
+    "words": ["文化", "文字"],
+    "frequency": 0.0449,
+    "frequency_cumulative": 51.5555,
+    "literacy_rate": 4.2
+  },
+  {
+    "rank_id": 106,
+    "char": "总",
+    "words": ["总结", "总是"],
+    "frequency": 0.0416,
+    "frequency_cumulative": 51.5971,
+    "literacy_rate": 4.24
+  },
+  {
+    "rank_id": 107,
+    "char": "立",
+    "words": ["立正", "站立"],
+    "frequency": 0.0383,
+    "frequency_cumulative": 51.6354,
+    "literacy_rate": 4.28
+  },
+  {
+    "rank_id": 108,
+    "char": "些",
+    "words": ["一些", "这些"],
+    "frequency": 0.035,
+    "frequency_cumulative": 51.6704,
+    "literacy_rate": 4.32
+  },
+  {
+    "rank_id": 109,
+    "char": "想",
+    "words": ["想法", "想念"],
+    "frequency": 0.0317,
+    "frequency_cumulative": 51.7021,
+    "literacy_rate": 4.36
+  },
+  {
+    "rank_id": 110,
+    "char": "样",
+    "words": ["样子", "模样"],
+    "frequency": 0.0284,
+    "frequency_cumulative": 51.7305,
+    "literacy_rate": 4.4
+  },
+  {
+    "rank_id": 111,
+    "char": "边",
+    "words": ["旁边", "边界"],
+    "frequency": 0.0251,
+    "frequency_cumulative": 51.7556,
+    "literacy_rate": 4.44
+  },
+  {
+    "rank_id": 112,
+    "char": "声",
+    "words": ["声音", "名声"],
+    "frequency": 0.0218,
+    "frequency_cumulative": 51.7774,
+    "literacy_rate": 4.48
+  },
+  {
+    "rank_id": 113,
+    "char": "车",
+    "words": ["汽车", "车辆"],
+    "frequency": 0.0185,
+    "frequency_cumulative": 51.7959,
+    "literacy_rate": 4.52
+  },
+  {
+    "rank_id": 114,
+    "char": "气",
+    "words": ["生气", "气体"],
+    "frequency": 0.0152,
+    "frequency_cumulative": 51.8111,
+    "literacy_rate": 4.56
+  },
+  {
+    "rank_id": 115,
+    "char": "重",
+    "words": ["重要", "重量"],
+    "frequency": 0.0119,
+    "frequency_cumulative": 51.823,
+    "literacy_rate": 4.6
+  },
+  {
+    "rank_id": 116,
+    "char": "与",
+    "words": ["与其", "参与"],
+    "frequency": 0.0086,
+    "frequency_cumulative": 51.8316,
+    "literacy_rate": 4.64
+  },
+  {
+    "rank_id": 117,
+    "char": "机",
+    "words": ["机会", "机器"],
+    "frequency": 0.0053,
+    "frequency_cumulative": 51.8369,
+    "literacy_rate": 4.68
+  },
+  {
+    "rank_id": 118,
+    "char": "当",
+    "words": ["当然", "应当"],
+    "frequency": 0.002,
+    "frequency_cumulative": 51.8389,
+    "literacy_rate": 4.72
+  },
+  {
+    "rank_id": 2499,
+    "char": "匾",
+    "words": ["牌匾", "匾额"],
+    "frequency": 0.002,
+    "frequency_cumulative": 98.5224,
+    "literacy_rate": 99.96
+  },
+  {
+    "rank_id": 2500,
+    "char": "敞",
+    "words": ["宽敞", "敞开"],
+    "frequency": 0.0019,
+    "frequency_cumulative": 98.5243,
+    "literacy_rate": 100.0
+  }
+]

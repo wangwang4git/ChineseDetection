@@ -31,6 +31,33 @@
         <!-- #endif -->
       </view>
 
+      <!-- 词语示例区域 -->
+      <view v-if="currentWords.length === 2" class="words-section">
+        <text class="words-title">📚 词语示例</text>
+        <view class="words-container">
+          <!-- 词语1 -->
+          <view class="word-group">
+            <RiceGrid 
+              v-for="(char, index) in currentWords[0]" 
+              :key="'word1-' + index"
+              :char="char" 
+              :size="160" 
+              :showBorder="false"
+            />
+          </view>
+          <!-- 词语2 -->
+          <view class="word-group">
+            <RiceGrid 
+              v-for="(char, index) in currentWords[1]" 
+              :key="'word2-' + index"
+              :char="char" 
+              :size="160" 
+              :showBorder="false"
+            />
+          </view>
+        </view>
+      </view>
+
       <!-- 操作按钮 -->
       <view class="action-section">
         <view class="action-btn btn-know" @tap="handleKnow">
@@ -77,6 +104,9 @@ import { initLevelResult, checkFuse, generateTestRecord } from '@/utils/calculat
 const plugin = requirePlugin('WechatSI')
 // 音频上下文
 let innerAudioContext = null
+// 播放队列
+let playQueue = []
+let isPlaying = false
 // #endif
 
 // 加载状态
@@ -125,6 +155,24 @@ const currentChar = computed(() => {
     return ''
   }
   return levelData.chars[currentLevelIndex.value].char
+})
+
+// 当前汉字完整数据（包含 words）
+const currentCharData = computed(() => {
+  const levelData = currentLevelData.value
+  if (!levelData || !levelData.chars[currentLevelIndex.value]) {
+    return null
+  }
+  return levelData.chars[currentLevelIndex.value]
+})
+
+// 当前词语列表
+const currentWords = computed(() => {
+  const charData = currentCharData.value
+  if (!charData || !charData.words || charData.words.length < 2) {
+    return []
+  }
+  return charData.words.slice(0, 2)
 })
 
 // 当前层级结果
@@ -310,46 +358,96 @@ onMounted(() => {
   // #ifdef MP-WEIXIN
   // 创建音频上下文
   innerAudioContext = uni.createInnerAudioContext()
+  // 不遵循系统静音开关，确保即使静音模式也能播放
+  innerAudioContext.obeyMuteSwitch = false
+  // 设置音量
+  innerAudioContext.volume = 1
+  
   innerAudioContext.onError((err) => {
     console.error('音频播放错误:', err)
+  })
+  
+  // 监听播放开始（调试用）
+  innerAudioContext.onPlay(() => {
+    console.log('音频开始播放')
+  })
+  
+  // 监听播放结束
+  innerAudioContext.onEnded(() => {
+    console.log('音频播放结束')
+    // 播放队列中的下一个
+    if (isPlaying && playQueue.length > 0) {
+      setTimeout(playNext, 50)  // 间隔 50ms
+    } else {
+      isPlaying = false
+    }
   })
   // #endif
 })
 
 // #ifdef MP-WEIXIN
 /**
- * 播放汉字发音
- * @param {string} char - 要播放的汉字
+ * 播放队列中的下一个
  */
-const playPronunciation = (char) => {
-  if (!char || !innerAudioContext) return
+const playNext = () => {
+  if (playQueue.length === 0) {
+    isPlaying = false
+    return
+  }
   
-  // 先停止当前播放
-  innerAudioContext.stop()
+  const text = playQueue.shift()
+  console.log('播放下一个:', text)
   
-  // 调用微信同声传译插件进行文本转语音
   plugin.textToSpeech({
     lang: 'zh_CN',
     tts: true,
-    content: char,
+    content: text,
     success: (res) => {
+      console.log('语音合成成功:', res)
       if (res.filename) {
         innerAudioContext.src = res.filename
         innerAudioContext.play()
+      } else {
+        // 无音频文件，继续下一个
+        setTimeout(playNext, 50)
       }
     },
     fail: (err) => {
       console.error('语音合成失败:', err)
+      // 失败时继续播放下一个
+      setTimeout(playNext, 50)
     }
   })
 }
 
 /**
- * 处理喇叭按钮点击 - 手动播放当前汉字发音
+ * 播放发音队列
+ * @param {Array<string>} texts - 要播放的文本数组
+ */
+const playPronunciationQueue = (texts) => {
+  if (!texts || texts.length === 0 || !innerAudioContext) return
+  
+  // 停止当前播放
+  innerAudioContext.stop()
+  
+  // 设置队列并开始播放
+  playQueue = [...texts]
+  isPlaying = true
+  
+  console.log('开始播放队列:', playQueue)
+  playNext()
+}
+
+/**
+ * 处理喇叭按钮点击 - 手动播放当前汉字和词语发音
  */
 const handleSpeakerTap = () => {
   if (currentChar.value) {
-    playPronunciation(currentChar.value)
+    const texts = [currentChar.value]
+    if (currentWords.value.length === 2) {
+      texts.push(currentWords.value[0], currentWords.value[1])
+    }
+    playPronunciationQueue(texts)
   }
 }
 
@@ -358,7 +456,11 @@ watch(currentChar, (newChar, oldChar) => {
   if (newChar && newChar !== oldChar) {
     // 延时 100ms 后播放，确保 UI 已更新
     setTimeout(() => {
-      playPronunciation(newChar)
+      const texts = [newChar]
+      if (currentWords.value.length === 2) {
+        texts.push(currentWords.value[0], currentWords.value[1])
+      }
+      playPronunciationQueue(texts)
     }, 100)
   }
 })
@@ -472,6 +574,31 @@ onUnmounted(() => {
 .speaker-icon {
   width: 48rpx;
   height: 48rpx;
+}
+
+/* 词语示例区域 */
+.words-section {
+  margin-top: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.words-title {
+  display: block;
+  text-align: center;
+  font-size: 28rpx;
+  color: #8200DB;
+  margin-bottom: 16rpx;
+}
+
+.words-container {
+  display: flex;
+  justify-content: center;
+  gap: 48rpx;
+}
+
+.word-group {
+  display: flex;
+  gap: 8rpx;
 }
 
 /* 操作按钮 - 胶囊形状 */

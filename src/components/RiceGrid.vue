@@ -1,6 +1,10 @@
 <template>
   <!-- 米字格组件 - 用于展示待测汉字 -->
-  <view class="rice-grid" :style="{ width: size + 'rpx', height: size + 'rpx' }">
+  <view 
+    class="rice-grid" 
+    :class="{ 'with-border': showBorder, 'no-border': !showBorder }"
+    :style="{ width: size + 'rpx', height: size + 'rpx' }"
+  >
     <!-- 米字格线条 -->
     <view class="grid-line line-horizontal"></view>
     <view class="grid-line line-vertical"></view>
@@ -30,6 +34,11 @@ const props = defineProps({
   size: {
     type: Number,
     default: 488
+  },
+  // 是否显示金色边框（小米字格不显示）
+  showBorder: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -38,7 +47,7 @@ const fontSize = computed(() => Math.floor(props.size * 0.5))
 </script>
 
 <style scoped>
-/* 米字格容器 - 白色背景 + 金色边框 */
+/* 米字格容器 - 白色背景 */
 .rice-grid {
   position: relative;
   display: flex;
@@ -46,9 +55,19 @@ const fontSize = computed(() => Math.floor(props.size * 0.5))
   align-items: center;
   background-color: #ffffff;
   border-radius: 32rpx;
-  border: 7rpx solid #FDC700;
   box-shadow: 0 50rpx 100rpx -24rpx rgba(0, 0, 0, 0.25);
   overflow: hidden;
+}
+
+/* 带金色边框的米字格 */
+.rice-grid.with-border {
+  border: 7rpx solid #FDC700;
+}
+
+/* 无边框的小米字格 */
+.rice-grid.no-border {
+  border: none;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
 }
 
 /* 米字格线条基础样式 */
