@@ -316,6 +316,8 @@ A:
 
 ## 🤝 贡献指南
 
+我们欢迎所有形式的贡献！
+
 1. Fork 本仓库
 2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
 3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
@@ -333,6 +335,12 @@ A:
 - [微信云开发](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html) - 云端一体化开发平台
 - [现代汉语常用字表](https://www.zdic.net/zd/zb/cc1/) - 汉字数据来源
 - [Figma](https://www.figma.com/) - UI 设计工具
+
+## 👥 贡献者墙
+
+https://contrib.rocks/image?repo=wangwang4git/ChineseDetection
+
+![Star History Chart](https://api.star-history.com/svg?repos=wangwang4git/ChineseDetection&type=Date)
 
 ---
 
