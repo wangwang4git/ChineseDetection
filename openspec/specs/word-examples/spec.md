@@ -62,16 +62,7 @@ TBD - created by archiving change add-word-examples. Update Purpose after archiv
 
 ### Requirement: 词语发音播放
 
-微信小程序环境下，系统 SHALL 在播放汉字发音后依次播放两个词语的发音。
-
-#### Scenario: 自动播放汉字和词语发音
-
-- **Given** 用户在微信小程序检测页
-- **And** 当前汉字有词语数据
-- **When** 系统展示新汉字
-- **Then** 系统 SHALL 延时 100ms 后播放汉字发音
-- **And** 汉字发音结束后延时 50ms 播放词语1发音
-- **And** 词语1发音结束后延时 50ms 播放词语2发音
+微信小程序环境下，系统 SHALL 仅在用户手动点击喇叭按钮时播放发音。
 
 #### Scenario: 手动播放完整发音序列
 
@@ -81,6 +72,13 @@ TBD - created by archiving change add-word-examples. Update Purpose after archiv
 - **Then** 系统 SHALL 播放汉字发音
 - **And** 依次播放词语1和词语2发音
 - **And** 每个发音间隔 50ms
+
+#### Scenario: 汉字切换时不自动播放
+
+- **Given** 用户在微信小程序检测页
+- **When** 系统展示新汉字
+- **Then** 系统 SHALL NOT 自动播放发音
+- **And** 仅在用户点击喇叭按钮时播放
 
 #### Scenario: 无词语数据时仅播放汉字
 

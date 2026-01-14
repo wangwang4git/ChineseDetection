@@ -93,7 +93,7 @@
  * 展示待测汉字，用户判断是否认识，支持分层测试和动态熔断
  * 微信小程序环境下支持汉字发音功能
  */
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import RiceGrid from '@/components/RiceGrid.vue'
 import { getLayeredTestCharacters } from '@/api/character.js'
 import { LEVEL_CONFIGS, TOTAL_TEST_COUNT } from '@/utils/levelConfig.js'
@@ -451,19 +451,7 @@ const handleSpeakerTap = () => {
   }
 }
 
-// 监听当前汉字变化，自动播放发音
-watch(currentChar, (newChar, oldChar) => {
-  if (newChar && newChar !== oldChar) {
-    // 延时 100ms 后播放，确保 UI 已更新
-    setTimeout(() => {
-      const texts = [newChar]
-      if (currentWords.value.length === 2) {
-        texts.push(currentWords.value[0], currentWords.value[1])
-      }
-      playPronunciationQueue(texts)
-    }, 100)
-  }
-})
+// 已移除自动播放逻辑，仅在手动点击喇叭按钮时播放发音
 
 // 页面卸载时销毁音频上下文
 onUnmounted(() => {

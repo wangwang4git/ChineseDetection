@@ -219,20 +219,7 @@ innerAudioContext.onEnded(() => {
   }
 })
 
-// 监听汉字变化，自动播放汉字和词语
-watch(currentChar, (newChar, oldChar) => {
-  if (newChar && newChar !== oldChar) {
-    setTimeout(() => {
-      const texts = [newChar]
-      if (currentWords.value.length === 2) {
-        texts.push(currentWords.value[0], currentWords.value[1])
-      }
-      playPronunciationQueue(texts)
-    }, 100)
-  }
-})
-
-// 喇叭按钮点击
+// 喇叭按钮点击（仅手动播放，无自动播放）
 const handleSpeakerTap = () => {
   if (currentChar.value) {
     const texts = [currentChar.value]
