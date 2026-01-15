@@ -1,6 +1,6 @@
 {
   "name": "uni-preset-vue",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "dev:custom": "uni -p",
     "dev:h5": "uni",
@@ -33,7 +33,8 @@
     "build:mp-xhs": "uni build -p mp-xhs",
     "build:quickapp-webview": "uni build -p quickapp-webview",
     "build:quickapp-webview-huawei": "uni build -p quickapp-webview-huawei",
-    "build:quickapp-webview-union": "uni build -p quickapp-webview-union"
+    "build:quickapp-webview-union": "uni build -p quickapp-webview-union",
+    "release": "standard-version"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-4080720251210001",
