@@ -215,7 +215,7 @@ const playNext = () => {
 // 监听播放结束，播放下一个
 innerAudioContext.onEnded(() => {
   if (isPlaying) {
-    setTimeout(playNext, 50)  // 间隔 50ms
+    playNext()  // 无间隔，立即播放
   }
 })
 

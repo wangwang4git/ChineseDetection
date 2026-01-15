@@ -377,7 +377,7 @@ onMounted(() => {
     console.log('音频播放结束')
     // 播放队列中的下一个
     if (isPlaying && playQueue.length > 0) {
-      setTimeout(playNext, 50)  // 间隔 50ms
+      playNext()  // 无间隔，立即播放
     } else {
       isPlaying = false
     }
@@ -409,13 +409,13 @@ const playNext = () => {
         innerAudioContext.play()
       } else {
         // 无音频文件，继续下一个
-        setTimeout(playNext, 50)
+        playNext()
       }
     },
     fail: (err) => {
       console.error('语音合成失败:', err)
       // 失败时继续播放下一个
-      setTimeout(playNext, 50)
+      playNext()
     }
   })
 }

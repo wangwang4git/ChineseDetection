@@ -71,7 +71,7 @@ TBD - created by archiving change add-word-examples. Update Purpose after archiv
 - **When** 用户点击喇叭按钮
 - **Then** 系统 SHALL 播放汉字发音
 - **And** 依次播放词语1和词语2发音
-- **And** 每个发音间隔 50ms
+- **And** 各发音无间隔，连续播放
 
 #### Scenario: 汉字切换时不自动播放
 
