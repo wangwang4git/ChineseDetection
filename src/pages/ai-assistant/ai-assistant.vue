@@ -622,7 +622,6 @@ const handleAIError = (msgId, error) => {
   /* 高度通过 JS 动态计算设置 */
   /* 上下 padding 保留，左右 padding 移至 message-wrapper */
   padding: 24rpx 0;
-  padding-bottom: 200rpx;
   box-sizing: border-box;
 }
 
