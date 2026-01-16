@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2](https://github.com/wangwang4git/ChineseDetection/compare/v0.0.1...v0.0.2) (2026-01-16)
+
+
+### Features
+
+* AI小助手增加markdown渲染 ([caffe03](https://github.com/wangwang4git/ChineseDetection/commit/caffe032bfb5a2df789d3f93484b4a755f6eb351))
+* 增加AI结果分析功能 ([6bcd5d9](https://github.com/wangwang4git/ChineseDetection/commit/6bcd5d93430f6be87e0526459be3b0d453ece67c))
+
 ### 0.0.1 (2026-01-15)
 
 
