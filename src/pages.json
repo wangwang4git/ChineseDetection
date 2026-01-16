@@ -34,6 +34,13 @@
 				"navigationBarTitleText": "历史详情",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/ai-assistant/ai-assistant",
+			"style": {
+				"navigationBarTitleText": "AI助手",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

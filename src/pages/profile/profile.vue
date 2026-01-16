@@ -88,7 +88,12 @@
 
     <!-- 历史记录 -->
     <view class="history-section">
-      <text class="section-title">📚 历史检测记录</text>
+      <view class="history-header">
+        <text class="section-title">📚 历史检测记录</text>
+        <view class="ai-tutor-btn" @tap="goToAiAssistant">
+          <text class="ai-tutor-text">🤖 AI辅导</text>
+        </view>
+      </view>
       
       <view v-if="records.length === 0" class="empty-state">
         <text class="empty-text">暂无检测记录</text>
@@ -405,6 +410,15 @@ const goToDetail = (id) => {
 }
 
 /**
+ * 跳转到 AI 助手页
+ */
+const goToAiAssistant = () => {
+  uni.navigateTo({
+    url: '/pages/ai-assistant/ai-assistant'
+  })
+}
+
+/**
  * 加载用户信息
  */
 const loadUserInfo = async () => {
@@ -683,12 +697,38 @@ onShow(() => {
   margin-top: 40rpx;
 }
 
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
 .section-title {
   font-size: 40rpx;
   font-weight: 500;
   color: #6E11B0;
-  display: block;
-  margin-bottom: 24rpx;
+}
+
+.ai-tutor-btn {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 28rpx;
+  border-radius: 9999rpx;
+  background: linear-gradient(90deg, #C27AFF 0%, #FB64B6 100%);
+  border: 3rpx solid #FFF;
+  box-shadow: 0 16rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.ai-tutor-btn:active {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+.ai-tutor-text {
+  color: #FFF;
+  font-size: 28rpx;
+  font-weight: 500;
 }
 
 .empty-state {
