@@ -94,7 +94,10 @@ export const ENV_CONFIG = {
     APP_VERSION: getEnvVar('VITE_APP_VERSION', '1.0.0'),
 
     // 是否为开发环境
-    IS_DEV: getEnvVar('NODE_ENV', 'development') === 'development'
+    IS_DEV: getEnvVar('NODE_ENV', 'development') === 'development',
+
+    // Tavily Search API Key（用于 AI 联网搜索）
+    TAVILY_API_KEY: getEnvVar('VITE_TAVILY_API_KEY', '')
 }
 
 /**

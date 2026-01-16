@@ -13,9 +13,10 @@ export default defineConfig(({ mode }) => {
   console.log('🔧 Vite 构建模式:', mode)
   console.log('🔧 当前平台:', process.env.UNI_PLATFORM)
   console.log('🔧 加载的环境变量:', {
-    VITE_WX_CLOUD_ENV: env.VITE_WX_CLOUD_ENV,
-    VITE_API_BASE_URL: env.VITE_API_BASE_URL,
-    VITE_APP_VERSION: env.VITE_APP_VERSION
+    VITE_WX_CLOUD_ENV: env.VITE_WX_CLOUD_ENV ? '***已配置***' : '未配置',
+    VITE_API_BASE_URL: env.VITE_API_BASE_URL ? '***已配置***' : '未配置',
+    VITE_APP_VERSION: env.VITE_APP_VERSION ? '***已配置***' : '未配置',
+    VITE_TAVILY_API_KEY: env.VITE_TAVILY_API_KEY ? '***已配置***' : '未配置'
   })
 
   const plugins = [uni()]
@@ -38,6 +39,7 @@ export default defineConfig(({ mode }) => {
     VITE_WX_CLOUD_ENV: env.VITE_WX_CLOUD_ENV || 'cloud-XXXX',
     VITE_API_BASE_URL: env.VITE_API_BASE_URL || '',
     VITE_APP_VERSION: env.VITE_APP_VERSION || '1.0.0',
+    VITE_TAVILY_API_KEY: env.VITE_TAVILY_API_KEY || '',
     NODE_ENV: mode
   }
 

@@ -133,6 +133,8 @@ import {
   analyzeCharGroup,
   extractUnknownChars
 } from '@/utils/aiPrompt.js'
+import { getAITools } from '@/utils/aiTools.js'
+import { ENV_CONFIG } from '@/config/env.js'
 import MarkdownIt from 'markdown-it'
 
 // 初始化 markdown-it 实例
@@ -464,6 +466,7 @@ const onScrollToUpper = () => {
 // #ifdef MP-WEIXIN
 /**
  * 发送消息到 AI（微信小程序）
+ * 集成工具调用机制，支持联网搜索
  */
 const sendToAI = async (userMessage) => {
   // 添加空的 AI 消息（加载状态）
@@ -477,10 +480,13 @@ const sendToAI = async (userMessage) => {
       { role: 'user', content: userMessage }
     ]
     
+    // 获取 AI 工具（仅当配置了 Tavily API Key 时启用）
+    const tools = getAITools({ tavilyApiKey: ENV_CONFIG.TAVILY_API_KEY })
+    
     let fullContent = ''
     
-    // 调用微信云开发 AI 接口
-    await wx.cloud.extend.AI.createModel("deepseek").streamText({
+    // 构建调用参数
+    const streamParams = {
       data: {
         model: 'deepseek-v3.2',
         messages: messageHistory
@@ -504,7 +510,16 @@ const sendToAI = async (userMessage) => {
         console.error('[AI] 错误:', error)
         handleAIError(aiMsgId, error)
       }
-    })
+    }
+    
+    // 若有可用工具，注册到调用参数中
+    if (tools.length > 0) {
+      streamParams.data.tools = tools
+      console.log('[AI] 已注册工具:', tools.map(t => t.name).join(', '))
+    }
+    
+    // 调用微信云开发 AI 接口
+    await wx.cloud.extend.AI.createModel("deepseek").streamText(streamParams)
   } catch (error) {
     console.error('[AI] 异常:', error)
     handleAIError(aiMsgId, error)
