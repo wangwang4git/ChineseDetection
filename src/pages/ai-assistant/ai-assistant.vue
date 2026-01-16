@@ -43,33 +43,23 @@
         <view v-if="msg.role === 'ai'" class="ai-message">
           <view class="ai-avatar">🤖</view>
           <view class="ai-bubble">
-            <!-- 加载状态：仅当 isLoading 为 true 且无内容时显示 -->
-            <view v-if="msg.isLoading && !msg.displayContent" class="loading-dots">
+            <!-- 加载状态 -->
+            <view v-if="msg.isLoading" class="loading-dots">
               <text class="dot">●</text>
               <text class="dot">●</text>
               <text class="dot">●</text>
             </view>
-            <!-- 流式输出时直接使用 text 渲染，避免 mp-html 更新问题 -->
-            <view v-else-if="msg.displayContent && msg.isTyping" class="streaming-content">
-              <text class="streaming-text">{{ msg.displayContent }}</text>
-            </view>
-            <!-- 完成后使用 ua-markdown 组件渲染 Markdown -->
-            <!-- 添加 :key 强制组件重新挂载 -->
-            <ua-markdown 
-              v-else-if="msg.displayContent && !msg.isTyping && msg.isComplete" 
-              :key="'md-' + msg.id + '-' + msg.displayContent.length"
-              :source="msg.displayContent" 
-              :selectable="true"
-              @ready="() => console.log('[ai-assistant] ua-markdown ready for msg:', msg.id)"
-              @error="(e) => console.error('[ai-assistant] ua-markdown error:', e)"
+            <!-- Markdown 内容渲染（流式 + 完成后都使用 rich-text） -->
+            <rich-text 
+              v-else-if="msg.htmlContent"
+              class="markdown-content"
+              :nodes="msg.htmlContent"
+              :user-select="true"
             />
-            <!-- 备用：如果 isComplete 为 false 但有内容且不在打字 -->
-            <view v-else-if="msg.displayContent && !msg.isTyping && !msg.isComplete" class="streaming-content">
-              <text class="streaming-text">{{ msg.displayContent }}</text>
-            </view>
-            <!-- 打字机光标效果 -->
-            <text v-if="msg.isTyping" class="typing-cursor">|</text>
-            <text v-if="!msg.displayContent && !msg.isLoading" class="empty-content">等待回复...</text>
+            <!-- 无内容占位 -->
+            <text v-else-if="!msg.isLoading && !msg.content" class="empty-hint">暂无内容</text>
+            <!-- 打字机光标 -->
+            <text v-if="msg.isStreaming" class="typing-cursor">|</text>
           </view>
         </view>
         
@@ -127,8 +117,9 @@
 
 <script setup>
 /**
- * AI 助手页面 v1.0
+ * AI 助手页面 v2.0
  * 智能对话辅导，支持流式输出和 Markdown 渲染
+ * 使用 markdown-it + rich-text 方案
  */
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
@@ -142,6 +133,14 @@ import {
   analyzeCharGroup,
   extractUnknownChars
 } from '@/utils/aiPrompt.js'
+import MarkdownIt from 'markdown-it'
+
+// 初始化 markdown-it 实例
+const md = new MarkdownIt({
+  html: false,        // 禁用 HTML 标签
+  breaks: true,       // 将 \n 转换为 <br>
+  linkify: true       // 自动转换 URL 为链接
+})
 
 // 状态栏高度
 const statusBarHeight = ref(0)
@@ -333,120 +332,103 @@ const addMessage = (role, content, isLoading = false) => {
   const now = new Date()
   const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
   
-  // 判断是否需要显示时间
-  const showTime = messages.value.length === 0 || 
-    (messages.value.length > 0 && 
-     new Date().getTime() - new Date(messages.value[messages.value.length - 1].timestamp).getTime() > 5 * 60 * 1000)
-  
-  const msgId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  // 判断是否需要显示时间（首条消息或距上条消息超5分钟）
+  const lastMsg = messages.value[messages.value.length - 1]
+  const showTime = !lastMsg || (now.getTime() - new Date(lastMsg.timestamp).getTime() > 5 * 60 * 1000)
   
   const msg = {
-    id: msgId,
+    id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     role,
-    content,           // 完整内容（用于存储）
-    displayContent: content || '', // 显示内容（用于打字机效果），确保不是 undefined
+    content: content || '',
+    htmlContent: content ? renderMarkdown(content) : '', // Markdown 转 HTML
     time: timeStr,
     timestamp: now.toISOString(),
     showTime,
-    isLoading,
-    isTyping: false,   // 是否正在打字
-    isComplete: !isLoading
+    isLoading,        // 等待响应中（显示加载动画）
+    isStreaming: false // 流式输出中（显示光标）
   }
   
   messages.value.push(msg)
-  
-  console.log('[addMessage] 添加消息:', JSON.stringify({ id: msgId, role, isLoading, displayContent: content?.substring(0, 20) }))
-  console.log('[addMessage] 当前消息数量:', messages.value.length)
-  
-  // 滚动到底部
-  nextTick(() => {
-    scrollToBottom()
-  })
-  
-  // 返回消息ID，而不是对象引用
-  return { id: msgId, ...msg }
+  nextTick(scrollToBottom)
+  return msg.id
 }
 
 /**
- * 更新消息内容（流式更新 - 打字机效果）
- * 直接更新显示内容，实现实时流式展示
+ * 将 Markdown 转换为带样式的 HTML
  */
-const updateMessageContent = (msgId, newContent) => {
-  // console.log('[updateMessageContent] 开始更新, msgId:', msgId, ', newContent长度:', newContent?.length)
-  // console.log('[updateMessageContent] 当前messages数量:', messages.value.length)
-  
-  const msgIndex = messages.value.findIndex(m => m.id === msgId)
-  // console.log('[updateMessageContent] 找到索引:', msgIndex)
-  
-  if (msgIndex !== -1) {
-    const msg = messages.value[msgIndex]
-    // console.log('[updateMessageContent] 原消息:', JSON.stringify({ 
-    //   id: msg.id, 
-    //   displayContent: msg.displayContent?.substring(0, 50),
-    //   isLoading: msg.isLoading 
-    // }))
-    
-    // 直接修改数组元素的属性，而不是替换整个对象
-    // 在小程序中，这种方式可能更可靠地触发响应式更新
-    messages.value[msgIndex] = {
-      ...msg,
-      content: newContent,        // 存储完整内容
-      displayContent: newContent, // 直接显示完整内容（流式更新）
+const renderMarkdown = (content) => {
+  if (!content) return ''
+  // 使用 markdown-it 转换，并包裹样式容器
+  const html = md.render(content)
+  // 添加内联样式确保在小程序中正确显示
+  return wrapWithStyles(html)
+}
+
+/**
+ * 为 HTML 添加内联样式（rich-text 不支持外部样式）
+ */
+const wrapWithStyles = (html) => {
+  return html
+    // 段落
+    .replace(/<p>/g, '<p style="margin:6px 0;line-height:1.7;font-size:14px;color:#1E2939;">')
+    // 标题
+    .replace(/<h1>/g, '<h1 style="font-size:20px;font-weight:700;color:#1E2939;margin:12px 0 8px 0;">')
+    .replace(/<h2>/g, '<h2 style="font-size:18px;font-weight:600;color:#1E2939;margin:10px 0 7px 0;">')
+    .replace(/<h3>/g, '<h3 style="font-size:16px;font-weight:600;color:#1E2939;margin:9px 0 6px 0;">')
+    // 加粗
+    .replace(/<strong>/g, '<strong style="font-weight:600;color:#1E2939;">')
+    // 斜体
+    .replace(/<em>/g, '<em style="font-style:italic;">')
+    // 列表
+    .replace(/<ul>/g, '<ul style="padding-left:20px;margin:6px 0;">')
+    .replace(/<ol>/g, '<ol style="padding-left:20px;margin:6px 0;">')
+    .replace(/<li>/g, '<li style="margin:4px 0;line-height:1.6;">')
+    // 引用块
+    .replace(/<blockquote>/g, '<blockquote style="margin:8px 0;padding:8px 10px;background:rgba(194,122,255,0.1);border-left:3px solid #C27AFF;border-radius:0 6px 6px 0;color:#4A5565;font-style:italic;">')
+    // 代码
+    .replace(/<code>/g, '<code style="font-family:Consolas,Monaco,monospace;font-size:13px;background:rgba(194,122,255,0.15);padding:2px 6px;border-radius:4px;color:#9810FA;">')
+    .replace(/<pre>/g, '<pre style="margin:8px 0;padding:10px;background:#1E2939;border-radius:6px;overflow-x:auto;color:#E5E7EB;">')
+    // 链接
+    .replace(/<a /g, '<a style="color:#51A2FF;text-decoration:underline;" ')
+    // 水平线
+    .replace(/<hr>/g, '<hr style="height:1px;background:#E5E7EB;margin:12px 0;border:none;">')
+    .replace(/<hr\/>/g, '<hr style="height:1px;background:#E5E7EB;margin:12px 0;border:none;"/>')
+}
+
+/**
+ * 更新消息内容（流式更新）
+ */
+const updateMessageContent = (msgId, content) => {
+  const idx = messages.value.findIndex(m => m.id === msgId)
+  if (idx !== -1) {
+    // 转换 Markdown 为 HTML
+    const htmlContent = renderMarkdown(content)
+    // 小程序中需要替换整个对象才能触发响应式更新
+    messages.value[idx] = {
+      ...messages.value[idx],
+      content,
+      htmlContent,
       isLoading: false,
-      isTyping: true              // 标记正在打字
+      isStreaming: true
     }
-    
-    // 强制触发数组更新（小程序兼容）
+    // 强制数组更新（小程序兼容）
     messages.value = [...messages.value]
-    
-    // console.log('[updateMessageContent] 更新后消息:', JSON.stringify({
-    //   id: messages.value[msgIndex].id,
-    //   displayContent: messages.value[msgIndex].displayContent?.substring(0, 50),
-    //   isLoading: messages.value[msgIndex].isLoading
-    // }))
-    
-    // 滚动到底部
     scrollToBottom()
-  } else {
-    console.error('[updateMessageContent] 未找到消息, msgId:', msgId)
-    console.error('[updateMessageContent] 所有消息ID:', messages.value.map(m => m.id))
   }
 }
 
 /**
- * 标记消息完成（停止打字机效果）
+ * 标记消息完成
  */
 const markMessageComplete = (msgId) => {
-  console.log('[markMessageComplete] msgId:', msgId)
-  const msgIndex = messages.value.findIndex(m => m.id === msgId)
-  if (msgIndex !== -1) {
-    const msg = messages.value[msgIndex]
-    console.log('[markMessageComplete] 更新前消息状态:', JSON.stringify({
-      id: msg.id,
-      displayContent: msg.displayContent?.substring(0, 50),
-      displayContentLength: msg.displayContent?.length,
-      isTyping: msg.isTyping,
-      isLoading: msg.isLoading
-    }))
-    
-    messages.value[msgIndex] = {
-      ...msg,
-      isComplete: true,
-      isLoading: false,
-      isTyping: false  // 停止打字机效果
+  const idx = messages.value.findIndex(m => m.id === msgId)
+  if (idx !== -1) {
+    messages.value[idx] = {
+      ...messages.value[idx],
+      isStreaming: false
     }
-    // 强制触发数组更新（小程序兼容）
+    // 强制数组更新
     messages.value = [...messages.value]
-    
-    const updatedMsg = messages.value[msgIndex]
-    console.log('[markMessageComplete] 更新后消息状态:', JSON.stringify({
-      id: updatedMsg.id,
-      displayContent: updatedMsg.displayContent?.substring(0, 50),
-      displayContentLength: updatedMsg.displayContent?.length,
-      isTyping: updatedMsg.isTyping,
-      isLoading: updatedMsg.isLoading,
-      shouldShowMarkdown: !!(updatedMsg.displayContent && !updatedMsg.isTyping)
-    }))
   }
 }
 
@@ -485,10 +467,7 @@ const onScrollToUpper = () => {
  */
 const sendToAI = async (userMessage) => {
   // 添加空的 AI 消息（加载状态）
-  const aiMessage = addMessage('ai', '', true)
-  
-  console.log('[AI Debug] 开始发送消息到 AI')
-  console.log('[AI Debug] 用户消息:', userMessage)
+  const aiMsgId = addMessage('ai', '', true)
   
   try {
     // 构建消息历史
@@ -498,58 +477,37 @@ const sendToAI = async (userMessage) => {
       { role: 'user', content: userMessage }
     ]
     
-    console.log('[AI Debug] 消息历史长度:', messageHistory.length)
-    console.log('[AI Debug] System Prompt 长度:', systemPrompt.value?.length || 0)
-    
     let fullContent = ''
-    let chunkCount = 0
     
     // 调用微信云开发 AI 接口
-    // 根据官方文档：onText 回调参数是增量文本字符串，需要累加
-    console.log('[AI Debug] 准备调用 wx.cloud.extend.AI.createModel("deepseek").streamText()')
-    
-    const result = await wx.cloud.extend.AI.createModel("deepseek").streamText({
+    await wx.cloud.extend.AI.createModel("deepseek").streamText({
       data: {
         model: 'deepseek-v3.2',
         messages: messageHistory
       },
       onText: (text) => {
-        chunkCount++
-        // console.log(`[AI Debug] onText 第${chunkCount}次回调, 类型: ${typeof text}, 内容:`, text)
-        // text 是增量文本，需要累加到 fullContent
         if (text) {
           fullContent += text
-          updateMessageContent(aiMessage.id, fullContent)
+          updateMessageContent(aiMsgId, fullContent)
         }
       },
-      onEvent: (event) => {
-        // console.log('[AI Debug] onEvent 回调:', event)
-      },
-      onFinish: (finalText) => {
-        console.log('[AI Debug] onFinish 回调, 类型:', typeof finalText, ', 内容:', finalText)
-        console.log('[AI Debug] 累计内容长度:', fullContent.length)
-        console.log('[AI Debug] 总共收到', chunkCount, '次 onText 回调')
-        // finalText 是完整文本
-        markMessageComplete(aiMessage.id)
+      onFinish: () => {
+        markMessageComplete(aiMsgId)
         isSending.value = false
-        
         // 添加到对话历史
         conversationHistory.value.push(
           { role: 'user', content: userMessage },
-          { role: 'assistant', content: fullContent || finalText || '' }
+          { role: 'assistant', content: fullContent }
         )
       },
       onError: (error) => {
-        console.error('[AI Debug] onError 回调:', error)
-        handleAIError(aiMessage.id, error)
+        console.error('[AI] 错误:', error)
+        handleAIError(aiMsgId, error)
       }
     })
-    
-    console.log('[AI Debug] streamText 返回值:', result)
   } catch (error) {
-    console.error('[AI Debug] AI 调用异常:', error)
-    console.error('[AI Debug] 异常堆栈:', error?.stack)
-    handleAIError(aiMessage.id, error)
+    console.error('[AI] 异常:', error)
+    handleAIError(aiMsgId, error)
   }
 }
 
@@ -616,7 +574,7 @@ const handleAIError = (msgId, error) => {
 .back-btn {
   display: inline-flex;
   align-items: center;
-  padding: 20rpx 36rpx;
+  padding: 14rpx 36rpx;
   background: rgba(255, 255, 255, 0.90);
   border-radius: 9999rpx;
   border: 3rpx solid #DAB2FF;
@@ -773,28 +731,19 @@ const handleAIError = (msgId, error) => {
 }
 
 @keyframes blink {
-  0%, 80%, 100% {
-    opacity: 0.3;
-  }
-  40% {
-    opacity: 1;
-  }
+  0%, 80%, 100% { opacity: 0.3; }
+  40% { opacity: 1; }
 }
 
-/* 流式输出内容样式 */
-.streaming-content {
-  display: inline;
-}
-
-.streaming-text {
+/* Markdown 内容样式 */
+.markdown-content {
   font-size: 28rpx;
   color: #1E2939;
   line-height: 1.7;
   word-break: break-all;
-  white-space: pre-wrap;
 }
 
-/* 打字机光标效果 */
+/* 打字机光标 */
 .typing-cursor {
   display: inline;
   font-size: 28rpx;
@@ -804,17 +753,8 @@ const handleAIError = (msgId, error) => {
 }
 
 @keyframes cursor-blink {
-  0%, 50% {
-    opacity: 1;
-  }
-  51%, 100% {
-    opacity: 0;
-  }
-}
-
-.empty-content {
-  font-size: 28rpx;
-  color: #6A7282;
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 
 /* 用户消息 */
@@ -912,6 +852,12 @@ const handleAIError = (msgId, error) => {
 .send-icon {
   font-size: 36rpx;
   color: #FFF;
+}
+
+/* 空内容占位 */
+.empty-hint {
+  font-size: 28rpx;
+  color: #9CA3AF;
 }
 
 /* H5 提示弹窗 */

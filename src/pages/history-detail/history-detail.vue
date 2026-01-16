@@ -154,7 +154,7 @@ onLoad((options) => {
 .back-btn {
   display: inline-flex;
   align-items: center;
-  padding: 20rpx 36rpx;
+  padding: 14rpx 36rpx;
   background: rgba(255, 255, 255, 0.90);
   border-radius: 9999rpx;
   border: 3rpx solid #DAB2FF;

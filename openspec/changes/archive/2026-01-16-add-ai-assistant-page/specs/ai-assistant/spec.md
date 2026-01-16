@@ -137,24 +137,32 @@ AI 助手页面 SHALL 包含顶部导航栏、消息列表和底部输入框。
 
 ### Requirement: Markdown 渲染
 
-AI 回复内容 SHALL 使用基于 mp-html 的 ua-markdown 组件支持 Markdown 格式渲染。
+AI 回复内容 SHALL 使用 markdown-it + 小程序 rich-text 组件实现 Markdown 格式渲染。
+
+#### Scenario: Markdown 渲染技术方案
+
+- **Given** AI 回复包含 Markdown 格式内容
+- **When** 消息需要在小程序中渲染
+- **Then** 系统 SHALL 使用 markdown-it 库将 Markdown 转换为 HTML 字符串
+- **And** 系统 SHALL 使用小程序原生 rich-text 组件渲染 HTML 内容
+- **And** 系统 SHALL 通过 tagStyle 配置实现与设计稿一致的样式
 
 #### Scenario: Markdown 内容渲染
 
 - **Given** AI 回复包含 Markdown 格式内容
 - **When** 消息显示在气泡中
-- **Then** 系统 SHALL 使用 ua-markdown 组件（基于 mp-html）渲染 Markdown
-- **And** 支持标题（#）、列表（- 或 1.）、加粗（**）、斜体（*）等格式
-- **And** 支持代码块（```）渲染
-- **And** 支持引用块（>）、链接、图片等格式
-- **And** 组件允许长按选中文本内容
+- **Then** 系统 SHALL 支持标题（#）、列表（- 或 1.）、加粗（**）、斜体（*）等格式
+- **And** 系统 SHALL 支持代码块（```）渲染
+- **And** 系统 SHALL 支持引用块（>）、链接等格式
+- **And** rich-text 组件设置 user-select 属性允许长按选中文本
 
-#### Scenario: 打字机效果
+#### Scenario: 流式输出打字机效果
 
 - **Given** AI 正在流式回复
 - **When** 系统收到增量文本
-- **Then** 系统 SHALL 实时更新 displayContent 显示内容
-- **And** 系统 SHALL 显示闪烁的光标（|）表示正在输入
+- **Then** 系统 SHALL 实时将累积的 Markdown 内容转换为 HTML
+- **And** 系统 SHALL 使用 rich-text 组件实时渲染更新的 HTML 内容
+- **And** 系统 SHALL 在内容末尾显示闪烁的光标（|）表示正在输入
 - **And** 回复完成后光标消失
 
 ---
