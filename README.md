@@ -13,6 +13,8 @@
 - ⚡ **动态熔断机制**：智能停止测试，避免过度疲劳
 - 🎨 **儿童友好界面**：适配幼儿园低龄用户的 UI 设计
 - 📈 **历史记录追踪**：完整的测试历史和进步跟踪
+- 🤖 **AI 智能助手**：基于检测结果的个性化分析和识字建议
+- 🔍 **联网搜索增强**：AI 可联网获取最新教育资讯（可选）
 - 🔄 **跨平台支持**：基于 uni-app，支持微信小程序、H5 等多平台
 - ☁️ **云端数据同步**：基于微信云开发，数据安全可靠
 - 🔐 **用户身份识别**：微信授权登录，个人数据隔离
@@ -32,6 +34,8 @@
 - **数据库**：云数据库 (MongoDB)
 - **存储**：云存储
 - **用户认证**：微信小程序授权
+- **AI 服务**：微信云开发 AI（DeepSeek 模型）
+- **联网搜索**：Tavily Search API（可选）
 
 ### 核心算法
 - **测试策略**：分层频率抽样
@@ -114,11 +118,14 @@ src/
 │   ├── test/              # 检测页
 │   ├── result/            # 结果页
 │   ├── profile/           # 个人页
-│   └── history-detail/    # 历史详情页
+│   ├── history-detail/    # 历史详情页
+│   └── ai-assistant/      # AI 助手页
 ├── utils/                 # 工具函数
 │   ├── levelConfig.js     # 分层配置
 │   ├── calculate.js       # 算法计算
 │   ├── storage.js         # 本地存储
+│   ├── aiPrompt.js        # AI 提示词构造
+│   ├── aiTools.js         # AI 工具定义（联网搜索）
 │   └── index.js           # 工具函数
 ├── styles/                # 样式文件
 │   ├── variables.scss     # 变量定义
@@ -147,6 +154,9 @@ src/
    ```bash
    # .env 文件
    VITE_WX_CLOUD_ENV=your-cloud-env-id-here
+   
+   # 可选：AI 联网搜索功能
+   VITE_TAVILY_API_KEY=tvly-xxx
    ```
 
 ### 安装依赖
@@ -252,6 +262,12 @@ npm run build:mp-weixin
 - 单次检测完整信息
 - 不认识汉字回顾
 - 进步对比分析
+
+### AI 助手页 (AIAssistantPage)
+- 基于检测数据的智能分析
+- 个性化识字建议和学习规划
+- 联网搜索最新教育资讯（需配置 Tavily API Key）
+- 流式输出 + Markdown 渲染
 
 ## 🔧 开发规范
 

@@ -13,7 +13,7 @@ cp .env.example .env
 
 ### 2. 编辑 .env 文件
 ```bash
-# 微信云开发环境 ID
+# 微信云开发环境 ID（必填）
 VITE_WX_CLOUD_ENV=your-actual-cloud-env-id
 
 # API 基础 URL（可选）
@@ -21,12 +21,22 @@ VITE_API_BASE_URL=https://your-api-domain.com
 
 # 应用版本（可选）
 VITE_APP_VERSION=1.0.0
+
+# Tavily Search API Key（可选，用于 AI 联网搜索功能）
+VITE_TAVILY_API_KEY=tvly-xxx
 ```
 
 ### 3. 获取微信云开发环境 ID
 1. 登录 [微信云开发控制台](https://console.cloud.tencent.com/tcb)
 2. 选择你的云开发环境
 3. 在概览页面复制环境 ID
+
+### 4. 获取 Tavily API Key（可选）
+AI 助手的联网搜索功能需要 Tavily API Key：
+1. 访问 [Tavily 官网](https://tavily.com/) 注册账号
+2. 在控制台创建 API Key
+3. 将 Key 填入 `.env` 文件的 `VITE_TAVILY_API_KEY` 字段
+4. 未配置时 AI 助手仍可正常使用，仅联网搜索功能不可用
 
 ## 📁 相关文件
 
@@ -91,6 +101,7 @@ define: {
     VITE_WX_CLOUD_ENV: env.VITE_WX_CLOUD_ENV,
     VITE_API_BASE_URL: env.VITE_API_BASE_URL,
     VITE_APP_VERSION: env.VITE_APP_VERSION,
+    VITE_TAVILY_API_KEY: env.VITE_TAVILY_API_KEY,
     NODE_ENV: mode
   })
 }

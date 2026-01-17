@@ -56,7 +56,8 @@ src/
 │   ├── test/test.vue          # 检测页（分层测试流程）
 │   ├── result/result.vue      # 结果页（认字量展示）
 │   ├── profile/profile.vue    # 个人页（用户信息、历史记录）
-│   └── history-detail/        # 历史详情页
+│   ├── history-detail/        # 历史详情页
+│   └── ai-assistant/          # AI 助手页（智能对话辅导）
 ├── static/                    # 静态资源
 │   ├── icons/                 # TabBar 图标
 │   ├── images/                # 应用图片资源
@@ -72,7 +73,9 @@ src/
     ├── calculate.js           # 认字量计算、熔断检测、随机抽样
     ├── storage.js             # 本地存储工具
     ├── userManager.js         # 用户信息管理器
-    └── share.js               # 微信分享配置
+    ├── share.js               # 微信分享配置
+    ├── aiPrompt.js            # AI 提示词构造工具
+    └── aiTools.js             # AI 工具定义模块（联网搜索）
 ```
 
 ## 核心概念
@@ -131,6 +134,9 @@ $$W = N_{L1} + (N_{L2} \times 3) + (N_{L3} \times 10) + (N_{L4} \times 20) + (N_
 | storage-extension | 5 | 本地存储扩展规范 |
 | user-age-capability | 6 | 用户年龄功能规范 |
 | user-management | 5 | 用户信息管理规范（OpenID、头像、昵称） |
+| ai-assistant | 12 | AI 助手规范（智能对话、工具调用、联网搜索） |
+| character-pronunciation | 6 | 汉字发音功能规范 |
+| word-examples | 6 | 组词示例功能规范 |
 
 ## 编码约定
 
@@ -281,7 +287,8 @@ export const ENV_CONFIG = {
   WX_CLOUD_ENV: getEnvVar('VITE_WX_CLOUD_ENV', 'cloud-XXXX'),
   API_BASE_URL: getEnvVar('VITE_API_BASE_URL', ''),
   APP_VERSION: getEnvVar('VITE_APP_VERSION', '1.0.0'),
-  IS_DEV: getEnvVar('NODE_ENV', 'development') === 'development'
+  IS_DEV: getEnvVar('NODE_ENV', 'development') === 'development',
+  TAVILY_API_KEY: getEnvVar('VITE_TAVILY_API_KEY', '')  // AI 联网搜索
 }
 ```
 
@@ -409,6 +416,14 @@ npm run build:mp-weixin
     │
     ▼
 历史详情页 (history-detail)
+
+AI 助手页 (ai-assistant)
+    │
+    ├── 智能对话（流式输出 + Markdown 渲染）
+    ├── 基于检测数据生成个性化分析
+    ├── 联网搜索（Tavily API，可选）
+    │
+    └── 微信云开发 AI（DeepSeek 模型）
 ```
 
 ## 重要约束
@@ -444,3 +459,11 @@ npm run build:mp-weixin
 - 所有云函数调用必须包含 try-catch 错误处理
 - 网络错误需要提供用户友好的提示信息
 - 云开发初始化失败需要明确的错误提示和解决方案
+
+### AI 助手约束
+- AI 功能仅支持微信小程序环境（H5 显示提示）
+- 使用微信云开发 AI 接口（`wx.cloud.extend.AI`）
+- 流式输出使用 `streamText` 方法和 `onText` 回调
+- Markdown 渲染使用 `markdown-it` + `rich-text` 组件
+- 联网搜索（Tavily）通过小程序 HTTP 请求调用，需配置 API Key
+- 工具调用机制遵循 CloudBase AI 工具调用格式
