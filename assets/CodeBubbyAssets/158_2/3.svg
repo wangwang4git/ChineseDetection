@@ -1,0 +1,14 @@
+<svg width="185" height="185" viewBox="0 0 185 185" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_158_28)">
+<path d="M188 4H4V188H188V4Z" stroke="#333333" stroke-width="2"/>
+<path d="M4 96H192" stroke="#999999" stroke-dasharray="4 4"/>
+<path d="M96 4V192" stroke="#999999" stroke-dasharray="4 4"/>
+<path d="M4 4L192 192" stroke="#CCCCCC" stroke-dasharray="4 4"/>
+<path d="M192 4L4 192" stroke="#CCCCCC" stroke-dasharray="4 4"/>
+</g>
+<defs>
+<clipPath id="clip0_158_28">
+<rect width="184.686" height="184.686" fill="white"/>
+</clipPath>
+</defs>
+</svg>

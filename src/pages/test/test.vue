@@ -22,7 +22,11 @@
 
       <!-- 米字格展示汉字 -->
       <view class="character-section">
-        <RiceGrid :char="currentChar" :size="488" />
+        <view class="character-wrapper">
+          <!-- 拼音展示 -->
+          <text class="pinyin-text">{{ currentPinyin }}</text>
+          <RiceGrid :char="currentChar" :size="488" />
+        </view>
         <!-- #ifdef MP-WEIXIN -->
         <!-- 喇叭按钮 - 点击播放当前汉字发音 -->
         <view class="speaker-btn" @tap="handleSpeakerTap">
@@ -98,6 +102,7 @@ import RiceGrid from '@/components/RiceGrid.vue'
 import { getLayeredTestCharacters } from '@/api/character.js'
 import { LEVEL_CONFIGS, TOTAL_TEST_COUNT } from '@/utils/levelConfig.js'
 import { initLevelResult, checkFuse, generateTestRecord } from '@/utils/calculate.js'
+import cnchar from 'cnchar'
 
 // #ifdef MP-WEIXIN
 // 微信同声传译插件
@@ -164,6 +169,17 @@ const currentCharData = computed(() => {
     return null
   }
   return levelData.chars[currentLevelIndex.value]
+})
+
+// 当前汉字拼音（带声调）
+const currentPinyin = computed(() => {
+  if (!currentChar.value) return ''
+  try {
+    return cnchar.spell(currentChar.value, 'tone', 'low')
+  } catch (e) {
+    console.error('获取拼音失败:', e)
+    return ''
+  }
 })
 
 // 当前词语列表
@@ -540,6 +556,24 @@ onUnmounted(() => {
   align-items: center;
   margin: 48rpx 0;
   gap: 24rpx;
+}
+
+/* 汉字+拼音包装器 */
+.character-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 拼音样式 */
+.pinyin-text {
+  font-family: "Arial", "Helvetica", sans-serif;
+  font-weight: bold;
+  font-size: 72rpx;
+  line-height: 80rpx;
+  color: #101828;
+  margin-bottom: 16rpx;
+  text-align: center;
 }
 
 /* 喇叭按钮 */
