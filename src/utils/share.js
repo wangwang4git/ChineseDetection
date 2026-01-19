@@ -105,3 +105,32 @@ export const getHistoryTimelineConfig = (vocabulary) => {
   }
   return config
 }
+
+/**
+ * 获取 AI 助手分享配置
+ * @returns {Object} 分享配置对象
+ */
+export const getAIAssistantShareConfig = () => {
+  const config = {
+    title: '🤖 AI 识字小助手 - 智能分析孩子识字水平',
+    path: '/pages/home/home'
+  }
+  if (SHARE_IMAGE_URL) {
+    config.imageUrl = SHARE_IMAGE_URL
+  }
+  return config
+}
+
+/**
+ * 获取 AI 助手朋友圈分享配置
+ * @returns {Object} 朋友圈分享配置对象
+ */
+export const getAIAssistantTimelineConfig = () => {
+  const config = {
+    title: 'AI 识字小助手 - 智能识字辅导'
+  }
+  if (SHARE_IMAGE_URL) {
+    config.imageUrl = SHARE_IMAGE_URL
+  }
+  return config
+}

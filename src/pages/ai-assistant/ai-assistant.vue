@@ -123,6 +123,9 @@
  */
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+// #ifdef MP-WEIXIN
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
+// #endif
 import { getRecordList } from '@/api/record.js'
 import userManager from '@/utils/userManager.js'
 import { 
@@ -136,6 +139,7 @@ import {
 import { getAITools } from '@/utils/aiTools.js'
 import { ENV_CONFIG } from '@/config/env.js'
 import MarkdownIt from 'markdown-it'
+import { getAIAssistantShareConfig, getAIAssistantTimelineConfig } from '@/utils/share.js'
 
 // 初始化 markdown-it 实例
 const md = new MarkdownIt({
@@ -178,6 +182,22 @@ const userData = ref({
 const canSend = computed(() => {
   return inputText.value.trim() && !isSending.value
 })
+
+// #ifdef MP-WEIXIN
+/**
+ * 分享给好友
+ */
+onShareAppMessage(() => {
+  return getAIAssistantShareConfig()
+})
+
+/**
+ * 分享到朋友圈
+ */
+onShareTimeline(() => {
+  return getAIAssistantTimelineConfig()
+})
+// #endif
 
 /**
  * 页面加载
