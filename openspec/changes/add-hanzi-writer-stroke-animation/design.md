@@ -1,25 +1,25 @@
 ## Context
 
-当前项目使用 RiceGrid 组件展示汉字，通过 CSS 绘制米字格背景和 `<text>` 元素显示汉字。此方案需要升级为使用 hanzi-writer 库，以支持笔画动画功能。
+当前项目使用 RiceGrid 组件展示汉字，通过 CSS 绘制米字格背景和 `<text>` 元素显示汉字。此方案需要升级为使用 hanzi-writer-miniprogram 组件，以支持笔画动画功能。
 
 **关键约束**：
-- uni-app 跨平台兼容性（H5 + 微信小程序）
+- 仅针对微信小程序环境开发
 - 保持现有米字格 UI 样式
-- hanzi-writer 需要 DOM/SVG 操作，需处理小程序兼容性
+- 使用 Canvas 2D API 渲染
 
 ## Goals / Non-Goals
 
 **Goals**:
-- 使用 hanzi-writer 渲染汉字（替代静态文本）
+- 使用 hanzi-writer-miniprogram 渲染汉字（替代静态文本）
 - 添加笔画动画触发按钮
 - 保持米字格视觉样式一致性
 - 支持大米字格（488rpx）和小米字格（160rpx）两种尺寸
-- **H5 和微信小程序均支持笔画动画功能**
 
 **Non-Goals**:
 - 不实现测验/描红模式（`writer.quiz()`）
 - 不实现词语小米字格的笔画动画（仅大米字格支持动画）
 - 不修改现有测试流程逻辑
+- 不支持 H5 环境
 
 ## Decisions
 
@@ -30,54 +30,59 @@
 - HanziGrid 需要管理 hanzi-writer 实例生命周期
 - 渐进式替换，降低风险
 
-### Decision 2: H5 环境 - hanzi-writer 初始化方式
+### Decision 2: 使用 hanzi-writer-miniprogram 组件
 
-**方案**：使用 SVG 背景 + hanzi-writer 渲染到同一 SVG
-
-```html
-<svg id="hanzi-target" width="192" height="192">
-  <!-- 米字格背景线条 -->
-  <line x1="0" y1="0" x2="192" y2="192" stroke="#E5E7EB" />
-  <line x1="192" y1="0" x2="0" y2="192" stroke="#E5E7EB" />
-  <line x1="96" y1="0" x2="96" y2="192" stroke="#E5E7EB" />
-  <line x1="0" y1="96" x2="192" y2="96" stroke="#E5E7EB" />
-</svg>
-```
-
-```javascript
-const writer = HanziWriter.create('hanzi-target', '向', {
-  width: 192,
-  height: 192,
-  padding: 10,
-  strokeColor: '#101828',
-  outlineColor: '#DDD',
-  showOutline: true
-})
-```
-
-### Decision 3: 小程序兼容性处理 - 使用 hanzi-writer-miniprogram
-
-**方案**：使用 `hanzi-writer-miniprogram` 组件实现微信小程序支持
+**方案**：使用 `hanzi-writer-miniprogram@beta` 版本实现微信小程序支持
 
 **技术调研结论**：
-- hanzi-writer 官方提供 `hanzi-writer-miniprogram` 微信小程序适配组件
-- 该组件使用 Canvas 2D API 渲染，支持笔画动画
-- 需要处理以下兼容性问题：
-  1. 真机 `Path2D` API 不支持问题
-  2. CDN 数据加载问题
+
+**版本选择（重要）**：
+- **稳定版 (v1.1.0)**：使用旧版 `wx.createCanvasContext` API，**仅支持基础库 ≤ 2.7.7**
+- **Beta 版 (v1.2.0-beta.1)**：支持新版 Canvas 2D API，**支持基础库 ≥ 2.9.0**
+- 由于 `wx.createCanvasContext` 已停止维护，**必须使用 beta 版本**
+
+**微信小程序基础库版本要求**：
+- Canvas 2D（`type="2d"`）最低支持版本：**2.9.0**
+- 建议设置最低基础库版本为 **2.9.0** 或更高
+- 可在小程序管理后台「设置 → 基础库最低版本设置」中配置
+
+**兼容性问题**：
+1. 真机 `Path2D` API 不支持问题 → 需修改源码跳过判断
+2. CDN 数据加载问题 → 需配置服务器域名
+
+**wxcomponents 目录位置（重要）**：
+- 根据 [uni-app 官方文档](https://zh.uniapp.dcloud.io/tutorial/miniprogram-subject.html)
+- HBuilderX 项目：`wxcomponents/` 位于项目根目录
+- **vue-cli/vite 项目：`wxcomponents/` 位于 `src` 目录下**
+- 本项目使用 vite 构建，因此 wxcomponents 应放在 `src/wxcomponents/`
 
 **实现步骤**：
 
-1. 安装依赖：
+1. 安装 beta 版本依赖：
 ```bash
-npm install hanzi-writer-miniprogram
+npm install hanzi-writer-miniprogram@beta
 ```
 
-2. 在 uni-app 根目录创建 `wxcomponents/hanzi-writer-miniprogram/` 目录
+2. 在 `src` 目录下创建 `wxcomponents/hanzi-writer-miniprogram/` 目录：
+```
+src/
+├── wxcomponents/
+│   └── hanzi-writer-miniprogram/
+│       ├── index.js
+│       ├── hanzi-writer.js
+│       ├── hanzi-writer-context.js
+│       ├── hanzi-writer-view.js
+│       ├── hanzi-writer-view.json
+│       ├── hanzi-writer-view.wxml
+│       └── hanzi-writer-view.wxss
+├── pages/
+├── components/
+└── ...
+```
 
 3. 复制组件文件：
-   - `node_modules/hanzi-writer-miniprogram/src/*` → `wxcomponents/hanzi-writer-miniprogram/`
-   - `node_modules/hanzi-writer/dist/hanzi-writer.js` → `wxcomponents/hanzi-writer-miniprogram/`
+   - `node_modules/hanzi-writer-miniprogram/src/*` → `src/wxcomponents/hanzi-writer-miniprogram/`
+   - `node_modules/hanzi-writer/dist/hanzi-writer.js` → `src/wxcomponents/hanzi-writer-miniprogram/`
 
 4. 修改 `hanzi-writer-context.js` 引入路径：
 ```javascript
@@ -90,50 +95,56 @@ import HanziWriter from './hanzi-writer';
 this._pathCmd = pathStringToCanvas(this._stroke.path);
 ```
 
-6. 页面注册组件（`pages.json`）：
+6. 在 `pages.json` 对应页面配置中注册组件：
 ```json
-"usingComponents": {
-  "hanzi-writer-view": "/wxcomponents/hanzi-writer-miniprogram/hanzi-writer-view"
+{
+  "path": "pages/test/test",
+  "style": {
+    "navigationBarTitleText": "检测中",
+    "navigationStyle": "custom",
+    "usingComponents": {
+      "hanzi-writer-view": "/wxcomponents/hanzi-writer-miniprogram/hanzi-writer-view"
+    }
+  }
 }
 ```
 
-7. 使用组件：
+7. 使用 Canvas 2D 模式（beta 版本特性）：
 ```html
-<!-- 小程序环境 -->
-<hanzi-writer-view id="hz-writer" width="192" height="192" />
+<template>
+  <hanzi-writer-view 
+    id="hz-writer" 
+    type="2d"
+    canvas-id="writer-canvas"
+    :width="192" 
+    :height="192" 
+  />
+</template>
 ```
 
 ```javascript
-import createHanziWriterContext from '@/wxcomponents/hanzi-writer-miniprogram/index'
-
-// 创建上下文
-this.writerCtx = createHanziWriterContext({
-  id: 'hz-writer',
-  character: '向',
-  page: this
-})
-
-// 播放动画
-this.writerCtx.animateCharacter()
+// 获取 Canvas 2D 上下文并创建 writer
+const query = wx.createSelectorQuery()
+query.select('#writer-canvas')
+  .fields({ node: true, size: true })
+  .exec((res) => {
+    const canvas = res[0].node
+    const ctx = canvas.getContext('2d')
+    
+    this.writerCtx = createHanziWriterContext({
+      id: 'hz-writer',
+      character: '向',
+      page: this,
+      renderCanvas: canvas,
+      renderCtx: ctx
+    })
+  })
 ```
 
-**条件编译结构**：
-```javascript
-// #ifdef H5
-import HanziWriter from 'hanzi-writer'
-// 使用 DOM API 渲染
-// #endif
-
-// #ifdef MP-WEIXIN
-import createHanziWriterContext from '@/wxcomponents/hanzi-writer-miniprogram/index'
-// 使用 Canvas 2D 渲染
-// #endif
-```
-
-### Decision 4: 笔画动画配置
+### Decision 3: 笔画动画配置
 
 ```javascript
-writer.animateCharacter({
+writerCtx.animateCharacter({
   strokeAnimationSpeed: 1,      // 笔画速度
   delayBetweenStrokes: 300,     // 笔画间隔 300ms
   onComplete: () => {
@@ -144,7 +155,7 @@ writer.animateCharacter({
 
 **轮廓可见性**：设置 `showOutline: true` + `outlineColor: '#DDD'`
 
-### Decision 5: 按钮布局
+### Decision 4: 按钮布局
 
 根据 Figma 设计稿，米字格右侧有两个圆形按钮垂直排列：
 1. 喇叭按钮（紫色 #E9D4FF）- 已实现
@@ -152,30 +163,31 @@ writer.animateCharacter({
 
 按钮尺寸：48x48px，圆角，带阴影
 
-**笔画按钮在 H5 和小程序环境均可用**（不再需要条件编译隐藏）
-
 ## Risks / Trade-offs
 
 | 风险 | 影响 | 缓解措施 |
 |------|------|----------|
+| 基础库版本限制 | 低版本用户无法使用 | 设置最低基础库 2.9.0，提示升级 |
 | hanzi-writer-miniprogram Path2D 兼容性 | 真机无法显示 | 修改源码跳过 Path2D 判断 |
 | hanzi-writer 汉字数据加载 | 网络依赖 | 配置 CDN 域名或使用本地数据 |
 | 性能影响（Canvas 动画） | 低端设备卡顿 | 限制动画复杂度 |
-| 小程序组件集成复杂度 | 开发调试成本 | 详细记录配置步骤 |
+| beta 版本稳定性 | 潜在 bug | 充分测试，关注官方更新 |
 
 ## Migration Plan
 
-1. 安装 hanzi-writer-miniprogram 依赖
-2. 配置 wxcomponents 目录和组件文件
+1. 安装 hanzi-writer-miniprogram@beta 依赖
+2. 在 `src/wxcomponents/` 目录下配置组件文件
 3. 修复 Path2D 兼容性问题
-4. 创建 HanziGrid 组件（条件编译处理 H5/小程序）
-5. 在 test.vue 中替换大米字格为 HanziGrid
-6. 在 test.vue 中替换词语小米字格为 HanziGrid
-7. 添加笔画按钮和动画触发逻辑（仅大米字格）
-8. 测试 H5 和小程序兼容性
-9. 配置小程序服务器域名（cdn.jsdelivr.net）
+4. 在 pages.json 中注册小程序原生组件
+5. **在小程序管理后台设置最低基础库版本 ≥ 2.9.0**
+6. 创建 HanziGrid 组件
+7. 在 test.vue 中替换大米字格为 HanziGrid
+8. 在 test.vue 中替换词语小米字格为 HanziGrid
+9. 添加笔画按钮和动画触发逻辑（仅大米字格）
+10. 测试小程序模拟器和真机兼容性
+11. 配置小程序服务器域名（cdn.jsdelivr.net）
 
 ## Open Questions
 
-- [x] ~~小程序环境是否有第三方 hanzi-writer 适配方案~~ → 使用 hanzi-writer-miniprogram
 - [ ] 是否需要将汉字数据本地化以避免 CDN 依赖
+- [x] ~~是否需要特定基础库版本~~ → 需要基础库 ≥ 2.9.0
