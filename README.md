@@ -356,7 +356,11 @@ A:
 
 https://contrib.rocks/image?repo=wangwang4git/ChineseDetection
 
-![Star History Chart](https://api.star-history.com/svg?repos=wangwang4git/ChineseDetection&type=Date)
+
+## ⭐️ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=wangwang4git/ChineseDetection&type=date&legend=top-left)](https://www.star-history.com/#wangwang4git/ChineseDetection&type=date&legend=top-left)
+
 
 ---
 
