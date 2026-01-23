@@ -57,6 +57,7 @@ import CharacterCard from '@/components/CharacterCard.vue'
 import { addRecord } from '@/api/record.js'
 import { getEncouragementMessage } from '@/utils/calculate.js'
 import { getResultShareConfig, getResultTimelineConfig } from '@/utils/share.js'
+import { addToVocabularyNotebook } from '@/utils/storage.js'
 
 // 检测记录
 const record = ref({
@@ -111,6 +112,12 @@ const endTest = async () => {
   // 保存记录
   try {
     await addRecord(record.value)
+    
+    // 同步更新生字本（将不认识的汉字加入生字本）
+    if (record.value.unknownChars && record.value.unknownChars.length > 0) {
+      addToVocabularyNotebook(record.value.unknownChars)
+      console.log('生字本已更新，新增:', record.value.unknownChars)
+    }
   } catch (e) {
     console.error('保存记录失败:', e)
   }

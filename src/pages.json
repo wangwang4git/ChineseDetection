@@ -41,6 +41,13 @@
 				"navigationBarTitleText": "AI助手",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/vocabulary-notebook/vocabulary-notebook",
+			"style": {
+				"navigationBarTitleText": "生字本",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

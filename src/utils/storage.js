@@ -8,7 +8,8 @@ const STORAGE_KEYS = {
   TEST_RECORDS: 'TEST_RECORDS',
   USER_INFO: 'USER_INFO',
   USER_OPENID: 'USER_OPENID',  // 单独存储 OpenID
-  PROFILE_GUIDE_SHOWN: 'PROFILE_GUIDE_SHOWN'  // 个人页引导提示状态
+  PROFILE_GUIDE_SHOWN: 'PROFILE_GUIDE_SHOWN',  // 个人页引导提示状态
+  VOCABULARY_NOTEBOOK: 'VOCABULARY_NOTEBOOK'  // 生字本
 }
 
 /**
@@ -199,5 +200,146 @@ export function setProfileGuideShown(shown = true) {
   } catch (e) {
     console.error('设置引导提示状态失败:', e)
     return false
+  }
+}
+
+// ==================== 生字本相关函数 ====================
+
+/**
+ * 获取生字本数据
+ * @returns {{chars: string[], lastUpdated: number}|null} 生字本数据
+ */
+export function getVocabularyNotebook() {
+  try {
+    const notebook = uni.getStorageSync(STORAGE_KEYS.VOCABULARY_NOTEBOOK)
+    if (notebook) {
+      const parsed = JSON.parse(notebook)
+      if (parsed && Array.isArray(parsed.chars)) {
+        return parsed
+      }
+    }
+    return null
+  } catch (e) {
+    console.error('获取生字本失败:', e)
+    return null
+  }
+}
+
+/**
+ * 保存生字本数据
+ * @param {{chars: string[], lastUpdated: number}} notebook - 生字本数据
+ * @returns {boolean} 是否保存成功
+ */
+export function setVocabularyNotebook(notebook) {
+  try {
+    if (!notebook || !Array.isArray(notebook.chars)) {
+      console.error('生字本数据格式无效')
+      return false
+    }
+    uni.setStorageSync(STORAGE_KEYS.VOCABULARY_NOTEBOOK, JSON.stringify(notebook))
+    return true
+  } catch (e) {
+    console.error('保存生字本失败:', e)
+    return false
+  }
+}
+
+/**
+ * 添加汉字到生字本（去重）
+ * @param {string[]} chars - 要添加的汉字数组
+ * @returns {boolean} 是否添加成功
+ */
+export function addToVocabularyNotebook(chars) {
+  try {
+    if (!chars || !Array.isArray(chars) || chars.length === 0) {
+      return true // 空数组视为成功
+    }
+    
+    let notebook = getVocabularyNotebook()
+    if (!notebook) {
+      notebook = { chars: [], lastUpdated: Date.now() }
+    }
+    
+    // 合并并去重
+    const existingSet = new Set(notebook.chars)
+    chars.forEach(char => existingSet.add(char))
+    
+    notebook.chars = Array.from(existingSet)
+    notebook.lastUpdated = Date.now()
+    
+    return setVocabularyNotebook(notebook)
+  } catch (e) {
+    console.error('添加生字失败:', e)
+    return false
+  }
+}
+
+/**
+ * 从生字本移除汉字
+ * @param {string} char - 要移除的汉字
+ * @returns {boolean} 是否移除成功
+ */
+export function removeFromVocabularyNotebook(char) {
+  try {
+    if (!char) {
+      return false
+    }
+    
+    let notebook = getVocabularyNotebook()
+    if (!notebook) {
+      return true // 生字本为空，视为成功
+    }
+    
+    notebook.chars = notebook.chars.filter(c => c !== char)
+    notebook.lastUpdated = Date.now()
+    
+    return setVocabularyNotebook(notebook)
+  } catch (e) {
+    console.error('移除生字失败:', e)
+    return false
+  }
+}
+
+/**
+ * 从历史记录初始化生字本
+ * 提取所有历史检测记录中的 unknownChars 并去重合并
+ * @returns {{chars: string[], lastUpdated: number}} 初始化后的生字本
+ */
+export function initVocabularyNotebook() {
+  try {
+    const records = getRecords()
+    const charSet = new Set()
+    
+    // 从所有记录中提取不认识的汉字
+    records.forEach(record => {
+      if (record.unknownChars && Array.isArray(record.unknownChars)) {
+        record.unknownChars.forEach(char => charSet.add(char))
+      }
+    })
+    
+    const notebook = {
+      chars: Array.from(charSet),
+      lastUpdated: Date.now()
+    }
+    
+    setVocabularyNotebook(notebook)
+    return notebook
+  } catch (e) {
+    console.error('初始化生字本失败:', e)
+    return { chars: [], lastUpdated: Date.now() }
+  }
+}
+
+/**
+ * 获取生字本汉字数量
+ * @returns {number} 生字数量
+ */
+export function getVocabularyCount() {
+  try {
+    const notebook = getVocabularyNotebook()
+    return notebook ? notebook.chars.length : 0
+  } catch (e) {
+    console.error('获取生字数量失败:', e)
+    return 0
   }
 }

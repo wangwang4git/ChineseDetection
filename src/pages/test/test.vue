@@ -1,15 +1,15 @@
 <template>
-  <!-- 检测页 - 汉字认字量检测 -->
+  <!-- 检测页 - 汉字认字量检测 / 生字学习模式 -->
   <view class="page-container">
     <!-- 加载状态 -->
     <view v-if="loading" class="loading-container">
-      <text class="loading-text">正在准备测试...</text>
+      <text class="loading-text">{{ isLearningMode ? '正在加载...' : '正在准备测试...' }}</text>
     </view>
 
     <!-- 测试内容 -->
     <view v-else class="test-content">
-      <!-- 进度信息 -->
-      <view class="progress-section">
+      <!-- 进度信息（学习模式下隐藏） -->
+      <view v-if="!isLearningMode" class="progress-section">
         <view class="progress-row">
           <text class="progress-text">第 {{ currentLevelIndex + 1 }} / {{ currentLevelConfig?.testCount }} 个</text>
           <text class="known-count">已认识: {{ totalKnownCount }} 个 ✅</text>
@@ -72,8 +72,8 @@
         </view>
       </view>
 
-      <!-- 鼓励语 -->
-      <view class="encourage-section">
+      <!-- 鼓励语（学习模式下隐藏） -->
+      <view v-if="!isLearningMode" class="encourage-section">
         <text class="encourage-text">{{ encourageText }}</text>
       </view>
     </view>
@@ -96,13 +96,17 @@
  * 检测页
  * 展示待测汉字，用户判断是否认识，支持分层测试和动态熔断
  * 微信小程序环境下支持汉字发音功能
+ * 支持生字学习模式（从生字本进入）
  */
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import RiceGrid from '@/components/RiceGrid.vue'
 import { getLayeredTestCharacters } from '@/api/character.js'
 import { LEVEL_CONFIGS, TOTAL_TEST_COUNT } from '@/utils/levelConfig.js'
 import { initLevelResult, checkFuse, generateTestRecord } from '@/utils/calculate.js'
+import { removeFromVocabularyNotebook } from '@/utils/storage.js'
 import cnchar from 'cnchar'
+import charDataJson from '@/static/top_2500_chars_with_words.json'
 
 // #ifdef MP-WEIXIN
 // 微信同声传译插件
@@ -113,6 +117,14 @@ let innerAudioContext = null
 let playQueue = []
 let isPlaying = false
 // #endif
+
+// ==================== 学习模式相关 ====================
+// 学习模式标识
+const isLearningMode = ref(false)
+// 学习模式下的汉字
+const learningChar = ref('')
+// 学习模式下的汉字数据
+const learningCharData = ref(null)
 
 // 加载状态
 const loading = ref(true)
@@ -155,6 +167,11 @@ const currentLevelData = computed(() => {
 
 // 当前汉字
 const currentChar = computed(() => {
+  // 学习模式下返回学习的汉字
+  if (isLearningMode.value) {
+    return learningChar.value
+  }
+  
   const levelData = currentLevelData.value
   if (!levelData || !levelData.chars[currentLevelIndex.value]) {
     return ''
@@ -164,6 +181,11 @@ const currentChar = computed(() => {
 
 // 当前汉字完整数据（包含 words）
 const currentCharData = computed(() => {
+  // 学习模式下返回学习汉字的数据
+  if (isLearningMode.value) {
+    return learningCharData.value
+  }
+  
   const levelData = currentLevelData.value
   if (!levelData || !levelData.chars[currentLevelIndex.value]) {
     return null
@@ -246,9 +268,49 @@ const initTest = async () => {
 }
 
 /**
+ * 初始化学习模式
+ * @param {string} char - 要学习的汉字
+ */
+const initLearningMode = (char) => {
+  loading.value = true
+  isLearningMode.value = true
+  learningChar.value = char
+  
+  // 从汉字数据中查找该汉字的信息
+  const charInfo = charDataJson.find(item => item.char === char)
+  if (charInfo) {
+    learningCharData.value = {
+      char: charInfo.char,
+      rank_id: charInfo.rank_id,
+      words: charInfo.words || []
+    }
+  } else {
+    // 找不到数据时使用默认值
+    learningCharData.value = {
+      char: char,
+      rank_id: 0,
+      words: []
+    }
+  }
+  
+  console.log('学习模式初始化:', learningCharData.value)
+  loading.value = false
+}
+
+/**
  * 处理"我认识"
  */
 const handleKnow = () => {
+  // 学习模式下：从生字本移除并返回
+  if (isLearningMode.value) {
+    removeFromVocabularyNotebook(learningChar.value)
+    uni.showToast({ title: '已从生字本移除', icon: 'success', duration: 1000 })
+    setTimeout(() => {
+      uni.navigateBack()
+    }, 800)
+    return
+  }
+  
   recordAnswer(true)
 }
 
@@ -256,6 +318,12 @@ const handleKnow = () => {
  * 处理"不认识"
  */
 const handleUnknown = () => {
+  // 学习模式下：保持不变，直接返回
+  if (isLearningMode.value) {
+    uni.navigateBack()
+    return
+  }
+  
   recordAnswer(false)
 }
 
@@ -367,9 +435,18 @@ const goToResult = () => {
   })
 }
 
-// 页面加载时初始化
-onMounted(() => {
-  initTest()
+// 页面加载时处理参数
+onLoad((options) => {
+  console.log('页面参数:', options)
+  
+  // 检查是否为学习模式
+  if (options.mode === 'vocabulary-learning' && options.char) {
+    const char = decodeURIComponent(options.char)
+    initLearningMode(char)
+  } else {
+    // 普通测试模式
+    initTest()
+  }
   
   // #ifdef MP-WEIXIN
   // 创建音频上下文
@@ -399,6 +476,11 @@ onMounted(() => {
     }
   })
   // #endif
+})
+
+// 页面加载时初始化（兼容处理）
+onMounted(() => {
+  // onLoad 已处理初始化逻辑
 })
 
 // #ifdef MP-WEIXIN

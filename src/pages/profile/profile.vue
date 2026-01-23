@@ -124,6 +124,19 @@
       </view>
     </view>
 
+    <!-- 生字本入口卡片 -->
+    <view class="vocabulary-card" @tap="goToVocabularyNotebook">
+      <view class="vocabulary-left">
+        <view class="vocabulary-icon-wrapper">
+          <image class="vocabulary-icon-img" src="/assets/CodeBubbyAssets/219_2/1.svg" mode="aspectFit" />
+        </view>
+        <text class="vocabulary-title">生字本</text>
+      </view>
+      <view class="vocabulary-count-badge">
+        <text class="vocabulary-count-text">{{ vocabularyCount }}</text>
+      </view>
+    </view>
+
     <!-- 底部占位（为 TabBar 留空间） -->
     <view class="tabbar-placeholder"></view>
     
@@ -165,7 +178,7 @@ import { getRecordList, getStatistics } from '@/api/record.js'
 import { handleChooseAvatar, handleNicknameInput, getMaskedOpenId } from '@/api/user.js'
 import userManager from '@/utils/userManager.js'
 import { formatDateTime } from '@/utils/index.js'
-import { getProfileGuideShown, setProfileGuideShown } from '@/utils/storage.js'
+import { getProfileGuideShown, setProfileGuideShown, getVocabularyNotebook, initVocabularyNotebook } from '@/utils/storage.js'
 import { getDefaultShareConfig, getDefaultTimelineConfig } from '@/utils/share.js'
 import CustomTabBar from '@/components/CustomTabBar.vue'
 
@@ -191,6 +204,9 @@ const statistics = ref({
   maxScore: 0,
   avgScore: 0
 })
+
+// 生字本数量
+const vocabularyCount = ref(0)
 
 // 统计卡片配置
 const statCards = computed(() => [
@@ -419,6 +435,15 @@ const goToAiAssistant = () => {
 }
 
 /**
+ * 跳转到生字本页面
+ */
+const goToVocabularyNotebook = () => {
+  uni.navigateTo({
+    url: '/pages/vocabulary-notebook/vocabulary-notebook'
+  })
+}
+
+/**
  * 加载用户信息
  */
 const loadUserInfo = async () => {
@@ -466,6 +491,23 @@ const loadRecords = async () => {
 }
 
 /**
+ * 加载生字本统计
+ */
+const loadVocabularyCount = () => {
+  try {
+    let notebook = getVocabularyNotebook()
+    // 如果生字本不存在，从历史记录初始化
+    if (!notebook) {
+      notebook = initVocabularyNotebook()
+    }
+    vocabularyCount.value = notebook?.chars?.length || 0
+  } catch (error) {
+    console.error('加载生字本统计失败:', error)
+    vocabularyCount.value = 0
+  }
+}
+
+/**
  * 加载所有数据
  */
 const loadData = async () => {
@@ -478,6 +520,9 @@ const loadData = async () => {
       loadStatistics(),
       loadRecords()
     ])
+    
+    // 同步加载生字本统计
+    loadVocabularyCount()
     
     // 数据加载完成后检查是否需要显示引导提示
     checkAndShowGuide()
@@ -690,6 +735,65 @@ onShow(() => {
 .stat-label {
   font-size: 24rpx;
   color: #364153;
+}
+
+/* 生字本入口卡片 */
+.vocabulary-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 32rpx;
+  padding: 34rpx;
+  margin-top: 24rpx;
+  border: 3rpx solid #8EC5FF;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.vocabulary-card:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.vocabulary-left {
+  display: flex;
+  align-items: center;
+}
+
+.vocabulary-icon-wrapper {
+  width: 80rpx;
+  height: 80rpx;
+  background: linear-gradient(135deg, #51A2FF 0%, #C27AFF 100%);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 24rpx;
+}
+
+.vocabulary-icon-img {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.vocabulary-title {
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #1E2939;
+}
+
+.vocabulary-count-badge {
+  background: linear-gradient(90deg, #2B7FFF 0%, #155DFC 100%);
+  border-radius: 9999rpx;
+  padding: 10rpx 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.vocabulary-count-text {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #FFFFFF;
 }
 
 /* 历史记录 */
