@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/wangwang4git/ChineseDetection/compare/v0.0.4...v0.0.5) (2026-01-23)
+
+
+### Features
+
+* 增加生字本 ([f3f8fce](https://github.com/wangwang4git/ChineseDetection/commit/f3f8fce4880d95839663fdfbe656a6c932957936))
+* 完善汉字笔画动画提案 ([1014024](https://github.com/wangwang4git/ChineseDetection/commit/1014024b0b8aa48260710af51ac2fb59892b0347))
+* 汉字笔画动画提案整理 ([9d7c126](https://github.com/wangwang4git/ChineseDetection/commit/9d7c126cbdf58c19764f5e23f390ee150c6f54cd))
+
+
+### Bug Fixes
+
+* 回滚汉字笔画动画提案 ([5ce6f4e](https://github.com/wangwang4git/ChineseDetection/commit/5ce6f4e0a5929533138705e3a8ceb65b4595b107))
+
 ### [0.0.4](https://github.com/wangwang4git/ChineseDetection/compare/v0.0.3...v0.0.4) (2026-01-19)
 
 
