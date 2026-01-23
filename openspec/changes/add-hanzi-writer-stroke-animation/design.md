@@ -43,8 +43,7 @@
 
 **微信小程序基础库版本要求**：
 - Canvas 2D（`type="2d"`）最低支持版本：**2.9.0**
-- 建议设置最低基础库版本为 **2.9.0** 或更高
-- 可在小程序管理后台「设置 → 基础库最低版本设置」中配置
+- beta 版本已内置兼容性处理，无需手动设置最低基础库版本
 
 **兼容性问题**：
 1. 真机 `Path2D` API 不支持问题 → 需修改源码跳过判断
@@ -58,9 +57,9 @@
 
 **实现步骤**：
 
-1. 安装 beta 版本依赖：
+1. 安装依赖（需要同时安装 hanzi-writer 核心库和小程序适配层）：
 ```bash
-npm install hanzi-writer-miniprogram@beta
+npm install hanzi-writer hanzi-writer-miniprogram@beta
 ```
 
 2. 在 `src` 目录下创建 `wxcomponents/hanzi-writer-miniprogram/` 目录：
@@ -167,7 +166,6 @@ writerCtx.animateCharacter({
 
 | 风险 | 影响 | 缓解措施 |
 |------|------|----------|
-| 基础库版本限制 | 低版本用户无法使用 | 设置最低基础库 2.9.0，提示升级 |
 | hanzi-writer-miniprogram Path2D 兼容性 | 真机无法显示 | 修改源码跳过 Path2D 判断 |
 | hanzi-writer 汉字数据加载 | 网络依赖 | 配置 CDN 域名或使用本地数据 |
 | 性能影响（Canvas 动画） | 低端设备卡顿 | 限制动画复杂度 |
@@ -179,15 +177,13 @@ writerCtx.animateCharacter({
 2. 在 `src/wxcomponents/` 目录下配置组件文件
 3. 修复 Path2D 兼容性问题
 4. 在 pages.json 中注册小程序原生组件
-5. **在小程序管理后台设置最低基础库版本 ≥ 2.9.0**
-6. 创建 HanziGrid 组件
-7. 在 test.vue 中替换大米字格为 HanziGrid
-8. 在 test.vue 中替换词语小米字格为 HanziGrid
-9. 添加笔画按钮和动画触发逻辑（仅大米字格）
-10. 测试小程序模拟器和真机兼容性
-11. 配置小程序服务器域名（cdn.jsdelivr.net）
+5. 创建 HanziGrid 组件
+6. 在 test.vue 中替换大米字格为 HanziGrid
+7. 在 test.vue 中替换词语小米字格为 HanziGrid
+8. 添加笔画按钮和动画触发逻辑（仅大米字格）
+9. 测试小程序模拟器和真机兼容性
+10. 配置小程序服务器域名（cdn.jsdelivr.net）
 
 ## Open Questions
 
 - [ ] 是否需要将汉字数据本地化以避免 CDN 依赖
-- [x] ~~是否需要特定基础库版本~~ → 需要基础库 ≥ 2.9.0

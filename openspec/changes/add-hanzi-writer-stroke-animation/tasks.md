@@ -1,14 +1,13 @@
 ## 0. 安装和配置小程序组件
 
-- [ ] 0.1 安装 hanzi-writer-miniprogram **beta 版本**：`npm install hanzi-writer-miniprogram@beta`
+- [ ] 0.1 安装依赖：`npm install hanzi-writer hanzi-writer-miniprogram@beta`
 - [ ] 0.2 创建 `src/wxcomponents/hanzi-writer-miniprogram/` 目录（vite 项目需放在 src 下）
 - [ ] 0.3 复制 `node_modules/hanzi-writer-miniprogram/src/*` 到 `src/wxcomponents/hanzi-writer-miniprogram/`
 - [ ] 0.4 复制 `node_modules/hanzi-writer/dist/hanzi-writer.js` 到 `src/wxcomponents/hanzi-writer-miniprogram/`
-- [ ] 0.5 修改 `hanzi-writer-context.js` 引入路径为 `./hanzi-writer`
+- [ ] 0.5 修改 `hanzi-writer-context.js` 引入路径为 `./hanzi-writer`（使用 require 语法）
 - [ ] 0.6 修复 `hanzi-writer.js` 中 Path2D 兼容性问题（跳过 Path2D 判断）
 - [ ] 0.7 在 `pages.json` 的 test 页面配置中添加 `usingComponents`
-- [ ] 0.8 **在小程序管理后台设置最低基础库版本 ≥ 2.9.0**（Canvas 2D 要求）
-- [ ] 0.9 配置小程序服务器域名（cdn.jsdelivr.net）
+- [ ] 0.8 配置小程序服务器域名（cdn.jsdelivr.net）
 
 ## 1. 创建 HanziGrid 组件
 
