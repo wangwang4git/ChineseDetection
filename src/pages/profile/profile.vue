@@ -90,7 +90,8 @@
     <view class="history-section">
       <view class="history-header">
         <text class="section-title">📚 历史检测记录</text>
-        <view class="ai-tutor-btn" @tap="goToAiAssistant">
+        <!-- AI 辅导按钮 - 仅 development 环境显示 -->
+        <view v-if="showAiTutor" class="ai-tutor-btn" @tap="goToAiAssistant">
           <text class="ai-tutor-text">🤖 AI辅导</text>
         </view>
       </view>
@@ -181,6 +182,7 @@ import { formatDateTime } from '@/utils/index.js'
 import { getProfileGuideShown, setProfileGuideShown, getVocabularyNotebook, initVocabularyNotebook } from '@/utils/storage.js'
 import { getDefaultShareConfig, getDefaultTimelineConfig } from '@/utils/share.js'
 import CustomTabBar from '@/components/CustomTabBar.vue'
+import { ENV_CONFIG } from '@/config/env.js'
 
 // 用户信息
 const userInfo = ref({
@@ -241,6 +243,9 @@ const isLoading = ref(false)
 
 // 用户引导提示状态
 const showGuideModal = ref(false)
+
+// 是否显示 AI 辅导入口（仅 development 环境显示）
+const showAiTutor = computed(() => ENV_CONFIG.IS_DEV)
 
 // 年龄选项（1-15岁）
 const ageOptions = Array.from({ length: 15 }, (_, i) => `${i + 1}岁`)
