@@ -52,10 +52,17 @@
  */
 import { ref, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
+// #ifdef MP-WEIXIN
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
+// #endif
 import { 
   getVocabularyNotebook, 
   initVocabularyNotebook 
 } from '@/utils/storage.js'
+import { 
+  getVocabularyNotebookShareConfig, 
+  getVocabularyNotebookTimelineConfig 
+} from '@/utils/share.js'
 
 // 生字本数据
 const notebook = ref(null)
@@ -69,6 +76,24 @@ const vocabularyChars = computed(() => {
 const vocabularyCount = computed(() => {
   return vocabularyChars.value.length
 })
+
+// #ifdef MP-WEIXIN
+/**
+ * 分享给好友
+ * 根据当前生字数量生成分享内容
+ */
+onShareAppMessage(() => {
+  return getVocabularyNotebookShareConfig(vocabularyCount.value)
+})
+
+/**
+ * 分享到朋友圈
+ * 根据当前生字数量生成分享内容
+ */
+onShareTimeline(() => {
+  return getVocabularyNotebookTimelineConfig(vocabularyCount.value)
+})
+// #endif
 
 // 卡片渐变背景色（循环使用4种颜色）
 const cardBackgrounds = [

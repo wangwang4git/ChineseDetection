@@ -134,3 +134,79 @@ export const getAIAssistantTimelineConfig = () => {
   }
   return config
 }
+
+/**
+ * 获取检测页分享配置
+ * @param {string} mode - 模式：'test' 检测模式, 'learn' 学习模式
+ * @returns {Object} 分享配置对象
+ */
+export const getTestShareConfig = (mode = 'test') => {
+  const titles = {
+    test: '🎯 正在进行汉字认字量检测，快来测测你家孩子！',
+    learn: '📖 正在学习汉字，和我一起识字吧！'
+  }
+  const config = {
+    title: titles[mode] || titles.test,
+    path: '/pages/home/home'
+  }
+  if (SHARE_IMAGE_URL) {
+    config.imageUrl = SHARE_IMAGE_URL
+  }
+  return config
+}
+
+/**
+ * 获取检测页朋友圈分享配置
+ * @param {string} mode - 模式：'test' 检测模式, 'learn' 学习模式
+ * @returns {Object} 朋友圈分享配置对象
+ */
+export const getTestTimelineConfig = (mode = 'test') => {
+  const titles = {
+    test: '汉字认字量检测 - 科学评估识字水平',
+    learn: '汉字学习中 - 一起来识字吧'
+  }
+  const config = {
+    title: titles[mode] || titles.test
+  }
+  if (SHARE_IMAGE_URL) {
+    config.imageUrl = SHARE_IMAGE_URL
+  }
+  return config
+}
+
+/**
+ * 获取生字本分享配置
+ * @param {number} count - 生字数量
+ * @returns {Object} 分享配置对象
+ */
+export const getVocabularyNotebookShareConfig = (count = 0) => {
+  const title = count > 0 
+    ? `📚 我的生字本有 ${count} 个汉字待学习，一起加油！`
+    : '🎉 生字本已清空！快来测试你的认字量'
+  const config = {
+    title,
+    path: '/pages/home/home'
+  }
+  if (SHARE_IMAGE_URL) {
+    config.imageUrl = SHARE_IMAGE_URL
+  }
+  return config
+}
+
+/**
+ * 获取生字本朋友圈分享配置
+ * @param {number} count - 生字数量
+ * @returns {Object} 朋友圈分享配置对象
+ */
+export const getVocabularyNotebookTimelineConfig = (count = 0) => {
+  const title = count > 0 
+    ? `生字本：${count} 个汉字待学习`
+    : '生字本已清空！来测试认字量吧'
+  const config = {
+    title
+  }
+  if (SHARE_IMAGE_URL) {
+    config.imageUrl = SHARE_IMAGE_URL
+  }
+  return config
+}

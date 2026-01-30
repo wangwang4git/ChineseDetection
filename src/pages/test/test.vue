@@ -100,11 +100,15 @@
  */
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+// #ifdef MP-WEIXIN
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
+// #endif
 import RiceGrid from '@/components/RiceGrid.vue'
 import { getLayeredTestCharacters } from '@/api/character.js'
 import { LEVEL_CONFIGS, TOTAL_TEST_COUNT } from '@/utils/levelConfig.js'
 import { initLevelResult, checkFuse, generateTestRecord } from '@/utils/calculate.js'
 import { removeFromVocabularyNotebook } from '@/utils/storage.js'
+import { getTestShareConfig, getTestTimelineConfig } from '@/utils/share.js'
 import cnchar from 'cnchar'
 import charDataJson from '@/static/top_2500_chars_with_words.json'
 
@@ -125,6 +129,26 @@ const isLearningMode = ref(false)
 const learningChar = ref('')
 // 学习模式下的汉字数据
 const learningCharData = ref(null)
+
+// #ifdef MP-WEIXIN
+/**
+ * 分享给好友
+ * 根据当前模式返回不同的分享配置
+ */
+onShareAppMessage(() => {
+  const mode = isLearningMode.value ? 'learn' : 'test'
+  return getTestShareConfig(mode)
+})
+
+/**
+ * 分享到朋友圈
+ * 根据当前模式返回不同的分享配置
+ */
+onShareTimeline(() => {
+  const mode = isLearningMode.value ? 'learn' : 'test'
+  return getTestTimelineConfig(mode)
+})
+// #endif
 
 // 加载状态
 const loading = ref(true)
