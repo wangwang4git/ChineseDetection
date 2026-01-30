@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/wangwang4git/ChineseDetection/compare/v0.0.5...v0.0.6) (2026-01-30)
+
+
+### Features
+
+* production不展示AI辅导入口 ([742b6e5](https://github.com/wangwang4git/ChineseDetection/commit/742b6e5882531eb57666d82e7a9c41da0130d319))
+* 检测页、生字本页增加分享功能 ([1c516eb](https://github.com/wangwang4git/ChineseDetection/commit/1c516ebae353f86f6fe7d69b2c1c949ebcbeb107))
+
+
+### Bug Fixes
+
+* 常用字字典bug fix ([7455f11](https://github.com/wangwang4git/ChineseDetection/commit/7455f11828bed10d55e5fde10b3093a58564d0a0))
+
 ### [0.0.5](https://github.com/wangwang4git/ChineseDetection/compare/v0.0.4...v0.0.5) (2026-01-23)
 
 
