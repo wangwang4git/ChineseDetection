@@ -210,3 +210,32 @@ export const getVocabularyNotebookTimelineConfig = (count = 0) => {
   }
   return config
 }
+
+/**
+ * 获取科学原理页分享配置
+ * @returns {Object} 分享配置对象
+ */
+export const getSciencePrincipleShareConfig = () => {
+  const config = {
+    title: '🔬 识字量测试科学原理 - 了解科学测评方法',
+    path: '/pages/science-principle/science-principle'
+  }
+  if (SHARE_IMAGE_URL) {
+    config.imageUrl = SHARE_IMAGE_URL
+  }
+  return config
+}
+
+/**
+ * 获取科学原理页朋友圈分享配置
+ * @returns {Object} 朋友圈分享配置对象
+ */
+export const getSciencePrincipleTimelineConfig = () => {
+  const config = {
+    title: '识字量测试科学原理 - 基于语言学研究的科学测评方法'
+  }
+  if (SHARE_IMAGE_URL) {
+    config.imageUrl = SHARE_IMAGE_URL
+  }
+  return config
+}

@@ -48,6 +48,13 @@
 				"navigationBarTitleText": "生字本",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/science-principle/science-principle",
+			"style": {
+				"navigationBarTitleText": "识字量测试科学原理",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

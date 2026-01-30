@@ -12,7 +12,10 @@
     <!-- 标题区域 -->
     <view class="title-section">
       <text class="main-title">🎓 汉字认字量检测 📚</text>
-      <text class="sub-title">一起来测测认识多少字吧！</text>
+      <view class="sub-title-section">
+        <text class="sub-title">一起来测测认识多少字吧！</text>
+        <text class="sub-title-link" @tap="goToPrinciple">科学原理查看请参考👉</text>
+      </view>
     </view>
 
     <!-- 年龄段认字量参考卡片 -->
@@ -125,6 +128,15 @@ const startTest = () => {
 
   // 测试用：使用获取到的环境ID
   // callCloudFunction(cloudEnv)
+}
+
+/**
+ * 跳转到科学原理页
+ */
+const goToPrinciple = () => {
+  uni.navigateTo({
+    url: '/pages/science-principle/science-principle'
+  })
 }
 
 /**
@@ -246,10 +258,22 @@ const callCloudFunction = (envId) => {
   letter-spacing: 1rpx;
 }
 
+.sub-title-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16rpx;
+}
+
 .sub-title {
   font-size: 32rpx;
   color: #6E11B0;
-  margin-top: 16rpx;
+}
+
+.sub-title-link {
+  font-size: 32rpx;
+  color: #155DFC;
+  margin-top: 8rpx;
 }
 
 /* 年龄卡片列表 */
