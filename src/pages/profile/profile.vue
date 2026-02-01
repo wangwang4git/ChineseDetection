@@ -4,139 +4,175 @@
     <!-- 顶部安全区域 -->
     <view class="safe-area-top"></view>
 
-    <!-- 用户信息卡片 -->
-    <view class="user-card">
-      <!-- 头像区域 - 可点击选择头像 -->
-      <view class="avatar-wrapper" @tap="handleAvatarClick">
-        <!-- #ifdef MP-WEIXIN -->
-        <button 
-          class="avatar-button" 
-          open-type="chooseAvatar" 
-          @chooseavatar="onChooseAvatar"
-        >
+    <!-- 骨架屏 - 数据加载中显示 -->
+    <template v-if="showSkeleton">
+      <!-- 用户卡片骨架 -->
+      <view class="user-card skeleton-card">
+        <view class="avatar-wrapper skeleton-avatar">
+          <view class="skeleton-circle"></view>
+        </view>
+        <view class="user-info">
+          <view class="skeleton-line skeleton-name"></view>
+          <view class="skeleton-line skeleton-id"></view>
+          <view class="skeleton-line skeleton-age"></view>
+        </view>
+      </view>
+      
+      <!-- 统计卡片骨架 -->
+      <view class="stats-section">
+        <view v-for="i in 3" :key="i" class="stat-card skeleton-stat">
+          <view class="skeleton-icon"></view>
+          <view class="skeleton-line skeleton-value"></view>
+          <view class="skeleton-line skeleton-label"></view>
+        </view>
+      </view>
+      
+      <!-- 历史记录骨架 -->
+      <view class="history-section">
+        <view class="skeleton-line skeleton-title"></view>
+        <view v-for="i in 2" :key="i" class="record-item skeleton-record">
+          <view class="skeleton-line skeleton-record-line"></view>
+          <view class="skeleton-line skeleton-record-line short"></view>
+        </view>
+      </view>
+    </template>
+
+    <!-- 实际内容 - 数据加载完成后显示 -->
+    <template v-else>
+      <!-- 用户信息卡片 -->
+      <view class="user-card">
+        <!-- 头像区域 - 可点击选择头像 -->
+        <view class="avatar-wrapper" @tap="handleAvatarClick">
+          <!-- #ifdef MP-WEIXIN -->
+          <button 
+            class="avatar-button" 
+            open-type="chooseAvatar" 
+            @chooseavatar="onChooseAvatar"
+          >
+            <image 
+              class="avatar-image" 
+              :src="userInfo.avatar" 
+              mode="aspectFill"
+            />
+          </button>
+          <!-- #endif -->
+          
+          <!-- #ifdef H5 -->
           <image 
             class="avatar-image" 
             :src="userInfo.avatar" 
             mode="aspectFill"
           />
-        </button>
-        <!-- #endif -->
-        
-        <!-- #ifdef H5 -->
-        <image 
-          class="avatar-image" 
-          :src="userInfo.avatar" 
-          mode="aspectFill"
-        />
-        <!-- #endif -->
-      </view>
-      
-      <view class="user-info">
-        <!-- 昵称区域 - 可点击编辑 -->
-        <view class="nickname-wrapper" @tap="handleNicknameClick">
-          <!-- #ifdef MP-WEIXIN -->
-          <input 
-            class="nickname-input" 
-            type="nickname" 
-            :value="userInfo.nickname"
-            placeholder="请输入昵称"
-            @blur="onNicknameChange"
-            @confirm="onNicknameChange"
-          />
           <!-- #endif -->
+        </view>
+        
+        <view class="user-info">
+          <!-- 昵称区域 - 可点击编辑 -->
+          <view class="nickname-wrapper" @tap="handleNicknameClick">
+            <!-- #ifdef MP-WEIXIN -->
+            <input 
+              class="nickname-input" 
+              type="nickname" 
+              :value="userInfo.nickname"
+              placeholder="请输入昵称"
+              @blur="onNicknameChange"
+              @confirm="onNicknameChange"
+            />
+            <!-- #endif -->
+            
+            <!-- #ifdef H5 -->
+            <input 
+              class="nickname-input" 
+              type="text" 
+              :value="userInfo.nickname"
+              placeholder="请输入昵称"
+              @blur="onNicknameChange"
+              @confirm="onNicknameChange"
+            />
+            <!-- #endif -->
+          </view>
           
-          <!-- #ifdef H5 -->
-          <input 
-            class="nickname-input" 
-            type="text" 
-            :value="userInfo.nickname"
-            placeholder="请输入昵称"
-            @blur="onNicknameChange"
-            @confirm="onNicknameChange"
-          />
-          <!-- #endif -->
-        </view>
-        
-        <!-- OpenID 显示（掩码处理） -->
-        <text class="account">ID：{{ maskedOpenId }}</text>
-        
-        <!-- 年龄显示 - 可点击编辑 -->
-        <picker mode="selector" :range="ageOptions" @change="onAgeChange">
-          <view class="age-wrapper">
-            <text class="age">年龄：{{ userInfo.age ? userInfo.age + '岁' : '点击设置' }}</text>
-          </view>
-        </picker>
-      </view>
-    </view>
-
-    <!-- 统计卡片 -->
-    <view class="stats-section">
-      <view 
-        v-for="(stat, index) in statCards" 
-        :key="index"
-        class="stat-card"
-        :style="{ 
-          background: stat.gradient,
-          borderColor: stat.borderColor
-        }"
-      >
-        <text class="stat-icon">{{ stat.emoji }}</text>
-        <text class="stat-value">{{ stat.value }}</text>
-        <text class="stat-label">{{ stat.label }}</text>
-      </view>
-    </view>
-
-    <!-- 历史记录 -->
-    <view class="history-section">
-      <view class="history-header">
-        <text class="section-title">📚 历史检测记录</text>
-        <!-- AI 辅导按钮 - 仅 development 环境显示 -->
-        <view v-if="showAiTutor" class="ai-tutor-btn" @tap="goToAiAssistant">
-          <text class="ai-tutor-text">🤖 AI辅导</text>
-        </view>
-      </view>
-      
-      <view v-if="records.length === 0" class="empty-state">
-        <text class="empty-text">暂无检测记录</text>
-        <text class="empty-hint">快去首页开始检测吧！</text>
-      </view>
-
-      <view v-else class="record-list">
-        <view 
-          v-for="record in records" 
-          :key="record.id"
-          class="record-item"
-          @tap="goToDetail(record.id)"
-        >
-          <view class="record-content">
-            <text class="record-time">{{ formatTime(record.testTime) }}</text>
-            <view class="record-main">
-              <text class="record-icon">📊</text>
-              <text class="record-score">认字量：{{ record.estimatedVocabulary }}</text>
+          <!-- OpenID 显示（掩码处理） -->
+          <text class="account">ID：{{ maskedOpenId }}</text>
+          
+          <!-- 年龄显示 - 可点击编辑 -->
+          <picker mode="selector" :range="ageOptions" @change="onAgeChange">
+            <view class="age-wrapper">
+              <text class="age">年龄：{{ userInfo.age ? userInfo.age + '岁' : '点击设置' }}</text>
             </view>
-            <text v-if="record.unknownChars?.length > 0" class="record-unknown">
-              需加强：{{ record.unknownChars.length }} 个汉字
-            </text>
-          </view>
-          <view class="record-arrow">
-            <text class="arrow-icon">👉</text>
-          </view>
+          </picker>
         </view>
       </view>
-    </view>
 
-    <!-- 生字本入口卡片 -->
-    <view class="vocabulary-card" @tap="goToVocabularyNotebook">
-      <view class="vocabulary-left">
-        <view class="vocabulary-icon-wrapper">
-          <image class="vocabulary-icon-img" src="/assets/CodeBubbyAssets/219_2/1.svg" mode="aspectFit" />
+      <!-- 统计卡片 -->
+      <view class="stats-section">
+        <view 
+          v-for="(stat, index) in statCards" 
+          :key="index"
+          class="stat-card"
+          :style="{ 
+            background: stat.gradient,
+            borderColor: stat.borderColor
+          }"
+        >
+          <text class="stat-icon">{{ stat.emoji }}</text>
+          <text class="stat-value">{{ stat.value }}</text>
+          <text class="stat-label">{{ stat.label }}</text>
         </view>
-        <text class="vocabulary-title">生字本</text>
       </view>
-      <view class="vocabulary-count-badge">
-        <text class="vocabulary-count-text">{{ vocabularyCount }}</text>
+
+      <!-- 历史记录 -->
+      <view class="history-section">
+        <view class="history-header">
+          <text class="section-title">📚 历史检测记录</text>
+          <!-- AI 辅导按钮 - 仅 development 环境显示 -->
+          <view v-if="showAiTutor" class="ai-tutor-btn" @tap="goToAiAssistant">
+            <text class="ai-tutor-text">🤖 AI辅导</text>
+          </view>
+        </view>
+        
+        <view v-if="records.length === 0" class="empty-state">
+          <text class="empty-text">暂无检测记录</text>
+          <text class="empty-hint">快去首页开始检测吧！</text>
+        </view>
+
+        <view v-else class="record-list">
+          <view 
+            v-for="record in records" 
+            :key="record.id"
+            class="record-item"
+            @tap="goToDetail(record.id)"
+          >
+            <view class="record-content">
+              <text class="record-time">{{ formatTime(record.testTime) }}</text>
+              <view class="record-main">
+                <text class="record-icon">📊</text>
+                <text class="record-score">认字量：{{ record.estimatedVocabulary }}</text>
+              </view>
+              <text v-if="record.unknownChars?.length > 0" class="record-unknown">
+                需加强：{{ record.unknownChars.length }} 个汉字
+              </text>
+            </view>
+            <view class="record-arrow">
+              <text class="arrow-icon">👉</text>
+            </view>
+          </view>
+        </view>
       </view>
-    </view>
+
+      <!-- 生字本入口卡片 -->
+      <view class="vocabulary-card" @tap="goToVocabularyNotebook">
+        <view class="vocabulary-left">
+          <view class="vocabulary-icon-wrapper">
+            <image class="vocabulary-icon-img" src="/assets/CodeBubbyAssets/219_2/1.svg" mode="aspectFit" />
+          </view>
+          <text class="vocabulary-title">生字本</text>
+        </view>
+        <view class="vocabulary-count-badge">
+          <text class="vocabulary-count-text">{{ vocabularyCount }}</text>
+        </view>
+      </view>
+    </template>
 
     <!-- 底部占位（为 TabBar 留空间） -->
     <view class="tabbar-placeholder"></view>
@@ -166,11 +202,17 @@
 
 <script setup>
 /**
- * 个人页 v3.0
+ * 个人页 v3.0 (性能优化版)
  * 展示用户信息、统计数据和历史检测记录
  * 支持微信头像选择和昵称填写
+ * 
+ * 性能优化：
+ * 1. 骨架屏 - 首次加载时显示骨架屏，改善用户感知
+ * 2. 复用 App 预加载的用户信息 - 避免重复云函数调用
+ * 3. 分离关键渲染路径 - 先显示关键数据，延迟加载非关键数据
+ * 4. 本地数据优先 - 立即显示本地缓存，后台异步更新
  */
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 // #ifdef MP-WEIXIN
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
@@ -183,6 +225,14 @@ import { getProfileGuideShown, setProfileGuideShown, getVocabularyNotebook, init
 import { getDefaultShareConfig, getDefaultTimelineConfig } from '@/utils/share.js'
 import CustomTabBar from '@/components/CustomTabBar.vue'
 import { ENV_CONFIG } from '@/config/env.js'
+
+// ==================== 状态管理 ====================
+
+// 骨架屏显示状态
+const showSkeleton = ref(true)
+
+// 首次加载标记（用于区分首次加载和页面切换）
+const isFirstLoad = ref(true)
 
 // 用户信息
 const userInfo = ref({
@@ -449,18 +499,35 @@ const goToVocabularyNotebook = () => {
 }
 
 /**
- * 加载用户信息
+ * 加载用户信息（优化版）
+ * 优先复用 App 预加载的用户信息，避免重复云函数调用
  */
 const loadUserInfo = async () => {
   try {
+    // 1. 尝试从 App globalData 获取预加载的用户信息
+    const app = getApp()
+    if (app?.globalData?.userInfoReady && app.globalData.userInfo) {
+      userInfo.value = app.globalData.userInfo
+      console.log('✅ 复用 App 预加载的用户信息')
+      return
+    }
+    
+    // 2. 如果 App 还在加载中，等待其完成
+    if (app?.globalData?.userInfoPromise) {
+      console.log('⏳ 等待 App 用户信息预加载完成...')
+      const preloadedInfo = await app.globalData.userInfoPromise
+      if (preloadedInfo) {
+        userInfo.value = preloadedInfo
+        console.log('✅ 获取 App 预加载的用户信息')
+        return
+      }
+    }
+    
+    // 3. 降级：直接从 userManager 获取
     const currentUserInfo = await userManager.getCurrentUserInfo()
     if (currentUserInfo) {
       userInfo.value = currentUserInfo
-      console.log('用户信息加载成功:', {
-        openid: getMaskedOpenId(currentUserInfo.openid),
-        nickname: currentUserInfo.nickname,
-        hasAuthorized: currentUserInfo.hasAuthorized
-      })
+      console.log('✅ 从 userManager 获取用户信息')
     }
   } catch (error) {
     console.error('加载用户信息失败:', error)
@@ -496,7 +563,7 @@ const loadRecords = async () => {
 }
 
 /**
- * 加载生字本统计
+ * 加载生字本统计（延迟加载 - 非关键数据）
  */
 const loadVocabularyCount = () => {
   try {
@@ -513,26 +580,61 @@ const loadVocabularyCount = () => {
 }
 
 /**
- * 加载所有数据
+ * 加载所有数据（优化版 - 分离关键渲染路径）
+ * 
+ * 优化策略：
+ * 1. 首次加载：显示骨架屏 → 加载关键数据 → 隐藏骨架屏 → 延迟加载非关键数据
+ * 2. 后续加载：直接加载所有数据（无骨架屏）
  */
 const loadData = async () => {
   if (isLoading.value) return
   
   isLoading.value = true
+  
   try {
-    await Promise.all([
-      loadUserInfo(),
-      loadStatistics(),
-      loadRecords()
-    ])
-    
-    // 同步加载生字本统计
-    loadVocabularyCount()
-    
-    // 数据加载完成后检查是否需要显示引导提示
-    checkAndShowGuide()
+    if (isFirstLoad.value) {
+      // ===== 首次加载：分阶段加载 =====
+      console.log('🚀 首次加载 - 使用骨架屏')
+      
+      // 阶段1：并行加载关键数据（用户信息、统计、记录）
+      await Promise.all([
+        loadUserInfo(),
+        loadStatistics(),
+        loadRecords()
+      ])
+      
+      // 阶段2：关键数据加载完成，隐藏骨架屏，显示内容
+      showSkeleton.value = false
+      isFirstLoad.value = false
+      
+      // 阶段3：延迟加载非关键数据（不阻塞 UI 渲染）
+      await nextTick()
+      
+      // 生字本统计 - 延迟 100ms 加载
+      setTimeout(() => {
+        loadVocabularyCount()
+      }, 100)
+      
+      // 引导提示 - 延迟 500ms 检查（页面渲染完成后）
+      setTimeout(() => {
+        checkAndShowGuide()
+      }, 500)
+      
+    } else {
+      // ===== 后续加载：直接刷新所有数据 =====
+      await Promise.all([
+        loadUserInfo(),
+        loadStatistics(),
+        loadRecords()
+      ])
+      
+      // 同步加载生字本统计
+      loadVocabularyCount()
+    }
   } catch (error) {
     console.error('加载数据失败:', error)
+    // 出错时也要隐藏骨架屏
+    showSkeleton.value = false
   } finally {
     isLoading.value = false
   }
@@ -540,6 +642,7 @@ const loadData = async () => {
 
 /**
  * 检查并显示用户引导提示
+ * 注意：此函数由 loadData 延迟调用，无需内部再 setTimeout
  */
 const checkAndShowGuide = () => {
   try {
@@ -547,10 +650,7 @@ const checkAndShowGuide = () => {
     const hasShownGuide = getProfileGuideShown()
     
     if (!hasShownGuide) {
-      // 延迟显示，确保页面渲染完成
-      setTimeout(() => {
-        showGuideModal.value = true
-      }, 800)
+      showGuideModal.value = true
     }
   } catch (error) {
     console.error('检查引导提示状态失败:', error)
@@ -599,6 +699,113 @@ onShow(() => {
 .tabbar-placeholder {
   height: calc(180rpx + env(safe-area-inset-bottom));
 }
+
+/* ==================== 骨架屏样式 ==================== */
+
+/* 骨架屏动画 */
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* 骨架屏基础样式 */
+.skeleton-line {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 8rpx;
+}
+
+.skeleton-circle {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 50%;
+}
+
+.skeleton-icon {
+  width: 48rpx;
+  height: 48rpx;
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 50%;
+  margin-bottom: 12rpx;
+}
+
+/* 用户卡片骨架 */
+.skeleton-card {
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+.skeleton-avatar {
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.skeleton-name {
+  width: 180rpx;
+  height: 40rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-id {
+  width: 240rpx;
+  height: 28rpx;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-age {
+  width: 140rpx;
+  height: 28rpx;
+}
+
+/* 统计卡片骨架 */
+.skeleton-stat {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.skeleton-value {
+  width: 60rpx;
+  height: 40rpx;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-label {
+  width: 80rpx;
+  height: 24rpx;
+}
+
+/* 历史记录骨架 */
+.skeleton-title {
+  width: 240rpx;
+  height: 40rpx;
+  margin-bottom: 24rpx;
+}
+
+.skeleton-record {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  padding: 34rpx !important;
+}
+
+.skeleton-record-line {
+  width: 100%;
+  height: 32rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-record-line.short {
+  width: 60%;
+}
+
+/* ==================== 实际内容样式 ==================== */
 
 /* 用户卡片 */
 .user-card {

@@ -7,7 +7,9 @@ export default {
   globalData: {
     env: '', // 初始化为空字符串
     userInfo: null,
-    isReady: false // 添加就绪状态标识
+    isReady: false, // 添加就绪状态标识
+    userInfoReady: false, // 用户信息预加载完成标识
+    userInfoPromise: null // 用户信息加载 Promise，供其他页面等待
   },
 
   onLaunch: function () {
@@ -48,19 +50,15 @@ export default {
 
       console.log("✅ 微信云开发能力初始化成功， env：" + this.globalData.env);
       
-      // 云开发初始化完成后，异步获取用户信息
-      // 使用 setTimeout 确保异步执行，避免 this 绑定问题
-      setTimeout(() => {
-        app.initUserInfo()
-      }, 100)
+      // 云开发初始化完成后，立即异步预加载用户信息（不阻塞启动）
+      // 存储 Promise 供其他页面复用，避免重复请求
+      app.globalData.userInfoPromise = app.initUserInfo()
     }
     // #endif
     
     // #ifdef H5
     // H5 环境直接初始化用户信息
-    setTimeout(() => {
-      app.initUserInfo()
-    }, 100)
+    app.globalData.userInfoPromise = app.initUserInfo()
     // #endif
   },
 
@@ -82,29 +80,39 @@ export default {
     /**
      * 初始化用户信息
      * 异步获取 OpenID 和用户信息，不阻塞应用启动
+     * @returns {Promise<Object>} 用户信息
      */
     async initUserInfo() {
       try {
-        console.log('👤 开始初始化用户信息...')
+        console.log('👤 开始预加载用户信息...')
+        const startTime = Date.now()
         
         // 异步获取用户信息
         const userInfo = await userManager.initUserInfo()
         
+        const duration = Date.now() - startTime
+        
         if (userInfo) {
           // 更新全局用户信息
           this.globalData.userInfo = userInfo
-          console.log('✅ 用户信息初始化成功:', {
+          this.globalData.userInfoReady = true
+          console.log(`✅ 用户信息预加载完成 (耗时 ${duration}ms):`, {
             openid: userManager.getMaskedOpenId(userInfo.openid),
             nickname: userInfo.nickname,
             hasAuthorized: userInfo.hasAuthorized,
             source: userInfo.source
           })
+          return userInfo
         } else {
           console.warn('⚠️ 用户信息初始化失败，使用默认信息')
+          this.globalData.userInfoReady = true
+          return null
         }
       } catch (error) {
         console.error('❌ 用户信息初始化异常:', error)
+        this.globalData.userInfoReady = true
         // 不影响应用正常启动，继续使用默认信息
+        return null
       }
     },
 
