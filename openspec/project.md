@@ -12,6 +12,8 @@
 - **包管理器**: npm
 - **样式**: SCSS + rpx 响应式单位
 - **类型支持**: TypeScript (部分支持)
+- **汉字处理**: cnchar ^3.2.6（拼音、笔画等）
+- **Markdown 渲染**: markdown-it ^14.1.0
 
 ### 后端技术栈
 - **云开发平台**: 微信云开发
@@ -29,7 +31,7 @@
 
 ```
 src/
-├── App.vue                    # 应用入口组件（云开发初始化）
+├── App.vue                    # 应用入口组件（云开发初始化、用户信息预加载）
 ├── main.js                    # 应用入口文件
 ├── manifest.json              # 应用配置（appid、权限等）
 ├── pages.json                 # 页面路由和 TabBar 配置
@@ -52,12 +54,14 @@ src/
 ├── config/                    # 配置文件
 │   └── env.js                 # 环境变量配置管理
 ├── pages/                     # 页面目录
-│   ├── home/home.vue          # 首页（开始检测入口）
-│   ├── test/test.vue          # 检测页（分层测试流程）
+│   ├── home/home.vue          # 首页（开始检测入口、科学原理入口）
+│   ├── test/test.vue          # 检测页（分层测试流程、生字学习模式）
 │   ├── result/result.vue      # 结果页（认字量展示）
-│   ├── profile/profile.vue    # 个人页（用户信息、历史记录）
+│   ├── profile/profile.vue    # 个人页（骨架屏、用户信息、历史记录）
 │   ├── history-detail/        # 历史详情页
-│   └── ai-assistant/          # AI 助手页（智能对话辅导）
+│   ├── vocabulary-notebook/   # 生字本页面
+│   ├── ai-assistant/          # AI 助手页（智能对话辅导）
+│   └── science-principle/     # 科学原理页（测试方法说明）
 ├── static/                    # 静态资源
 │   ├── icons/                 # TabBar 图标
 │   ├── images/                # 应用图片资源
@@ -71,8 +75,8 @@ src/
     ├── index.js               # 工具入口（时间格式化等）
     ├── levelConfig.js         # 分层配置常量
     ├── calculate.js           # 认字量计算、熔断检测、随机抽样
-    ├── storage.js             # 本地存储工具
-    ├── userManager.js         # 用户信息管理器
+    ├── storage.js             # 本地存储工具（含 OpenID 缓存）
+    ├── userManager.js         # 用户信息管理器（懒加载优化）
     ├── share.js               # 微信分享配置
     ├── aiPrompt.js            # AI 提示词构造工具
     └── aiTools.js             # AI 工具定义模块（联网搜索）
@@ -109,6 +113,29 @@ $$W = N_{L1} + (N_{L2} \times 3) + (N_{L3} \times 10) + (N_{L4} \times 20) + (N_
 - **错误率熔断**: 任意层级错误率超过 80%
 - **处理**: 假设剩余未测字及后续层级都不认识（计 0 分）
 
+### 汉字发音功能
+
+微信小程序环境支持汉字发音播放：
+- **实现方式**: 微信同声传译插件 (`WechatSI`)
+- **功能**: 点击喇叭按钮播放当前汉字发音
+- **音频管理**: 使用播放队列防止重叠，支持自动停止
+- **平台限制**: 仅微信小程序可用，使用条件编译 `#ifdef MP-WEIXIN`
+
+### 组词示例功能
+
+在检测页和生字学习模式中展示汉字的词语示例：
+- **数据来源**: `top_2500_chars_with_words.json`（包含每个汉字的常用词语）
+- **展示方式**: 展示 2 个常用词语，使用米字格组件展示
+- **用途**: 帮助儿童理解汉字在词语中的实际用法
+
+### 生字本功能
+
+自动收集用户不认识的汉字，支持学习模式：
+- **自动收集**: 检测过程中不认识的汉字自动加入生字本
+- **学习模式**: 从生字本进入检测页时启用学习模式
+- **认识移除**: 在学习模式中标记认识后，从生字本移除
+- **存储**: 本地存储 `VOCABULARY_NOTEBOOK`
+
 ### 用户信息管理
 
 用户信息数据结构（UserInfo）：
@@ -120,6 +147,37 @@ $$W = N_{L1} + (N_{L2} \times 3) + (N_{L3} \times 10) + (N_{L4} \times 20) + (N_
 - `lastUpdated`: 最后更新时间戳
 - `source`: 数据来源（wechat/default）
 
+### 性能优化策略
+
+#### App 级用户信息预加载
+
+应用启动时在 `App.vue` 中预加载用户信息，通过 `globalData` 共享给各页面：
+
+```javascript
+globalData: {
+  env: '',                    // 云开发环境ID
+  userInfo: null,             // 用户信息缓存
+  isReady: false,             // 应用就绪状态
+  userInfoReady: false,       // 用户信息预加载完成标识
+  userInfoPromise: null       // 用户信息加载 Promise（供页面复用）
+}
+```
+
+#### userManager 懒加载优化
+
+`userManager.js` 采用**本地缓存优先**策略：
+1. **快速返回**：先从本地存储读取用户信息，立即返回（同步操作，几乎无延迟）
+2. **后台刷新**：`refreshOpenIdInBackground()` 异步更新 OpenID，不阻塞 UI
+3. **缓存 OpenID**：`storage.js` 单独存储 `USER_OPENID`，支持快速读取验证
+
+#### 页面级骨架屏和分阶段加载
+
+`profile.vue` 实现分阶段加载策略：
+1. **阶段 1（骨架屏）**：首次加载时显示骨架屏动画
+2. **阶段 2（关键数据）**：并行加载用户信息、统计数据、历史记录
+3. **阶段 3（隐藏骨架屏）**：关键数据完成后显示实际内容
+4. **阶段 4（延迟加载）**：非关键数据延迟加载（生字本统计 100ms，引导提示 500ms）
+
 ## 已实现的规范
 
 项目已实现以下功能规范（详见 `openspec/specs/`）：
@@ -129,14 +187,19 @@ $$W = N_{L1} + (N_{L2} \times 3) + (N_{L3} \times 10) + (N_{L4} \times 20) + (N_
 | api | 11 | API 接口规范（统一响应格式、云函数接口） |
 | components | 5 | 公共组件规范（米字格、汉字卡片、TabBar等） |
 | pages | 5 | 页面规范（首页、检测页、结果页、个人页、历史详情页） |
+| profile-page | - | 个人页基础规范 |
 | profile-page-update | 4 | 个人页更新规范（用户信息展示、编辑） |
 | share-capability | 7 | 微信分享功能规范 |
+| storage | - | 本地存储基础规范 |
 | storage-extension | 5 | 本地存储扩展规范 |
+| test-page | - | 检测页功能规范 |
 | user-age-capability | 6 | 用户年龄功能规范 |
 | user-management | 5 | 用户信息管理规范（OpenID、头像、昵称） |
 | ai-assistant | 12 | AI 助手规范（智能对话、工具调用、联网搜索） |
-| character-pronunciation | 6 | 汉字发音功能规范 |
+| character-pronunciation | 6 | 汉字发音功能规范（微信同声传译插件） |
 | word-examples | 6 | 组词示例功能规范 |
+| vocabulary-notebook | - | 生字本功能规范 |
+| science-principle-page | - | 科学原理页规范（测试方法说明） |
 
 ## 编码约定
 
@@ -367,7 +430,9 @@ npm run build:mp-weixin
 - 存储键:
   - `TEST_RECORDS` - 检测记录列表
   - `USER_INFO` - 用户信息
+  - `USER_OPENID` - 用户 OpenID（单独存储，便于快速访问）
   - `PROFILE_GUIDE_SHOWN` - 个人页引导提示状态
+  - `VOCABULARY_NOTEBOOK` - 生字本数据
 
 ### 云数据库
 
@@ -390,43 +455,85 @@ npm run build:mp-weixin
 首页 (home)
     │
     ├── 点击"开始检测"
+    │   │
+    │   ▼
+    │  检测页 (test)
+    │   │
+    │   ├── 分层测试 L1-L6（共 175 字）
+    │   ├── 随机抽样和顺序打乱
+    │   ├── 动态熔断检测
+    │   ├── 汉字发音功能（微信小程序）
+    │   ├── 组词示例展示
+    │   │
+    │   ▼
+    │  结果页 (result)
+    │   │
+    │   ├── 显示认字量
+    │   ├── 保存记录
+    │   ├── 分享功能
+    │   │
+    │   ▼
+    │  首页 (home)
     │
-    ▼
-检测页 (test)
-    │
-    ├── 分层测试 L1-L6（共 175 字）
-    ├── 随机抽样和顺序打乱
-    ├── 动态熔断检测
-    │
-    ▼
-结果页 (result)
-    │
-    ├── 显示认字量
-    ├── 保存记录
-    ├── 分享功能
-    │
-    ▼
-首页 (home)
+    └── 点击"了解科学原理"
+        │
+        ▼
+       科学原理页 (science-principle)
+        │
+        ├── 数据来源说明（2500常用字，覆盖98.5%语料）
+        ├── 分层测试策略和计算公式
+        ├── 层级表格展示
+        └── 熔断机制说明
 
 个人页 (profile)
     │
+    ├── 骨架屏加载动画
     ├── 用户信息展示和编辑（头像、昵称、年龄）
     ├── 统计数据展示
     ├── 点击历史记录
+    │   │
+    │   ▼
+    │  历史详情页 (history-detail)
     │
-    ▼
-历史详情页 (history-detail)
-
-AI 助手页 (ai-assistant)
+    ├── 点击"生字本"
+    │   │
+    │   ▼
+    │  生字本 (vocabulary-notebook)
+    │   │
+    │   ├── 生字列表管理（4列网格布局）
+    │   ├── 点击单字进入学习模式
+    │   │   │
+    │   │   ▼
+    │   │  检测页 (test) - 学习模式
+    │   │   │
+    │   │   ├── 展示单个汉字
+    │   │   ├── 汉字发音功能
+    │   │   ├── 组词示例展示
+    │   │   └── 认识后从生字本移除
+    │   │
+    │   └── 从历史记录自动收集
     │
-    ├── 智能对话（流式输出 + Markdown 渲染）
-    ├── 基于检测数据生成个性化分析
-    ├── 联网搜索（Tavily API，可选）
-    │
-    └── 微信云开发 AI（DeepSeek 模型）
+    └── 点击"AI辅导"
+        │
+        ▼
+       AI 助手页 (ai-assistant)
+        │
+        ├── 智能对话（流式输出 + Markdown 渲染）
+        ├── 基于检测数据生成个性化分析
+        ├── 联网搜索（Tavily API，可选）
+        │
+        └── 微信云开发 AI（DeepSeek 模型）
 ```
 
 ## 重要约束
+
+### 性能优化要求
+
+- **用户信息预加载**：App 启动时立即预加载用户信息，存储 Promise 供页面复用
+- **本地缓存优先**：用户信息优先使用本地缓存，后台异步刷新 OpenID
+- **骨架屏加载**：首次进入页面时显示骨架屏，避免白屏和布局跳动
+- **分阶段加载**：区分关键数据和非关键数据，非关键数据延迟加载
+- **避免重复请求**：页面间复用 `globalData.userInfoPromise`，不重复调用云函数
 
 ### 跨平台兼容性
 - 使用 uni-app API 而非原生 Web API 以保证跨平台兼容
@@ -439,10 +546,13 @@ AI 助手页 (ai-assistant)
 - `uni.showActionSheet` 的 `itemList` 最多 6 个选项
 - 超过 6 个选项需使用 `<picker>` 组件替代
 - 分享图片推荐 5:4 比例，最小 500x400 像素
+- **微信同声传译插件**：汉字发音功能依赖 `WechatSI` 插件，需在 `manifest.json` 中配置
 
 ### 数据处理
 - JSON 数据使用静态 `import` 导入，不使用动态 `require`
-- 所有汉字数据来源于 `top_2500_chars_with_literacy.json`
+- 所有汉字数据来源于 `top_2500_chars_with_literacy.json`（基础字频数据）
+- 汉字词语数据来源于 `top_2500_chars_with_words.json`（含词语示例）
+- 使用 `cnchar` 库获取汉字拼音
 
 ### 云开发约束
 - 云函数调用必须包含错误处理
@@ -467,3 +577,9 @@ AI 助手页 (ai-assistant)
 - Markdown 渲染使用 `markdown-it` + `rich-text` 组件
 - 联网搜索（Tavily）通过小程序 HTTP 请求调用，需配置 API Key
 - 工具调用机制遵循 CloudBase AI 工具调用格式
+
+### 汉字发音约束
+- 发音功能仅支持微信小程序环境，使用条件编译 `#ifdef MP-WEIXIN`
+- 依赖微信同声传译插件 (`WechatSI`)，需要使用 `requirePlugin('WechatSI')` 引入
+- 使用 `innerAudioContext` 管理音频播放，支持播放队列防止重叠
+- 需要在 `onUnmounted` 中销毁音频上下文避免内存泄漏
