@@ -160,8 +160,8 @@
         </view>
       </view>
 
-      <!-- 生字本入口卡片 -->
-      <view class="vocabulary-card" @tap="goToVocabularyNotebook">
+      <!-- 生字本入口卡片 - 仅在有历史检测记录时显示 -->
+      <view v-if="records.length > 0" class="vocabulary-card" @tap="goToVocabularyNotebook">
         <view class="vocabulary-left">
           <view class="vocabulary-icon-wrapper">
             <image class="vocabulary-icon-img" src="/assets/CodeBubbyAssets/219_2/1.svg" mode="aspectFit" />
