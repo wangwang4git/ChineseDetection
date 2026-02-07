@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.7](https://github.com/wangwang4git/ChineseDetection/compare/v0.0.6...v0.0.7) (2026-02-07)
+
+
+### Features
+
+* 增加识字量原理介绍 ([626c387](https://github.com/wangwang4git/ChineseDetection/commit/626c3874ac8f9d6595b586bb75e078b7adda4e7f))
+* 按钮点击增加音效 ([a560bb2](https://github.com/wangwang4git/ChineseDetection/commit/a560bb2aa28a8521b06ff42e841b7e2e6bd08eed))
+
+
+### Bug Fixes
+
+* 修复无历史检测记录，展示生字本bug ([7e9027d](https://github.com/wangwang4git/ChineseDetection/commit/7e9027d805a86bfd9da2b2885af92c3988a54337))
+* 切换我的TAB性能优化 ([36076a6](https://github.com/wangwang4git/ChineseDetection/commit/36076a61fb09b67fafedaab4a7f8252e8658234e))
+
 ### [0.0.6](https://github.com/wangwang4git/ChineseDetection/compare/v0.0.5...v0.0.6) (2026-01-30)
 
 
