@@ -48,7 +48,7 @@
  * 结果页
  * 展示检测结果，包括预估认字量、分层详情和不认识的汉字列表
  */
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 // #ifdef MP-WEIXIN
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
@@ -58,6 +58,7 @@ import { addRecord } from '@/api/record.js'
 import { getEncouragementMessage } from '@/utils/calculate.js'
 import { getResultShareConfig, getResultTimelineConfig } from '@/utils/share.js'
 import { addToVocabularyNotebook } from '@/utils/storage.js'
+import { initAudio, playSound, destroyAudio } from '@/utils/audioManager.js'
 
 // 检测记录
 const record = ref({
@@ -109,6 +110,7 @@ onShareTimeline(() => {
  * 结束检测
  */
 const endTest = async () => {
+  playSound('button')
   // 保存记录
   try {
     await addRecord(record.value)
@@ -127,6 +129,16 @@ const endTest = async () => {
     url: '/pages/home/home'
   })
 }
+
+// 初始化音效
+onMounted(() => {
+  initAudio()
+})
+
+// 销毁音效实例
+onUnmounted(() => {
+  destroyAudio()
+})
 </script>
 
 <style scoped>

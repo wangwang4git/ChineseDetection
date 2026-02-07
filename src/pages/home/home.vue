@@ -55,12 +55,13 @@
  * 首页 v2.0
  * 展示不同年龄段的认字量参考区间，引导用户开始检测
  */
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 // #ifdef MP-WEIXIN
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 // #endif
 import CustomTabBar from '@/components/CustomTabBar.vue'
 import { getDefaultShareConfig, getDefaultTimelineConfig } from '@/utils/share.js'
+import { initAudio, playSound, destroyAudio } from '@/utils/audioManager.js'
 
 // 年龄段卡片数据（含 emoji 和渐变色）
 const ageCards = ref([
@@ -116,6 +117,7 @@ onShareTimeline(() => {
  * 开始检测
  */
 const startTest = () => {
+  playSound('button')
   uni.navigateTo({
     url: '/pages/test/test'
   })
@@ -134,6 +136,7 @@ const startTest = () => {
  * 跳转到科学原理页
  */
 const goToPrinciple = () => {
+  playSound('button')
   uni.navigateTo({
     url: '/pages/science-principle/science-principle'
   })
@@ -211,6 +214,16 @@ const callCloudFunction = (envId) => {
       })
     });
 }
+
+// 初始化音效
+onMounted(() => {
+  initAudio()
+})
+
+// 销毁音效实例
+onUnmounted(() => {
+  destroyAudio()
+})
 </script>
 
 <style scoped>

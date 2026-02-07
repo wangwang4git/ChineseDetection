@@ -212,7 +212,7 @@
  * 3. 分离关键渲染路径 - 先显示关键数据，延迟加载非关键数据
  * 4. 本地数据优先 - 立即显示本地缓存，后台异步更新
  */
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 // #ifdef MP-WEIXIN
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
@@ -223,6 +223,7 @@ import userManager from '@/utils/userManager.js'
 import { formatDateTime } from '@/utils/index.js'
 import { getProfileGuideShown, setProfileGuideShown, getVocabularyNotebook, initVocabularyNotebook } from '@/utils/storage.js'
 import { getDefaultShareConfig, getDefaultTimelineConfig } from '@/utils/share.js'
+import { initAudio, playSound, destroyAudio } from '@/utils/audioManager.js'
 import CustomTabBar from '@/components/CustomTabBar.vue'
 import { ENV_CONFIG } from '@/config/env.js'
 
@@ -320,6 +321,7 @@ onShareTimeline(() => {
  * 处理头像点击
  */
 const handleAvatarClick = () => {
+  playSound('button')
   // #ifdef H5
   // H5 环境显示头像选择器
   showAvatarPicker()
@@ -375,6 +377,7 @@ const onChooseAvatar = (e) => {
  * 处理昵称点击
  */
 const handleNicknameClick = () => {
+  playSound('button')
   // 聚焦到昵称输入框
   console.log('点击昵称区域')
 }
@@ -383,6 +386,7 @@ const handleNicknameClick = () => {
  * 处理年龄选择变更
  */
 const onAgeChange = (e) => {
+  playSound('button')
   const selectedAge = parseInt(e.detail.value) + 1
   
   // 1. 立即更新UI
@@ -475,6 +479,7 @@ const formatTime = (time) => {
  * 跳转到详情页
  */
 const goToDetail = (id) => {
+  playSound('button')
   uni.navigateTo({
     url: `/pages/history-detail/history-detail?id=${id}`
   })
@@ -484,6 +489,7 @@ const goToDetail = (id) => {
  * 跳转到 AI 助手页
  */
 const goToAiAssistant = () => {
+  playSound('button')
   uni.navigateTo({
     url: '/pages/ai-assistant/ai-assistant'
   })
@@ -493,6 +499,7 @@ const goToAiAssistant = () => {
  * 跳转到生字本页面
  */
 const goToVocabularyNotebook = () => {
+  playSound('button')
   uni.navigateTo({
     url: '/pages/vocabulary-notebook/vocabulary-notebook'
   })
@@ -661,6 +668,7 @@ const checkAndShowGuide = () => {
  * 关闭引导提示框
  */
 const closeGuideModal = () => {
+  playSound('button')
   showGuideModal.value = false
   
   // 记录已显示过引导提示
@@ -674,12 +682,18 @@ const closeGuideModal = () => {
 
 // 页面显示时加载数据
 onMounted(() => {
+  initAudio()
   loadData()
 })
 
 // 页面每次显示时刷新数据
 onShow(() => {
   loadData()
+})
+
+// 销毁音效实例
+onUnmounted(() => {
+  destroyAudio()
 })
 </script>
 

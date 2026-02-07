@@ -54,7 +54,7 @@
  * 历史详情页
  * 展示单次检测的完整信息
  */
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 // #ifdef MP-WEIXIN
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
@@ -63,6 +63,7 @@ import CharacterCard from '@/components/CharacterCard.vue'
 import { getRecordDetail } from '@/api/record.js'
 import { formatDateTime } from '@/utils/index.js'
 import { getHistoryShareConfig, getHistoryTimelineConfig } from '@/utils/share.js'
+import { initAudio, playSound, destroyAudio } from '@/utils/audioManager.js'
 
 // 加载状态
 const loading = ref(true)
@@ -99,6 +100,7 @@ const formatTime = (time) => {
  * 返回上一页
  */
 const goBack = () => {
+  playSound('button')
   uni.navigateBack()
 }
 
@@ -126,11 +128,17 @@ const loadDetail = async (id) => {
  * 页面加载
  */
 onLoad((options) => {
+  initAudio()
   if (options.id) {
     loadDetail(options.id)
   } else {
     loading.value = false
   }
+})
+
+// 销毁音效实例
+onUnmounted(() => {
+  destroyAudio()
 })
 </script>
 

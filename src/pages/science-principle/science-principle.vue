@@ -189,11 +189,12 @@
  * 识字量测试科学原理页面
  * 展示测试方法的科学依据和计算原理
  */
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 // #ifdef MP-WEIXIN
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
 // #endif
 import { getSciencePrincipleShareConfig, getSciencePrincipleTimelineConfig } from '@/utils/share.js'
+import { initAudio, playSound, destroyAudio } from '@/utils/audioManager.js'
 
 /**
  * 层级表格数据
@@ -211,6 +212,7 @@ const levelData = ref([
  * 返回上一页
  */
 const goBack = () => {
+  playSound('button')
   uni.navigateBack({
     fail: () => {
       // 如果没有上一页，返回首页
@@ -238,6 +240,16 @@ onShareTimeline(() => {
   return getSciencePrincipleTimelineConfig()
 })
 // #endif
+
+// 初始化音效
+onMounted(() => {
+  initAudio()
+})
+
+// 销毁音效实例
+onUnmounted(() => {
+  destroyAudio()
+})
 </script>
 
 <style scoped>

@@ -5,7 +5,7 @@ TBD - created by archiving change build-chinese-detection-app. Update Purpose af
 ## Requirements
 ### Requirement: 统一响应格式
 
-所有 API 接口返回统一的响应格式，便于前端统一处理。
+所有 API 接口 SHALL 返回统一的响应格式，便于前端统一处理。
 
 #### Scenario: 成功响应
 
@@ -37,7 +37,7 @@ TBD - created by archiving change build-chinese-detection-app. Update Purpose af
 
 ### Requirement: 汉字接口 (getLayeredTestCharacters)
 
-基于分层频率抽样策略获取测试汉字列表。
+应用 SHALL 提供基于分层频率抽样策略获取测试汉字列表的接口。
 
 #### Scenario: 获取分层测试汉字
 
@@ -58,7 +58,7 @@ TBD - created by archiving change build-chinese-detection-app. Update Purpose af
 
 ### Requirement: 汉字接口 (getCharactersByLevel)
 
-获取指定层级的汉字列表。
+应用 SHALL 提供获取指定层级汉字列表的接口。
 
 #### Scenario: 获取指定层级汉字
 
@@ -78,7 +78,7 @@ TBD - created by archiving change build-chinese-detection-app. Update Purpose af
 
 ### Requirement: 汉字接口 (getLevelConfigs)
 
-获取分层配置信息。
+应用 SHALL 提供获取分层配置信息的接口。
 
 #### Scenario: 获取层级配置
 
@@ -100,7 +100,7 @@ TBD - created by archiving change build-chinese-detection-app. Update Purpose af
 
 ### Requirement: 计算工具 (calculateVocabulary)
 
-基于分层权重公式计算预估认字量。
+应用 SHALL 提供基于分层权重公式计算预估认字量的工具函数。
 
 #### Scenario: 计算认字量
 
@@ -119,7 +119,7 @@ TBD - created by archiving change build-chinese-detection-app. Update Purpose af
 
 ### Requirement: 计算工具 (checkFuse)
 
-检查是否触发动态熔断机制。
+应用 SHALL 提供检查是否触发动态熔断机制的工具函数。
 
 #### Scenario: 连续不认识熔断
 
@@ -143,7 +143,7 @@ TBD - created by archiving change build-chinese-detection-app. Update Purpose af
 
 ### Requirement: 计算工具 (generateTestSequence)
 
-基于汉字数据生成分层测试序列。
+应用 SHALL 提供基于汉字数据生成分层测试序列的工具函数。
 
 #### Scenario: 生成测试序列
 
@@ -161,7 +161,7 @@ TBD - created by archiving change build-chinese-detection-app. Update Purpose af
 
 ### Requirement: 记录接口 (addRecord)
 
-保存检测记录到本地存储。
+应用 SHALL 提供保存检测记录到本地存储的接口。
 
 #### Scenario: 保存检测记录
 
@@ -190,7 +190,7 @@ TBD - created by archiving change build-chinese-detection-app. Update Purpose af
 
 ### Requirement: 记录接口 (getRecordList)
 
-获取历史检测记录列表。
+应用 SHALL 提供获取历史检测记录列表的接口。
 
 #### Scenario: 获取历史记录列表
 
@@ -211,7 +211,7 @@ TBD - created by archiving change build-chinese-detection-app. Update Purpose af
 
 ### Requirement: 记录接口 (getRecordDetail)
 
-获取单条检测记录详情。
+应用 SHALL 提供获取单条检测记录详情的接口。
 
 #### Scenario: 获取记录详情
 
@@ -232,7 +232,7 @@ TBD - created by archiving change build-chinese-detection-app. Update Purpose af
 
 ### Requirement: 统计接口 (getStatistics)
 
-获取用户检测统计数据。
+应用 SHALL 提供获取用户检测统计数据的接口。
 
 #### Scenario: 获取统计数据
 

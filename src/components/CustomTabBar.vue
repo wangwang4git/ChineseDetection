@@ -30,6 +30,8 @@
  * 自定义 TabBar 组件
  * 设计稿样式：白色半透明背景 + 紫色顶部边框 + 选中项粉紫渐变卡片
  */
+import { onMounted, onUnmounted } from 'vue'
+import { initAudio, playSound, destroyAudio } from '@/utils/audioManager.js'
 
 // Props 定义
 const props = defineProps({
@@ -40,12 +42,19 @@ const props = defineProps({
   }
 })
 
+// 初始化音效
+onMounted(() => {
+  initAudio()
+})
+
 /**
  * 切换 Tab
  * @param {string} tab - Tab 名称
  */
 const switchTab = (tab) => {
   if (props.current === tab) return
+  
+  playSound('button')
   
   // 使用 switchTab 进行页面切换
   const urls = {
@@ -57,6 +66,11 @@ const switchTab = (tab) => {
     url: urls[tab]
   })
 }
+
+// 销毁音效实例
+onUnmounted(() => {
+  destroyAudio()
+})
 </script>
 
 <style scoped>

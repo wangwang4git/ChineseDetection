@@ -121,7 +121,7 @@
  * 智能对话辅导，支持流式输出和 Markdown 渲染
  * 使用 markdown-it + rich-text 方案
  */
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 // #ifdef MP-WEIXIN
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
@@ -140,6 +140,7 @@ import { getAITools } from '@/utils/aiTools.js'
 import { ENV_CONFIG } from '@/config/env.js'
 import MarkdownIt from 'markdown-it'
 import { getAIAssistantShareConfig, getAIAssistantTimelineConfig } from '@/utils/share.js'
+import { initAudio, playSound, destroyAudio } from '@/utils/audioManager.js'
 
 // 初始化 markdown-it 实例
 const md = new MarkdownIt({
@@ -210,6 +211,9 @@ onLoad(() => {
  * 页面挂载
  */
 onMounted(() => {
+  // 初始化音效
+  initAudio()
+  
   // 获取系统信息
   const systemInfo = uni.getSystemInfoSync()
   statusBarHeight.value = systemInfo.statusBarHeight || 20
@@ -313,6 +317,7 @@ const loadCharData = async () => {
  * 返回上一页
  */
 const goBack = () => {
+  playSound('button')
   uni.navigateBack()
 }
 
@@ -322,6 +327,7 @@ const goBack = () => {
 const sendMessage = async () => {
   if (!canSend.value) return
   
+  playSound('button')
   const content = inputText.value.trim()
   if (!content) return
   
@@ -570,6 +576,11 @@ const handleAIError = (msgId, error) => {
   })
 }
 // #endif
+
+// 销毁音效实例
+onUnmounted(() => {
+  destroyAudio()
+})
 </script>
 
 <style scoped>

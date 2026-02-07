@@ -50,7 +50,7 @@
  * 展示用户需要学习的所有汉字
  * 支持点击进入学习模式
  */
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 // #ifdef MP-WEIXIN
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
@@ -63,6 +63,7 @@ import {
   getVocabularyNotebookShareConfig, 
   getVocabularyNotebookTimelineConfig 
 } from '@/utils/share.js'
+import { initAudio, playSound, destroyAudio } from '@/utils/audioManager.js'
 
 // 生字本数据
 const notebook = ref(null)
@@ -131,6 +132,7 @@ const loadVocabulary = () => {
  * @param {string} char - 汉字
  */
 const handleCharTap = (char) => {
+  playSound('button')
   uni.navigateTo({
     url: `/pages/test/test?mode=vocabulary-learning&char=${encodeURIComponent(char)}`
   })
@@ -140,12 +142,23 @@ const handleCharTap = (char) => {
  * 返回上一页
  */
 const goBack = () => {
+  playSound('button')
   uni.navigateBack()
 }
+
+// 初始化音效
+onMounted(() => {
+  initAudio()
+})
 
 // 页面每次显示时刷新数据
 onShow(() => {
   loadVocabulary()
+})
+
+// 销毁音效实例
+onUnmounted(() => {
+  destroyAudio()
 })
 </script>
 

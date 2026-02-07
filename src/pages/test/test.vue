@@ -109,6 +109,7 @@ import { LEVEL_CONFIGS, TOTAL_TEST_COUNT } from '@/utils/levelConfig.js'
 import { initLevelResult, checkFuse, generateTestRecord } from '@/utils/calculate.js'
 import { removeFromVocabularyNotebook } from '@/utils/storage.js'
 import { getTestShareConfig, getTestTimelineConfig } from '@/utils/share.js'
+import { initAudio, playSound, destroyAudio } from '@/utils/audioManager.js'
 import cnchar from 'cnchar'
 import charDataJson from '@/static/top_2500_chars_with_words.json'
 
@@ -325,6 +326,7 @@ const initLearningMode = (char) => {
  * 处理"我认识"
  */
 const handleKnow = () => {
+  playSound('success')
   // 学习模式下：从生字本移除并返回
   if (isLearningMode.value) {
     removeFromVocabularyNotebook(learningChar.value)
@@ -342,6 +344,7 @@ const handleKnow = () => {
  * 处理"不认识"
  */
 const handleUnknown = () => {
+  playSound('fail')
   // 学习模式下：保持不变，直接返回
   if (isLearningMode.value) {
     uni.navigateBack()
@@ -448,6 +451,7 @@ const updateEncourage = () => {
  * 跳转到结果页
  */
 const goToResult = () => {
+  playSound('button')
   showFuseModal.value = false
   
   // 生成检测记录
@@ -458,6 +462,9 @@ const goToResult = () => {
     url: `/pages/result/result?data=${encodeURIComponent(JSON.stringify(record))}`
   })
 }
+
+// 初始化音效
+initAudio()
 
 // 页面加载时处理参数
 onLoad((options) => {
@@ -584,6 +591,11 @@ onUnmounted(() => {
   }
 })
 // #endif
+
+// 页面卸载时销毁音效实例
+onUnmounted(() => {
+  destroyAudio()
+})
 </script>
 
 <style scoped>
