@@ -20,12 +20,22 @@
 
     <!-- 年龄段认字量参考卡片 -->
     <view class="card-list">
-      <view v-for="(item, index) in ageCards" :key="index" class="age-card" :style="{ background: item.gradient }">
+      <view
+        v-for="(item, index) in ageCards"
+        :key="index"
+        class="age-card"
+        :style="{ background: item.gradient }"
+        @tap="item.tappable ? goToLiteracyAdvice() : null"
+      >
         <view class="card-left">
           <text class="card-emoji">{{ item.emoji }}</text>
           <view class="card-info">
             <text class="card-age">{{ item.age }}</text>
-            <text class="card-desc">目标认字量</text>
+            <view class="card-desc-row">
+              <text class="card-desc">目标认字量</text>
+              <!-- 4-5岁卡片显示可点击提示 -->
+              <text v-if="item.tappable" class="card-advice-link">（点击查看建议📖）</text>
+            </view>
           </view>
         </view>
         <view class="card-right">
@@ -69,31 +79,36 @@ const ageCards = ref([
     emoji: '🌱',
     age: '4-5岁',
     range: '50-100',
-    gradient: 'linear-gradient(135deg, #FFE5E5 0%, white 100%)'
+    gradient: 'linear-gradient(135deg, #FFE5E5 0%, white 100%)',
+    tappable: true // 4-5岁卡片支持点击跳转到识字学习建议页
   },
   {
     emoji: '🌿',
     age: '5-6岁',
     range: '200-300',
-    gradient: 'linear-gradient(135deg, #E5F5FF 0%, white 100%)'
+    gradient: 'linear-gradient(135deg, #E5F5FF 0%, white 100%)',
+    tappable: false
   },
   {
     emoji: '🌺',
     age: '幼小衔接',
     range: '300-500',
-    gradient: 'linear-gradient(135deg, #FFF5E5 0%, white 100%)'
+    gradient: 'linear-gradient(135deg, #FFF5E5 0%, white 100%)',
+    tappable: false
   },
   {
     emoji: '🌻',
     age: '1～2年级',
     range: '1600左右',
-    gradient: 'linear-gradient(135deg, #F0FFE5 0%, white 100%)'
+    gradient: 'linear-gradient(135deg, #F0FFE5 0%, white 100%)',
+    tappable: false
   },
   {
     emoji: '🌳',
     age: '3～4年级',
     range: '2500左右',
-    gradient: 'linear-gradient(135deg, #FFE5F5 0%, white 100%)'
+    gradient: 'linear-gradient(135deg, #FFE5F5 0%, white 100%)',
+    tappable: false
   }
 ])
 
@@ -139,6 +154,16 @@ const goToPrinciple = () => {
   playSound('button')
   uni.navigateTo({
     url: '/pages/science-principle/science-principle'
+  })
+}
+
+/**
+ * 跳转到4-5岁识字学习建议页
+ */
+const goToLiteracyAdvice = () => {
+  playSound('button')
+  uni.navigateTo({
+    url: '/pages/literacy-advice/literacy-advice'
   })
 }
 
@@ -331,6 +356,18 @@ onUnmounted(() => {
   font-size: 28rpx;
   color: #4A5565;
   margin-top: 4rpx;
+}
+
+.card-desc-row {
+  display: flex;
+  align-items: center;
+  margin-top: 4rpx;
+}
+
+.card-advice-link {
+  font-size: 24rpx;
+  color: #155DFC;
+  margin-left: 2rpx;
 }
 
 .card-right {

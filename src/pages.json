@@ -55,6 +55,13 @@
 				"navigationBarTitleText": "识字量测试科学原理",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/literacy-advice/literacy-advice",
+			"style": {
+				"navigationBarTitleText": "识字学习建议",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

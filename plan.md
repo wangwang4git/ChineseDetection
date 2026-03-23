@@ -83,7 +83,7 @@ $N_{Lx}$ 代表在第 $x$ 层级中实际认读正确的字数。
 
 提示词参考：
 
-```
+```markdown
 我需要设计一个小程序，用于幼儿园汉字认字量检测，包含页面：
 * 首页，首页展示不同年龄段推荐的汉字认字量区间（如下列举），下方展示“开始检测吧！”按钮；
     4-5岁，目标认字量50-100
@@ -170,7 +170,7 @@ export default defineConfig({
 
 需求提案提示词参考：
 
-```
+```markdown
 /openspec:proposal
 1. 读取openspec/project.md，了解项目概览。
 2. 你作为一位精通 Vue 3 组合式 API 的资深 uni-app 跨平台应用开发专家，在开发过程中需兼顾微信小程序兼容性，通过 #ifdef 和 #endif 条件编译处理平台差异，严格遵循 uni-app 最佳实践与性能优化建议，重视移动端适配和交互体验，并保证代码具备清晰、规范的注释。
@@ -193,7 +193,7 @@ export default defineConfig({
 历史认字量检测详情页Figma设计稿：https://www.figma.com/design/WnWhtqvnDK8QVKWL9isb75/%E6%B1%89%E5%AD%97%E8%AE%A4%E5%AD%97%E9%87%8F%E6%A3%80%E6%B5%8B%E5%B0%8F%E7%A8%8B%E5%BA%8F?node-id=1-430&m=dev
 ```
 
-```
+```markdown
 /openspec:proposal
 基于/static/top_2500_chars_with_literacy.json文件，修正认字量算法，修正提案相关内容，包括数据模型等等！
 1. json文件内容为前2500个常用汉字，rank_id表示排序，char表示汉字，frequency表示该汉字在中文语料出现频率，frequency_cumulative表示该汉字之前（包括该汉字）在中文语料出现累积频率；
@@ -216,18 +216,18 @@ $N_{Lx}$ 代表在第 $x$ 层级中实际认读正确的字数
 ```
 
 需求编码提示词参考：
-```
+```markdown
 /openspec:apply build-chinese-detection-app
 ```
 
 fix运行错误提示词参考：
-```
+```markdown
 点击首页开始检测吧，会出现如下错误，请仔细分析后修复！
 加载汉字数据失败: Error: module 'static/top_2500_chars_with_literacy.json.js' is not defined, require args is '../static/top_2500_chars_with_literacy.json'
 ```
 
 需求归档提示词参考：
-```
+```markdown
 /openspec:archive build-chinese-detection-app
 ```
 
@@ -236,6 +236,7 @@ fix运行错误提示词参考：
 借助微信开发者工具验证。
 
 ## TODOList
+
 - [x] 前端布局对齐Figma设计稿优化
 - [x] 前端交互增加动画效果
 - [x] 小程序上架
@@ -249,6 +250,8 @@ fix运行错误提示词参考：
 - [x] 添加生字本
 - [x] 添加识字量原理介绍
 - [ ] 添加测试报告：同龄评价、记录成长、专业建议、分级阅读
+- [ ] 优化按钮点击音频效果
+- [ ] 添加不同年龄段识字量提升专业建议
 
 ## 技术选型
 
