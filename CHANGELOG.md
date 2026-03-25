@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.8](https://github.com/wangwang4git/ChineseDetection/compare/v0.0.7...v0.0.8) (2026-03-25)
+
+
+### Features
+
+* 添加4-5岁识字学习建议页面 ([fef2582](https://github.com/wangwang4git/ChineseDetection/commit/fef2582c580c6353144f092388fddaaecf4e68a0))
+
 ### [0.0.7](https://github.com/wangwang4git/ChineseDetection/compare/v0.0.6...v0.0.7) (2026-02-07)
 
 
