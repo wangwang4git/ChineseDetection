@@ -62,6 +62,34 @@
 				"navigationBarTitleText": "识字学习建议",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/literacy-advice-5-6/literacy-advice-5-6",
+			"style": {
+				"navigationBarTitleText": "5-6岁识字学习建议",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/literacy-advice-transition/literacy-advice-transition",
+			"style": {
+				"navigationBarTitleText": "幼小衔接识字学习建议",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/literacy-advice-grade-1-2/literacy-advice-grade-1-2",
+			"style": {
+				"navigationBarTitleText": "1-2年级识字学习建议",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/literacy-advice-grade-3-4/literacy-advice-grade-3-4",
+			"style": {
+				"navigationBarTitleText": "3-4年级识字学习建议",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

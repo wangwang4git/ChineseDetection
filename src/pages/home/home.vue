@@ -25,7 +25,7 @@
         :key="index"
         class="age-card"
         :style="{ background: item.gradient }"
-        @tap="item.tappable ? goToLiteracyAdvice() : null"
+        @tap="item.tappable ? goToAdvice(item) : null"
       >
         <view class="card-left">
           <text class="card-emoji">{{ item.emoji }}</text>
@@ -73,42 +73,47 @@ import CustomTabBar from '@/components/CustomTabBar.vue'
 import { getDefaultShareConfig, getDefaultTimelineConfig } from '@/utils/share.js'
 import { initAudio, playSound, destroyAudio } from '@/utils/audioManager.js'
 
-// 年龄段卡片数据（含 emoji 和渐变色）
+// 年龄段卡片数据（含 emoji、渐变色和跳转路由）
 const ageCards = ref([
   {
     emoji: '🌱',
     age: '4-5岁',
     range: '50-100',
     gradient: 'linear-gradient(135deg, #FFE5E5 0%, white 100%)',
-    tappable: true // 4-5岁卡片支持点击跳转到识字学习建议页
+    tappable: true,
+    route: '/pages/literacy-advice/literacy-advice'
   },
   {
     emoji: '🌿',
     age: '5-6岁',
     range: '200-300',
     gradient: 'linear-gradient(135deg, #E5F5FF 0%, white 100%)',
-    tappable: false
+    tappable: true,
+    route: '/pages/literacy-advice-5-6/literacy-advice-5-6'
   },
   {
     emoji: '🌺',
     age: '幼小衔接',
     range: '300-500',
     gradient: 'linear-gradient(135deg, #FFF5E5 0%, white 100%)',
-    tappable: false
+    tappable: true,
+    route: '/pages/literacy-advice-transition/literacy-advice-transition'
   },
   {
     emoji: '🌻',
     age: '1～2年级',
     range: '1600左右',
     gradient: 'linear-gradient(135deg, #F0FFE5 0%, white 100%)',
-    tappable: false
+    tappable: true,
+    route: '/pages/literacy-advice-grade-1-2/literacy-advice-grade-1-2'
   },
   {
     emoji: '🌳',
     age: '3～4年级',
     range: '2500左右',
     gradient: 'linear-gradient(135deg, #FFE5F5 0%, white 100%)',
-    tappable: false
+    tappable: true,
+    route: '/pages/literacy-advice-grade-3-4/literacy-advice-grade-3-4'
   }
 ])
 
@@ -158,12 +163,13 @@ const goToPrinciple = () => {
 }
 
 /**
- * 跳转到4-5岁识字学习建议页
+ * 跳转到对应年龄段的识字学习建议页
+ * @param {Object} item 卡片数据项，包含 route 字段
  */
-const goToLiteracyAdvice = () => {
+const goToAdvice = (item) => {
   playSound('button')
   uni.navigateTo({
-    url: '/pages/literacy-advice/literacy-advice'
+    url: item.route
   })
 }
 
