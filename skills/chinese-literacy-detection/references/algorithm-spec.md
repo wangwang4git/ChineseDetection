@@ -253,15 +253,19 @@ THEN 触发熔断
     batchChars    - 本批出题的字（按出题顺序排列）
     userResponse  - 用户回复解析结果（每个字的认识/不认识标记）
 
+  // ⛔ 前置门控：出题前必须检查，如果已熔断则禁止进入此函数
+  ASSERT consecutiveUnknown < 5, "已触发熔断，禁止继续处理"
+
   // 快速路径：用户回复"都不认识"
   IF userResponse.type = "ALL_UNKNOWN":
     levelResult.unknown += len(batchChars)
     levelResult.tested += len(batchChars)
     levelResult.consecutiveUnknown += len(batchChars)
-    // 每批至少5字，consecutiveUnknown 必然 ≥ 5 → 必须触发熔断
+    // ⚠️ 每批至少5字，consecutiveUnknown 必然 ≥ 5 → 必须触发熔断
     FOR EACH char IN batchChars:
       levelResult.unknownChars.append(char)
     RETURN Check-Fuse(levelResult, FUSE_CONFIG)  // ⚠️ 必然返回 triggered=true
+    // 🚫 绝对禁令：此路径返回后，Chatbot 的下一条消息只能是熔断通知+结果报告
 
   // 快速路径：用户回复"都认识"
   IF userResponse.type = "ALL_KNOWN":
@@ -297,8 +301,9 @@ THEN 触发熔断
 **关键规则说明**：
 1. 必须按出题顺序逐字处理，不能先处理"认识"的再处理"不认识"的
 2. 每处理一个字后**立即**检查熔断，而非等本批全部处理完才检查
-3. "都不认识"快速路径：`consecutiveUnknown += 本批字数`，由于每批 ≥ 5 字，必然触发熔断
+3. "都不认识"快速路径：`consecutiveUnknown += 本批字数`，由于每批 ≥ 5 字，**必然触发熔断**，Chatbot 的下一条消息**只能是熔断通知+结果报告**
 4. "都认识"快速路径：`consecutiveUnknown = 0`，直接重置
+5. **前置门控**：进入此函数前必须确认 `consecutiveUnknown < 5`，否则禁止出题
 
 ### 4.5 熔断处理流程
 
