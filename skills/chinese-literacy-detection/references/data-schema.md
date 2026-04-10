@@ -21,10 +21,10 @@
 interface CharacterEntry {
   rank_id: number;              // 词频排名，1-2500，唯一标识
   char: string;                 // 单个汉字，如 "的"
-  words: string[];              // 组词示例数组，2-5 个常见词组
+  words: string[];              // 组词示例数组，2 个常见词组
   frequency: number;            // 该字在语料库中的词频百分比
   frequency_cumulative: number; // 从第 1 名到该字的累计词频百分比
-  literacy_rate: number;        // 该字在同龄人群中的识字率参考值 (0-1)
+  literacy_rate: number;        // 该字在数据集中的位置百分比参考值 (0-100)
 }
 ```
 
@@ -37,7 +37,7 @@ interface CharacterEntry {
 | `words` | string[] | 2-5 个常见词组 | 组词辅助理解、学习复习 |
 | `frequency` | number | 词频百分比 | 参考信息，不直接参与计算 |
 | `frequency_cumulative` | number | 累计词频 | 展示覆盖率统计 |
-| `literacy_rate` | number | 0-1 的识字率参考 | 辅助判断，不直接参与计算 |
+| `literacy_rate` | number | 0-100 的位置百分比参考 | 辅助判断，不直接参与计算 |
 
 ### 1.4 示例数据（摘自 `assets/top_2500_chars_with_words.json`）
 
@@ -54,7 +54,7 @@ interface CharacterEntry {
   {
     "rank_id": 50,
     "char": "会",
-    "words": ["开会", "社会", "会议", "学会"],
+    "words": ["开会", "社会"],
     "frequency": 0.3821,
     "frequency_cumulative": 25.67,
     "literacy_rate": 0.95
@@ -216,6 +216,7 @@ const AGE_LITERACY_REFERENCE = [
   { age: '7-8岁',  expected: '1200-1600',stage: '二年级水平' },
   { age: '8-9岁',  expected: '1600-2000',stage: '三年级水平' },
   { age: '9-10岁', expected: '2000-2500',stage: '四年级水平' },
+  { age: '10-12岁',expected: '2500+',    stage: '五年级及以上水平' },
 ];
 ```
 
