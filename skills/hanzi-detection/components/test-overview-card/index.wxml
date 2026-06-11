@@ -1,0 +1,22 @@
+<!-- components/test-overview-card/index.wxml -->
+<!-- ratio=1:1，展示3个层级概览+省略提示 -->
+
+<view class="card-container">
+  <view class="card-title">汉字认字量检测</view>
+
+  <view class="level-list">
+    <view wx:for="{{levelOverviews}}" wx:key="level" class="level-item">
+      <view class="level-tag">{{item.name}}</view>
+      <view class="level-desc">{{item.description}}</view>
+      <view class="level-count">{{item.testCount}}题</view>
+    </view>
+  </view>
+
+  <view wx:if="{{omittedCount > 0}}" class="omitted-hint">还有 {{omittedCount}} 个层级...</view>
+
+  <view class="card-summary">基于2500高频汉字，共{{totalChars}}题</view>
+
+  <view class="card-footer">
+    <view class="btn-primary" hover-class="btn-primary-hover" bindtap="onTapStartTest">开始检测</view>
+  </view>
+</view>

@@ -53,6 +53,8 @@ Desktop.ini
 *.sw?
 *.sublime-workspace
 *.sublime-project
+# 小程序AI Skill验证目录
+cli-agent-run/
 
 # =====================
 # Vite

@@ -32,6 +32,58 @@ export default defineConfig(({ mode }) => {
         )
       },
     })
+
+    // 注入 skills 分包配置（拷贝 skills/ + 修改 app.json / project.config.json）
+    plugins.push({
+      name: 'inject-skills-config',
+      buildStart() {
+        const skillsSrc = path.resolve(process.cwd(), 'skills')
+        const skillsDest = path.join(process.env.UNI_OUTPUT_DIR, 'skills')
+        if (fs.existsSync(skillsSrc)) {
+          fs.copySync(skillsSrc, skillsDest)
+          console.log('✅ [inject-skills-config] skills/ 已复制到输出目录')
+        } else {
+          console.log('⚠️  [inject-skills-config] 未找到 skills/ 目录，跳过复制')
+        }
+      },
+      closeBundle() {
+        // 修改 app.json — 注入 agent.skills + subPackages
+        const appJsonPath = path.join(process.env.UNI_OUTPUT_DIR, 'app.json')
+        if (fs.existsSync(appJsonPath)) {
+          const appJson = fs.readJsonSync(appJsonPath)
+          if (!appJson.agent) {
+            appJson.agent = {
+              skills: [
+                {
+                  name: '汉字认字量检测',
+                  description: '基于2500高频汉字进行分层抽样认字量检测，管理检测历史记录与统计',
+                  path: 'skills/hanzi-detection',
+                },
+              ],
+            }
+          }
+          if (!appJson.subPackages) {
+            appJson.subPackages = [{ root: 'skills', independent: true, pages: [] }]
+          }
+          fs.writeJsonSync(appJsonPath, appJson, { spaces: 2 })
+          console.log('✅ [inject-skills-config] app.json 已注入 agent.skills + subPackages')
+        }
+
+        // 修改 project.config.json — 注入 packOptions.include
+        const pjPath = path.join(process.env.UNI_OUTPUT_DIR, 'project.config.json')
+        if (fs.existsSync(pjPath)) {
+          const pj = fs.readJsonSync(pjPath)
+          if (!pj.packOptions) pj.packOptions = { ignore: [] }
+          if (!pj.packOptions.include) pj.packOptions.include = []
+          const hasSkills = pj.packOptions.include.some((i) => i.value === 'skills')
+          if (!hasSkills) {
+            pj.packOptions.include.push({ type: 'folder', value: 'skills' })
+          }
+          fs.writeJsonSync(pjPath, pj, { spaces: 2 })
+          console.log('✅ [inject-skills-config] project.config.json 已注入 packOptions.include')
+        }
+      },
+    })
   }
 
   // 构建注入的环境变量对象，确保不会有undefined值

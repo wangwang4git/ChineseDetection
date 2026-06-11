@@ -1,0 +1,165 @@
+/* 色源：app.json window.navigationBarBackgroundColor #667eea + backgroundColor #F8F8F8 + tabBar.color #364153
+ *       暗黑：源项目无 darkmode → 底色白→#1C1C1E，品牌主色#667eea 保持不变，文字翻白
+ * ratio=1:1 */
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 3.2vw;
+  background-color: #FFFFFF;
+  border-radius: 1.07vw;
+  overflow: hidden;
+}
+
+.vocab-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.13vw 0;
+}
+
+.vocab-title {
+  font-size: 3.73vw;
+  color: rgba(0,0,0,0.45);
+}
+
+.vocab-number {
+  font-size: 9.6vw;
+  font-weight: 600;
+  color: #667eea;
+  line-height: 1.2;
+}
+
+.vocab-unit {
+  font-size: 3.2vw;
+  color: rgba(0,0,0,0.45);
+}
+
+.encourage-text {
+  font-size: 3.73vw;
+  color: rgba(0,0,0,0.9);
+  text-align: center;
+  margin-bottom: 2.13vw;
+}
+
+.stat-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 2.13vw 0;
+  border-top: 0.27vw solid rgba(0,0,0,0.06);
+  border-bottom: 0.27vw solid rgba(0,0,0,0.06);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-num {
+  font-size: 5.33vw;
+  font-weight: 600;
+  color: rgba(0,0,0,0.9);
+}
+
+.stat-num.known {
+  color: #667eea;
+}
+
+.stat-num.unknown {
+  color: rgba(0,0,0,0.3);
+}
+
+.stat-label {
+  font-size: 3.2vw;
+  color: rgba(0,0,0,0.45);
+}
+
+.unknown-section {
+  flex: 1;
+  overflow: hidden;
+  padding-top: 1.07vw;
+}
+
+.section-title {
+  font-size: 3.2vw;
+  color: rgba(0,0,0,0.45);
+  margin-bottom: 1.07vw;
+}
+
+.unknown-chars {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.unknown-char {
+  font-size: 4vw;
+  color: rgba(0,0,0,0.9);
+  margin-right: 1.6vw;
+  margin-bottom: 1.07vw;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 2.13vw;
+}
+
+.btn-primary {
+  font-size: 4vw;
+  color: #FFFFFF;
+  background-color: #667eea;
+  padding: 2.13vw 5.33vw;
+  border-radius: 1.07vw;
+  font-weight: 500;
+}
+
+.btn-primary-hover {
+  opacity: 0.8;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-container {
+    background-color: #1C1C1E;
+  }
+  .vocab-title {
+    color: rgba(255,255,255,0.45);
+  }
+  .vocab-number {
+    color: #667eea;
+  }
+  .vocab-unit {
+    color: rgba(255,255,255,0.45);
+  }
+  .encourage-text {
+    color: rgba(255,255,255,0.9);
+  }
+  .stat-num {
+    color: rgba(255,255,255,0.9);
+  }
+  .stat-num.known {
+    color: #667eea;
+  }
+  .stat-num.unknown {
+    color: rgba(255,255,255,0.3);
+  }
+  .stat-label {
+    color: rgba(255,255,255,0.45);
+  }
+  .stat-row {
+    border-color: rgba(255,255,255,0.06);
+  }
+  .section-title {
+    color: rgba(255,255,255,0.45);
+  }
+  .unknown-char {
+    color: rgba(255,255,255,0.9);
+  }
+  .btn-primary {
+    background-color: #667eea;
+    color: #FFFFFF;
+  }
+}

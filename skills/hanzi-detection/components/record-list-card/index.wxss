@@ -1,0 +1,182 @@
+/* 色源：app.json window.navigationBarBackgroundColor #667eea + backgroundColor #F8F8F8 + tabBar.color #364153
+ *       暗黑：源项目无 darkmode → 底色白→#1C1C1E，品牌主色#667eea保持不变，文字翻白
+ * ratio=1:1 */
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 3.2vw;
+  background-color: #FFFFFF;
+  border-radius: 1.07vw;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.13vw;
+}
+
+.card-title {
+  font-size: 4.53vw;
+  font-weight: 600;
+  color: rgba(0,0,0,0.9);
+}
+
+.stat-link {
+  font-size: 3.2vw;
+  color: #667eea;
+}
+
+.stat-link-hover {
+  opacity: 0.6;
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-text {
+  font-size: 4vw;
+  color: rgba(0,0,0,0.45);
+  margin-bottom: 1.07vw;
+}
+
+.empty-hint {
+  font-size: 3.2vw;
+  color: rgba(0,0,0,0.3);
+}
+
+.record-list {
+  flex: 1;
+  overflow: hidden;
+}
+
+.record-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2.13vw 0;
+  border-bottom: 0.27vw solid rgba(0,0,0,0.06);
+}
+
+.record-item-hover {
+  background-color: rgba(102,126,234,0.05);
+}
+
+.record-left {
+  flex: 1;
+  overflow: hidden;
+}
+
+.record-score {
+  font-size: 5.33vw;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.record-unit {
+  font-size: 3.2vw;
+  font-weight: 400;
+  color: rgba(0,0,0,0.45);
+}
+
+.record-time {
+  font-size: 3.2vw;
+  color: rgba(0,0,0,0.3);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.record-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.record-stat .stat-num {
+  font-size: 3.73vw;
+  color: rgba(0,0,0,0.45);
+  text-align: center;
+}
+
+.record-stat .stat-label {
+  font-size: 2.67vw;
+  color: rgba(0,0,0,0.3);
+}
+
+.record-arrow {
+  font-size: 4vw;
+  color: rgba(0,0,0,0.2);
+  margin-left: 2.13vw;
+}
+
+.card-footer {
+  padding-top: 2.13vw;
+}
+
+.btn-view-all {
+  font-size: 3.2vw;
+  color: #667eea;
+  text-align: center;
+  padding: 2.13vw;
+}
+
+.btn-view-all-hover {
+  opacity: 0.6;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-container {
+    background-color: #1C1C1E;
+  }
+  .card-title {
+    color: rgba(255,255,255,0.9);
+  }
+  .stat-link {
+    color: #667eea;
+  }
+  .empty-text {
+    color: rgba(255,255,255,0.45);
+  }
+  .empty-hint {
+    color: rgba(255,255,255,0.3);
+  }
+  .record-item {
+    border-color: rgba(255,255,255,0.06);
+  }
+  .record-item-hover {
+    background-color: rgba(102,126,234,0.1);
+  }
+  .record-score {
+    color: #667eea;
+  }
+  .record-unit {
+    color: rgba(255,255,255,0.45);
+  }
+  .record-time {
+    color: rgba(255,255,255,0.3);
+  }
+  .record-stat .stat-num {
+    color: rgba(255,255,255,0.45);
+  }
+  .record-stat .stat-label {
+    color: rgba(255,255,255,0.3);
+  }
+  .record-arrow {
+    color: rgba(255,255,255,0.2);
+  }
+  .btn-view-all {
+    color: #667eea;
+  }
+}

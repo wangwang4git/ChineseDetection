@@ -1,0 +1,147 @@
+{
+  "apis": [
+    {
+      "name": "getTestCharacters",
+      "description": "获取分层抽样的检测汉字列表。基于2500高频汉字，通过6层分层抽样（L1核心字全测50字→L2高频3抽1→L3中频10抽1→L4次常用20抽1→L5低频50抽1→L6生僻100抽1），共生成约175个检测汉字。返回层级概览和完整待测汉字列表，供小程序AI逐字提问。",
+      "_meta": { "ui": { "componentPath": "components/test-overview-card/index" } },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "totalChars": { "type": "number", "description": "检测总字数" },
+          "levelCount": { "type": "number", "description": "层级数量" },
+          "levelOverviews": { "type": "array", "description": "层级概览" },
+          "testChars": { "type": "array", "description": "所有待测汉字列表" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "submitTestResult",
+      "description": "提交检测结果并计算认字量。接收用户已知和未知的汉字列表，按层级权重计算估算认字量，生成鼓励语，并自动保存到本地检测记录。",
+      "_meta": { "ui": { "componentPath": "components/result-card/index" } },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "knownChars": { "type": "array", "items": { "type": "string" }, "description": "用户认识的汉字列表" },
+          "unknownChars": { "type": "array", "items": { "type": "string" }, "description": "用户不认识的汉字列表" }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "estimatedVocabulary": { "type": "number", "description": "估算认字量" },
+          "totalTestedCount": { "type": "number", "description": "实际测试字数" },
+          "knownCount": { "type": "number", "description": "认识的字数" },
+          "unknownCount": { "type": "number", "description": "不认识的字数" },
+          "encouragementMessage": { "type": "string", "description": "鼓励语" },
+          "levelDetails": { "type": "array", "description": "各层级详情" },
+          "unknownChars": { "type": "array", "description": "不认识的字列表" },
+          "recordId": { "type": "string", "description": "记录ID" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getRecordList",
+      "description": "获取历史检测记录列表。从本地存储读取所有检测记录，按时间倒序排列，返回每条记录的摘要信息（时间、认字量、测试字数、不认识字数）。",
+      "_meta": { "ui": { "componentPath": "components/record-list-card/index" } },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "records": { "type": "array", "description": "记录摘要列表" },
+          "totalCount": { "type": "number", "description": "总记录数" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getRecordDetail",
+      "description": "获取指定检测记录的完整详情。根据记录ID查询单条检测记录的完整信息，包括各层级测试结果、不认识汉字列表等。通常在用户从历史记录列表中点击某条记录时调用。",
+      "_meta": { "ui": { "componentPath": "components/record-detail-card/index" } },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "记录ID" }
+        },
+        "required": ["id"],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "记录ID" },
+          "testTime": { "type": "string", "description": "检测时间" },
+          "estimatedVocabulary": { "type": "number", "description": "估算认字量" },
+          "totalTestedCount": { "type": "number", "description": "测试字数" },
+          "levelDetails": { "type": "array", "description": "各层级详情" },
+          "unknownChars": { "type": "array", "description": "不认识的字" },
+          "isFused": { "type": "boolean", "description": "是否熔断" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "getStatistics",
+      "description": "获取检测统计概览。统计历史检测总次数、最高认字量和平均认字量，用于了解整体识字水平趋势。",
+      "_meta": { "ui": { "componentPath": "components/stats-card/index" } },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "testCount": { "type": "number", "description": "检测总次数" },
+          "maxScore": { "type": "number", "description": "最高认字量" },
+          "avgScore": { "type": "number", "description": "平均认字量" }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "components": [
+    {
+      "path": "components/test-overview-card/index",
+      "relatedPage": "/pages/test/test"
+    },
+    {
+      "path": "components/result-card/index",
+      "relatedPage": "/pages/result/result"
+    },
+    {
+      "path": "components/record-list-card/index",
+      "relatedPage": "/pages/profile/profile"
+    },
+    {
+      "path": "components/record-detail-card/index",
+      "relatedPage": "/pages/history-detail/history-detail"
+    },
+    {
+      "path": "components/stats-card/index",
+      "relatedPage": "/pages/profile/profile"
+    }
+  ]
+}

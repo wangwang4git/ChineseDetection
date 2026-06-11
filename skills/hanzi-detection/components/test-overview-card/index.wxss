@@ -1,0 +1,116 @@
+/* 色源：app.json window.navigationBarBackgroundColor #667eea + backgroundColor #F8F8F8 + tabBar.color #364153
+ *       暗黑：源项目无 darkmode → 底色白→#1C1C1E，品牌主色 #667eea 保持不变，文字翻白
+ * ratio=1:1 */
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 3.2vw;
+  background-color: #FFFFFF;
+  border-radius: 1.07vw;
+  overflow: hidden;
+}
+
+.card-title {
+  font-size: 4.53vw;
+  font-weight: 600;
+  color: rgba(0,0,0,0.9);
+  margin-bottom: 2.67vw;
+}
+
+.level-list {
+  flex: 1;
+  overflow: hidden;
+}
+
+.level-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 1.33vw 0;
+}
+
+.level-tag {
+  font-size: 3.2vw;
+  font-weight: 500;
+  color: #667eea;
+  width: 7vw;
+  flex-shrink: 0;
+}
+
+.level-desc {
+  font-size: 3.73vw;
+  color: rgba(0,0,0,0.9);
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.level-count {
+  font-size: 3.2vw;
+  color: rgba(0,0,0,0.3);
+  flex-shrink: 0;
+}
+
+.omitted-hint {
+  font-size: 3.2vw;
+  color: rgba(0,0,0,0.3);
+  text-align: center;
+  padding: 1.07vw 0;
+}
+
+.card-summary {
+  font-size: 3.2vw;
+  color: rgba(0,0,0,0.45);
+  text-align: center;
+  padding: 1.07vw 0;
+  margin-bottom: 1.07vw;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-primary {
+  font-size: 4vw;
+  color: #FFFFFF;
+  background-color: #667eea;
+  padding: 2.67vw 8vw;
+  border-radius: 1.07vw;
+  font-weight: 500;
+}
+
+.btn-primary-hover {
+  opacity: 0.8;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-container {
+    background-color: #1C1C1E;
+  }
+  .card-title {
+    color: rgba(255,255,255,0.9);
+  }
+  .level-tag {
+    color: #667eea;
+  }
+  .level-desc {
+    color: rgba(255,255,255,0.9);
+  }
+  .level-count {
+    color: rgba(255,255,255,0.3);
+  }
+  .omitted-hint {
+    color: rgba(255,255,255,0.3);
+  }
+  .card-summary {
+    color: rgba(255,255,255,0.45);
+  }
+  .btn-primary {
+    background-color: #667eea;
+    color: #FFFFFF;
+  }
+}

@@ -1,0 +1,189 @@
+/* 色源：app.json window.navigationBarBackgroundColor #667eea + backgroundColor #F8F8F8 + tabBar.color #364153
+ *       暗黑：源项目无 darkmode → 底色白→#1C1C1E，品牌主色#667eea保持不变，文字翻白
+ * ratio=1:1 */
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 3.2vw;
+  background-color: #FFFFFF;
+  border-radius: 1.07vw;
+  overflow: hidden;
+}
+
+.card-title {
+  font-size: 4.53vw;
+  font-weight: 600;
+  color: rgba(0,0,0,0.9);
+  margin-bottom: 2.13vw;
+}
+
+.detail-section {
+  margin-bottom: 1.6vw;
+}
+
+.detail-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.6vw 0;
+  border-bottom: 0.27vw solid rgba(0,0,0,0.04);
+}
+
+.detail-label {
+  font-size: 3.73vw;
+  color: rgba(0,0,0,0.45);
+}
+
+.detail-value {
+  font-size: 3.73vw;
+  color: rgba(0,0,0,0.9);
+}
+
+.detail-value.vocab {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.level-section {
+  flex: 1;
+  overflow: hidden;
+  padding-top: 1.07vw;
+}
+
+.section-title {
+  font-size: 3.2vw;
+  color: rgba(0,0,0,0.45);
+  margin-bottom: 1.07vw;
+}
+
+.level-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.53vw 0;
+}
+
+.level-name {
+  font-size: 3.2vw;
+  font-weight: 500;
+  color: #667eea;
+  width: 6vw;
+  flex-shrink: 0;
+}
+
+.level-bar-container {
+  flex: 1;
+  margin: 0 2.13vw;
+}
+
+.level-bar-bg {
+  height: 1.6vw;
+  background-color: rgba(0,0,0,0.06);
+  border-radius: 0.53vw;
+  overflow: hidden;
+}
+
+.level-bar-fill {
+  height: 100%;
+  background-color: #667eea;
+  border-radius: 0.53vw;
+}
+
+.level-scores {
+  font-size: 2.67vw;
+  color: rgba(0,0,0,0.3);
+  width: 10vw;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.omitted-hint {
+  font-size: 2.67vw;
+  color: rgba(0,0,0,0.3);
+  text-align: center;
+  padding: 0.8vw 0;
+}
+
+.unknown-section {
+  padding-top: 1.07vw;
+}
+
+.unknown-chars {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.unknown-char {
+  font-size: 3.73vw;
+  color: rgba(0,0,0,0.9);
+  margin-right: 1.33vw;
+  margin-bottom: 0.8vw;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 2.13vw;
+}
+
+.btn-secondary {
+  font-size: 4vw;
+  color: #667eea;
+  padding: 2.13vw 5.33vw;
+  border-radius: 1.07vw;
+  border: 0.27vw solid #667eea;
+}
+
+.btn-secondary-hover {
+  opacity: 0.6;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-container {
+    background-color: #1C1C1E;
+  }
+  .card-title {
+    color: rgba(255,255,255,0.9);
+  }
+  .detail-label {
+    color: rgba(255,255,255,0.45);
+  }
+  .detail-value {
+    color: rgba(255,255,255,0.9);
+  }
+  .detail-value.vocab {
+    color: #667eea;
+  }
+  .detail-row {
+    border-color: rgba(255,255,255,0.04);
+  }
+  .section-title {
+    color: rgba(255,255,255,0.45);
+  }
+  .level-name {
+    color: #667eea;
+  }
+  .level-bar-bg {
+    background-color: rgba(255,255,255,0.06);
+  }
+  .level-bar-fill {
+    background-color: #667eea;
+  }
+  .level-scores {
+    color: rgba(255,255,255,0.3);
+  }
+  .omitted-hint {
+    color: rgba(255,255,255,0.3);
+  }
+  .unknown-char {
+    color: rgba(255,255,255,0.9);
+  }
+  .btn-secondary {
+    color: #667eea;
+    border-color: #667eea;
+  }
+}

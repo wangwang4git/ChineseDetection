@@ -1,0 +1,86 @@
+/* 色源：app.json window.navigationBarBackgroundColor #667eea + backgroundColor #F8F8F8 + tabBar.color #364153
+ *       暗黑：源项目无 darkmode → 底色白→#1C1C1E，品牌主色#667eea保持不变，文字翻白
+ * ratio=4:3 */
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 3.2vw;
+  background-color: #FFFFFF;
+  border-radius: 1.07vw;
+  overflow: hidden;
+}
+
+.card-title {
+  font-size: 4.53vw;
+  font-weight: 600;
+  color: rgba(0,0,0,0.9);
+  margin-bottom: 3.2vw;
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-text {
+  font-size: 4vw;
+  color: rgba(0,0,0,0.45);
+}
+
+.stats-grid {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 2.13vw;
+}
+
+.stat-num {
+  font-size: 7.47vw;
+  font-weight: 600;
+  color: rgba(0,0,0,0.9);
+  line-height: 1.2;
+}
+
+.stat-num.highlight {
+  color: #667eea;
+}
+
+.stat-label {
+  font-size: 3.2vw;
+  color: rgba(0,0,0,0.45);
+  margin-top: 1.07vw;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-container {
+    background-color: #1C1C1E;
+  }
+  .card-title {
+    color: rgba(255,255,255,0.9);
+  }
+  .empty-text {
+    color: rgba(255,255,255,0.45);
+  }
+  .stat-num {
+    color: rgba(255,255,255,0.9);
+  }
+  .stat-num.highlight {
+    color: #667eea;
+  }
+  .stat-label {
+    color: rgba(255,255,255,0.45);
+  }
+}

@@ -1,0 +1,38 @@
+<!-- components/result-card/index.wxml -->
+<!-- ratio=1:1，展示认字量结果 -->
+
+<view class="card-container">
+  <view class="vocab-section">
+    <view class="vocab-title">你的识字量</view>
+    <view class="vocab-number">{{estimatedVocabulary}}</view>
+    <view class="vocab-unit">字</view>
+  </view>
+
+  <view class="encourage-text">{{encouragementMessage}}</view>
+
+  <view class="stat-row">
+    <view class="stat-item">
+      <view class="stat-num">{{totalTestedCount}}</view>
+      <view class="stat-label">测试字数</view>
+    </view>
+    <view class="stat-item">
+      <view class="stat-num known">{{knownCount}}</view>
+      <view class="stat-label">认识</view>
+    </view>
+    <view class="stat-item">
+      <view class="stat-num unknown">{{unknownCount}}</view>
+      <view class="stat-label">不认识</view>
+    </view>
+  </view>
+
+  <view wx:if="{{unknownChars.length > 0}}" class="unknown-section">
+    <view class="section-title">不认识的字</view>
+    <view class="unknown-chars">
+      <text wx:for="{{unknownChars}}" wx:key="*this" class="unknown-char">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="card-footer">
+    <view class="btn-primary" hover-class="btn-primary-hover" bindtap="onTapViewHistory">查看历史记录</view>
+  </view>
+</view>

@@ -1,0 +1,46 @@
+<!-- components/record-detail-card/index.wxml -->
+<!-- ratio=1:1，展示单条记录详情 -->
+
+<view class="card-container">
+  <view class="card-title">检测详情</view>
+
+  <view class="detail-section">
+    <view class="detail-row">
+      <view class="detail-label">检测时间</view>
+      <view class="detail-value">{{testTime}}</view>
+    </view>
+    <view class="detail-row">
+      <view class="detail-label">认字量</view>
+      <view class="detail-value vocab">{{estimatedVocabulary}} 字</view>
+    </view>
+    <view class="detail-row">
+      <view class="detail-label">测试字数</view>
+      <view class="detail-value">{{totalTestedCount}} 字</view>
+    </view>
+  </view>
+
+  <view wx:if="{{levelDetails.length > 0}}" class="level-section">
+    <view class="section-title">各层级详情</view>
+    <view wx:for="{{levelDetails}}" wx:key="level" class="level-row">
+      <view class="level-name">L{{item.level}}</view>
+      <view class="level-bar-container">
+        <view class="level-bar-bg">
+          <view class="level-bar-fill" style="width: {{item.testedCount > 0 ? item.knownCount / item.testedCount * 100 : 0}}%"></view>
+        </view>
+      </view>
+      <view class="level-scores">{{item.knownCount}}/{{item.testedCount}}</view>
+    </view>
+    <view wx:if="{{omittedLevels > 0}}" class="omitted-hint">还有 {{omittedLevels}} 个层级...</view>
+  </view>
+
+  <view wx:if="{{unknownChars.length > 0}}" class="unknown-section">
+    <view class="section-title">不认识的字</view>
+    <view class="unknown-chars">
+      <text wx:for="{{unknownChars}}" wx:key="*this" class="unknown-char">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="card-footer">
+    <view class="btn-secondary" hover-class="btn-secondary-hover" bindtap="onTapBackToList">返回列表</view>
+  </view>
+</view>

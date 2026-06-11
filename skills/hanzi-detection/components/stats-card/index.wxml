@@ -1,0 +1,25 @@
+<!-- components/stats-card/index.wxml -->
+<!-- ratio=4:3，展示统计数据概览 -->
+
+<view class="card-container">
+  <view class="card-title">检测统计</view>
+
+  <view wx:if="{{isEmpty}}" class="empty-state">
+    <view class="empty-text">暂无检测数据</view>
+  </view>
+
+  <view wx:else class="stats-grid">
+    <view class="stat-card">
+      <view class="stat-num">{{testCount}}</view>
+      <view class="stat-label">检测次数</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num highlight">{{maxScore}}</view>
+      <view class="stat-label">最高认字量</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-num">{{avgScore}}</view>
+      <view class="stat-label">平均认字量</view>
+    </view>
+  </view>
+</view>
