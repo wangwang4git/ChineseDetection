@@ -44,6 +44,7 @@ Desktop.ini
 .idea/
 .vscode/
 .codebuddy/
+.workbuddy/
 # CodeBuddy 生成的资源文件（项目静态资源应使用 src/static/）
 /assets/
 *.suo
